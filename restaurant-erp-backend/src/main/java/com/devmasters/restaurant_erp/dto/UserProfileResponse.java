@@ -1,5 +1,6 @@
 package com.devmasters.restaurant_erp.dto;
 
+import com.devmasters.restaurant_erp.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,18 +10,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AuthResponse {
-    private String accessToken;
-    private String refreshToken;
+public class UserProfileResponse {
 
+    private String id;
     private String email;
     private String firstName;
     private String lastName;
+    private String phone;
 
-    private String role;
+    private String address;
+    private String city;
+    private String state;
+    private String zip;
 
     private String referralCode;
 
-    private String message;
-    private boolean success;
+    private Role role;
 }

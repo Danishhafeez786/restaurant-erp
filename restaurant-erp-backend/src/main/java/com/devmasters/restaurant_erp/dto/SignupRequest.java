@@ -11,30 +11,36 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SignupRequest {
-    @NotBlank(message = "Email is required")
-    @Email(message = "Email should be valid")
+    @NotBlank
+    @Email
     private String email;
 
-    @NotBlank(message = "First name is required")
-    @Size(min = 2, message = "First name must be at least 2 characters")
+    @NotBlank
     private String firstName;
 
-    @NotBlank(message = "Last name is required")
-    @Size(min = 2, message = "Last name must be at least 2 characters")
+    @NotBlank
     private String lastName;
 
-    @NotBlank(message = "Restaurant name is required")
-    @Size(min = 2, message = "Restaurant name must be at least 2 characters")
-    private String restaurantName;
-
-    @NotBlank(message = "Phone is required")
-    @Size(min = 10, message = "Phone must be at least 10 characters")
+    @NotBlank
     private String phone;
 
-    @NotBlank(message = "Password is required")
-    @Size(min = 6, message = "Password must be at least 6 characters")
+    @NotBlank
+    private String address;
+
+    @NotBlank
+    private String city;
+
+    @NotBlank
+    private String state;
+
+    @NotBlank
+    private String zip;
+
+    private String referredBy;
+
+    @NotBlank
     private String password;
 
-    @NotBlank(message = "Confirm password is required")
+    @NotBlank
     private String confirmPassword;
 }

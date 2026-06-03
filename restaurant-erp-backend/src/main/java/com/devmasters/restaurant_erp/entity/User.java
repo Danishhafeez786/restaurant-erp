@@ -17,31 +17,34 @@ import java.time.LocalDateTime;
 public class User {
     @Id
     private String id;
-    
+
     @Indexed(unique = true)
     private String email;
-    
+
     private String password;
+
     private String firstName;
     private String lastName;
-    private String restaurantName;
+
     private String phone;
+
+    private String address;
+    private String city;
+    private String state;
+    private String zip;
+
+    @Indexed(unique = true)
+    private String referralCode;
+
+    private String referredBy;
+
+    private Role role;
+
     private boolean enabled;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id='" + id + '\'' +
-                ", email='" + email + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", restaurantName='" + restaurantName + '\'' +
-                ", phone='" + phone + '\'' +
-                ", enabled=" + enabled +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
-    }
+    private int tokenVersion = 0;
+
 }

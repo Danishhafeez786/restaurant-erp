@@ -1,5 +1,8 @@
 package com.devmasters.restaurant_erp.security;
 
+import com.devmasters.restaurant_erp.entity.Role;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -11,26 +14,80 @@ import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
-    @Value("${app.jwtSecret:your-secret-key-change-this-in-production}")
+    @Value("${app.jwtSecret}")
     private String jwtSecret;
 
-    @Value("${app.jwtExpirationMs:86400000}")
-    private int jwtExpirationMs;
+    @Value("${app.jwtAccessExpirationMs}")
+    private long accessExpiration;
 
-    private SecretKey getSigningKey() {
+    @Value("${app.jwtRefreshExpirationMs}")
+    private long refreshExpiration;
+
+    private SecretKey key() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(String email) {
+
+    public String generateAccessToken(String email, Role role, int tokenVersion) {
+
         return Jwts.builder()
                 .setSubject(email)
+                .claim("role", role.name())
+                .claim("tokenVersion", tokenVersion)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS512)
+                .setExpiration(new Date(System.currentTimeMillis() + accessExpiration))
+                .signWith(key(), SignatureAlgorithm.HS512)
                 .compact();
     }
 
-    public String getEmailFromToken(String token) {
+    public String generateRefreshToken(
+            String email
+    ) {
+
+        return Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(new Date())
+                .setExpiration(
+                        new Date(
+                                System.currentTimeMillis()
+                                        + refreshExpiration
+                        )
+                )
+                .signWith(key(), SignatureAlgorithm.HS512)
+                .compact();
+    }
+
+
+    // 🔐 INTERNAL PARSER
+    private Jws<Claims> parse(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key())
+                .build()
+                .parseClaimsJws(token);
+    }
+
+    private SecretKey getSigningKey() {
+        return Keys.hmacShaKeyFor(
+                jwtSecret.getBytes(StandardCharsets.UTF_8)
+        );
+    }
+
+
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(token);
+
+            return true;
+
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public String getEmail(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
                 .build()
@@ -39,15 +96,21 @@ public class JwtTokenProvider {
                 .getSubject();
     }
 
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(getSigningKey())
-                    .build()
-                    .parseClaimsJws(token);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+    public String getRole(String token) {
+        return (String) Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("role");
+    }
+
+    public int getTokenVersion(String token) {
+        return (Integer) Jwts.parserBuilder()
+                .setSigningKey(key())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("tokenVersion");
     }
 }

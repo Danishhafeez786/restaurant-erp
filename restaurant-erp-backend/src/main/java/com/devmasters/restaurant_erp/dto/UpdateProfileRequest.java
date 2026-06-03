@@ -9,18 +9,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AuthResponse {
-    private String accessToken;
-    private String refreshToken;
+public class UpdateProfileRequest {
 
-    private String email;
     private String firstName;
     private String lastName;
+    private String phone;
 
-    private String role;
-
-    private String referralCode;
-
-    private String message;
-    private boolean success;
+    private String address;
+    private String city;
+    private String state;
+    private String zip;
 }
