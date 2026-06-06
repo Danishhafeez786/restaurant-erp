@@ -1,6 +1,6 @@
 package com.devmasters.restaurant_erp.config;
 
-import com.devmasters.restaurant_erp.repository.RefreshTokenRepository;
+import com.devmasters.restaurant_erp.auth.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;

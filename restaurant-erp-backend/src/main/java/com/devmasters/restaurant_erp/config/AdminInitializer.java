@@ -1,8 +1,8 @@
 package com.devmasters.restaurant_erp.config;
 
-import com.devmasters.restaurant_erp.entity.Role;
-import com.devmasters.restaurant_erp.entity.User;
-import com.devmasters.restaurant_erp.repository.UserRepository;
+import com.devmasters.restaurant_erp.auth.domain.Role;
+import com.devmasters.restaurant_erp.auth.domain.User;
+import com.devmasters.restaurant_erp.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;

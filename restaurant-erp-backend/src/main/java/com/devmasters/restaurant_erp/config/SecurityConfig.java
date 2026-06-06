@@ -1,9 +1,9 @@
 package com.devmasters.restaurant_erp.config;
 
-import com.devmasters.restaurant_erp.security.JwtAuthFilter;
-import com.devmasters.restaurant_erp.security.RateLimitFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -37,7 +37,12 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(
+                                "/auth/**",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/ws/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
 
@@ -78,4 +83,56 @@ public class SecurityConfig {
 
         return source;
     }
+
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
 }
+
+//@Configuration
+//@EnableWebSecurity
+//public class SecurityConfig {
+//
+//    private static final String[] PUBLIC_URLS = {
+//
+//            "/auth/**",
+//
+//            "/swagger-ui/**",
+//            "/swagger-ui.html",
+//
+//            "/v3/api-docs/**",
+//
+//            "/actuator/health",
+//
+//            "/ws/**"
+//    };
+//
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(
+//            HttpSecurity http) throws Exception {
+//
+//        http
+//                .csrf(csrf -> csrf.disable())
+//
+//                .authorizeHttpRequests(auth -> auth
+//
+//                        .requestMatchers(PUBLIC_URLS)
+//                        .permitAll()
+//
+//                        .anyRequest()
+//                        .authenticated()
+//                )
+//
+//                .httpBasic(Customizer.withDefaults());
+//
+//        return http.build();
+//    }
+//
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//
+//        return new BCryptPasswordEncoder();
+//    }
+//}
