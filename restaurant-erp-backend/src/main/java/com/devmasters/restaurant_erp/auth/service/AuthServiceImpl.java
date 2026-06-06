@@ -8,6 +8,7 @@ import com.devmasters.restaurant_erp.auth.repository.UserRepository;
 import com.devmasters.restaurant_erp.config.JwtTokenProvider;
 import com.devmasters.restaurant_erp.auth.transformer.UserTransformer;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,19 +16,15 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    @Autowired
     private final UserRepository userRepository;
 
-    @Autowired
     private final PasswordEncoder passwordEncoder;
 
-    @Autowired
     private final JwtTokenProvider jwtTokenProvider;
 
-    @Autowired
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
