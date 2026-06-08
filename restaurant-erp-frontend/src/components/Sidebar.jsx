@@ -37,6 +37,11 @@ const Sidebar = () => {
       path: "/dashboard",
     },
     {
+      title: "Employee Management",
+      icon: <UserGroupIcon className="w-6 h-6" />,
+      path: "/create-employee",
+    },
+    {
       title: "POS Orders",
       icon: <ShoppingCartIcon className="w-6 h-6" />,
       path: "/pos-orders",
