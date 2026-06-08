@@ -1,152 +1,287 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { authApi } from '../services/authApi';
+import {
+  EyeIcon,
+  EyeSlashIcon,
+} from "@heroicons/react/24/outline";
+
+import { useState } from "react";
+// import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
+import { loginUser } from "../services/auth/authService";
+
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
-  const { login } = useAuth();
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+
+  const [error, setError] = useState("");
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
+
+  e.preventDefault();
+
+  setError("");
+
+  try {
+
     setLoading(true);
 
-    try {
-      const response = await authApi.login(formData);
+    const response = await loginUser(formData);
 
-      if (response.success) {
-        login(
-          {
-            email: response.email,
-            firstName: response.firstName,
-            lastName: response.lastName,
-            restaurantName: response.restaurantName,
-          },
-          response.token
-        );
-        navigate('/dashboard');
-      } else {
-        setError(response.message || 'Login failed');
-      }
-    } catch (err) {
-      setError(err.message || 'Login failed. Please try again.');
-    } finally {
-      setLoading(false);
+    console.log("LOGIN RESPONSE:", response);
+
+    if (!response.success) {
+
+      setError(
+        response.message || "Login Failed"
+      );
+
+      return;
     }
-  };
+
+    // SAVE TOKENS
+
+    localStorage.setItem(
+      "accessToken",
+      response.accessToken
+    );
+
+    localStorage.setItem(
+      "refreshToken",
+      response.refreshToken
+    );
+
+    localStorage.setItem(
+      "user",
+      JSON.stringify({
+        email: response.email,
+        firstName: response.firstName,
+        lastName: response.lastName,
+        role: response.role,
+      })
+    );
+
+    // REDIRECT TO DASHBOARD
+
+    navigate("/dashboard");
+
+  } catch (err) {
+
+    console.error(err);
+
+    if (err.response?.data?.message) {
+
+      setError(err.response.data.message);
+
+    } else {
+
+      setError("Server Error");
+
+    }
+
+  } finally {
+
+    setLoading(false);
+
+  }
+
+};
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-600 via-primary-500 to-accent-600 flex items-center justify-center px-4 py-12">
-      {/* Animated background elements */}
-      <div className="absolute top-10 left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-pulse-glow"></div>
-      <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent-400/10 rounded-full blur-3xl animate-pulse-glow"></div>
+    <div className="min-h-screen bg-gradient-to-br from-[#062b27] via-[#0d4039] to-[#041816] flex items-center justify-center p-4">
 
-      <div className="relative z-10 w-full max-w-md">
-        {/* Card */}
-        <div className="card p-8 md:p-10 backdrop-blur-sm border border-white/20">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-4xl md:text-5xl font-bold gradient-text mb-2">
-              Restaurant ERP
+      <div className="w-full max-w-7xl bg-white rounded-3xl overflow-hidden shadow-2xl grid grid-cols-1 lg:grid-cols-2">
+
+        {/* LEFT */}
+        <div className="hidden lg:flex bg-gradient-to-br from-[#0b3b35] to-[#06211d] text-white p-14 flex-col justify-between">
+
+          <div>
+
+            <h1 className="text-4xl font-extrabold">
+              DevMasters<span className="text-yellow-400">POS</span>
             </h1>
-            <p className="text-slate-600 font-medium">Welcome Back</p>
-          </div>
 
-          {/* Error Message */}
-          {error && (
-            <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-lg">
-              <p className="text-red-700 font-medium text-sm">{error}</p>
-            </div>
-          )}
-
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">
-                Email Address
-              </label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                placeholder="owner@restaurant.com"
-                className="input-field"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">
-                Password
-              </label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                placeholder="••••••••"
-                className="input-field"
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn-primary w-full disabled:opacity-70 disabled:cursor-not-allowed"
-            >
-              {loading ? (
-                <span className="flex items-center justify-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Logging in...
-                </span>
-              ) : (
-                'Sign In'
-              )}
-            </button>
-          </form>
-
-          {/* Footer */}
-          <div className="mt-8 pt-8 border-t border-slate-200 text-center">
-            <p className="text-slate-600 text-sm">
-              Don't have an account?{' '}
-              <Link
-                to="/signup"
-                className="font-semibold text-primary-600 hover:text-primary-700 transition-colors"
-              >
-                Create one here
-              </Link>
+            <p className="text-gray-300 mt-3">
+              Restaurant Management System
             </p>
+
           </div>
+
+          <div>
+
+            <h2 className="text-5xl font-bold leading-tight">
+              Welcome Back!
+            </h2>
+
+            <p className="text-gray-300 mt-6 text-lg leading-relaxed">
+              Manage orders, kitchen, delivery, inventory,
+              reservations and reports from one platform.
+            </p>
+
+          </div>
+
+          <div className="text-sm text-gray-400">
+            © 2026 DevMasters - All rights reserved.
+          </div>
+
         </div>
 
-        {/* Bottom accent */}
-        <div className="mt-6 text-center text-white/60 text-sm">
-          <p>Secure authentication powered by JWT</p>
+        {/* RIGHT */}
+        <div className="bg-white flex items-center justify-center p-6 sm:p-10 lg:p-16">
+
+          <div className="w-full max-w-md">
+
+            <div className="mb-10">
+
+              <h2 className="text-4xl font-bold text-gray-800">
+                Login Account
+              </h2>
+
+              <p className="text-gray-500 mt-3">
+                Continue managing your restaurant.
+              </p>
+
+            </div>
+
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-6"
+            >
+
+              {/* ERROR */}
+              {error && (
+                <div className="bg-red-100 text-red-600 px-4 py-3 rounded-xl text-sm">
+                  {error}
+                </div>
+              )}
+
+              {/* EMAIL */}
+              <div>
+
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Email Address
+                </label>
+
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="Enter your email"
+                  className="w-full border border-gray-300 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-[#0d4039]"
+                  required
+                />
+
+              </div>
+
+              {/* PASSWORD */}
+              <div>
+
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Password
+                </label>
+
+                <div className="relative">
+
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="Enter your password"
+                    className="w-full border border-gray-300 rounded-2xl px-5 py-4 pr-14 outline-none focus:ring-2 focus:ring-[#0d4039]"
+                    required
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setShowPassword(!showPassword)
+                    }
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"
+                  >
+
+                    {showPassword ? (
+                      <EyeSlashIcon className="w-6 h-6" />
+                    ) : (
+                      <EyeIcon className="w-6 h-6" />
+                    )}
+
+                  </button>
+
+                </div>
+
+              </div>
+
+              {/* REMEMBER */}
+              <div className="flex items-center justify-between">
+
+                <label className="flex items-center gap-2 text-sm text-gray-600">
+
+                  <input type="checkbox" />
+
+                  Remember Me
+
+                </label>
+
+                <button
+                  type="button"
+                  className="text-[#0d4039] font-semibold hover:underline"
+                >
+                  Forgot Password?
+                </button>
+
+              </div>
+
+              {/* BUTTON */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-[#0d4039] hover:bg-[#0a2d28] text-white py-4 rounded-2xl font-semibold transition-all duration-300 shadow-lg disabled:opacity-50"
+              >
+
+                {loading ? "Please Wait..." : "Sign In"}
+
+              </button>
+
+              <p className="text-sm text-gray-600 text-center">
+                Don't have an account?{" "}
+                <Link
+                  to="/signup"
+                  className="text-[#0d4039] font-semibold hover:underline"
+                >
+                  Sign Up
+                </Link>
+              </p> 
+            </form>
+
+          </div>
+
         </div>
+
       </div>
+
     </div>
   );
 };
 
 export default Login;
-

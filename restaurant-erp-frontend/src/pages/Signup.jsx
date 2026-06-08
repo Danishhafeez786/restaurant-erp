@@ -1,245 +1,447 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { authApi } from '../services/authApi';
+import {
+  EyeIcon,
+  EyeSlashIcon,
+} from "@heroicons/react/24/outline";
+
+import { useState } from "react";
+
+import { Link, useNavigate } from "react-router-dom";
+
+import { signupUser } from "../services/auth/authService";
 
 const Signup = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    firstName: '',
-    lastName: '',
-    restaurantName: '',
-    phone: '',
-    password: '',
-    confirmPassword: '',
-  });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
-  const { signup } = useAuth();
+
+  const [showPassword, setShowPassword] =
+    useState(false);
+
+  const [showConfirmPassword,
+    setShowConfirmPassword] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+
+  const [error, setError] = useState("");
+
+  const [formData, setFormData] = useState({
+    email: "",
+    firstName: "",
+    lastName: "",
+    phone: "",
+    address: "",
+    city: "",
+    state: "",
+    zip: "",
+    referredBy: "",
+    password: "",
+    confirmPassword: "",
+  });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
 
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+    e.preventDefault();
+
+    setError("");
+
+    if (
+      formData.password !==
+      formData.confirmPassword
+    ) {
+      setError("Passwords do not match");
       return;
     }
 
-    setLoading(true);
-
     try {
-      const response = await authApi.signup(formData);
 
-      if (response.success) {
-        signup(
-          {
-            email: response.email,
-            firstName: response.firstName,
-            lastName: response.lastName,
-            restaurantName: response.restaurantName,
-          },
-          response.token
+      setLoading(true);
+
+      const response =
+        await signupUser(formData);
+
+      if (!response.success) {
+        setError(
+          response.message ||
+          "Signup Failed"
         );
-        navigate('/dashboard');
-      } else {
-        setError(response.message || 'Signup failed');
+        return;
       }
+
+      alert("Account Created Successfully");
+
+      navigate("/");
+
     } catch (err) {
-      setError(err.message || 'Signup failed. Please try again.');
+
+      console.error(err);
+
+      if (err.response?.data?.message) {
+        setError(err.response.data.message);
+      } else {
+        setError("Server Error");
+      }
+
     } finally {
+
       setLoading(false);
+
     }
+
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-accent-600 via-accent-500 to-primary-600 flex items-center justify-center px-4 py-12">
-      {/* Animated background elements */}
-      <div className="absolute top-10 right-10 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-pulse-glow"></div>
-      <div className="absolute bottom-10 left-10 w-96 h-96 bg-primary-400/10 rounded-full blur-3xl animate-pulse-glow"></div>
+    <div className="min-h-screen bg-gradient-to-br from-[#062b27] via-[#0d4039] to-[#041816] flex items-center justify-center p-4">
 
-      <div className="relative z-10 w-full max-w-2xl">
-        {/* Card */}
-        <div className="card p-8 md:p-12 backdrop-blur-sm border border-white/20">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-4xl md:text-5xl font-bold gradient-text mb-2">
-              Restaurant ERP
+      <div className="w-full max-w-7xl bg-white rounded-3xl overflow-hidden shadow-2xl grid grid-cols-1 lg:grid-cols-2">
+
+        {/* LEFT SIDE */}
+        <div className="hidden lg:flex bg-gradient-to-br from-[#0b3b35] to-[#06211d] text-white p-14 flex-col justify-between">
+
+          <div>
+
+            <h1 className="text-4xl font-extrabold">
+              DevMasters
+              <span className="text-yellow-400">
+                POS
+              </span>
             </h1>
-            <p className="text-slate-600 font-medium">Create Your Account</p>
+
+            <p className="text-gray-300 mt-3">
+              Restaurant ERP System
+            </p>
+
           </div>
 
-          {/* Error Message */}
-          {error && (
-            <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-lg">
-              <p className="text-red-700 font-medium text-sm">{error}</p>
-            </div>
-          )}
+          <div>
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Name Fields */}
-            <div className="grid md:grid-cols-2 gap-5">
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
-                  First Name
-                </label>
-                <input
-                  type="text"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  required
-                  placeholder="John"
-                  className="input-field"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
-                  Last Name
-                </label>
-                <input
-                  type="text"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  required
-                  placeholder="Doe"
-                  className="input-field"
-                />
-              </div>
+            <h2 className="text-5xl font-bold leading-tight">
+              Create Your Account
+            </h2>
+
+            <p className="text-gray-300 mt-6 text-lg leading-relaxed">
+              Join the modern restaurant
+              management platform for POS,
+              kitchen, delivery, inventory and
+              analytics.
+            </p>
+
+          </div>
+
+          <div className="text-sm text-gray-400">
+            © 2026 DevMasters - All rights reserved.
+          </div>
+
+        </div>
+
+        {/* RIGHT SIDE */}
+        <div className="bg-white p-6 sm:p-10 lg:p-16 overflow-y-auto">
+
+          <div className="w-full max-w-xl mx-auto">
+
+            <div className="mb-8">
+
+              <h2 className="text-4xl font-bold text-gray-800">
+                Sign Up
+              </h2>
+
+              <p className="text-gray-500 mt-2">
+                Create your customer account
+              </p>
+
             </div>
 
-            {/* Email */}
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">
-                Email Address
-              </label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                placeholder="owner@restaurant.com"
-                className="input-field"
-              />
-            </div>
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-5"
+            >
 
-            {/* Restaurant & Phone */}
-            <div className="grid md:grid-cols-2 gap-5">
+              {error && (
+                <div className="bg-red-100 text-red-600 px-4 py-3 rounded-xl text-sm">
+                  {error}
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    First Name
+                  </label>
+
+                  <input
+                    type="text"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    placeholder="Muhammad"
+                    className="w-full border border-gray-300 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-[#0d4039]"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Last Name
+                  </label>
+
+                  <input
+                    type="text"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    placeholder="Danish"
+                    className="w-full border border-gray-300 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-[#0d4039]"
+                    required
+                  />
+                </div>
+
+              </div>
+
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
-                  Restaurant Name
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Email Address
                 </label>
+
                 <input
-                  type="text"
-                  name="restaurantName"
-                  value={formData.restaurantName}
+                  type="email"
+                  name="email"
+                  value={formData.email}
                   onChange={handleChange}
+                  placeholder="example@gmail.com"
+                  className="w-full border border-gray-300 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-[#0d4039]"
                   required
-                  placeholder="My Restaurant"
-                  className="input-field"
                 />
               </div>
+
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Phone Number
                 </label>
+
                 <input
-                  type="tel"
+                  type="text"
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
+                  placeholder="+92 300 1234567"
+                  className="w-full border border-gray-300 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-[#0d4039]"
                   required
-                  placeholder="+1 (555) 000-0000"
-                  className="input-field"
                 />
               </div>
-            </div>
 
-            {/* Password Fields */}
-            <div className="grid md:grid-cols-2 gap-5">
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
-                  Password
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Address
                 </label>
+
                 <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
+                  type="text"
+                  name="address"
+                  value={formData.address}
                   onChange={handleChange}
+                  placeholder="Street Address"
+                  className="w-full border border-gray-300 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-[#0d4039]"
                   required
-                  placeholder="••••••••"
-                  className="input-field"
                 />
               </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    City
+                  </label>
+
+                  <input
+                    type="text"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleChange}
+                    placeholder="Karachi"
+                    className="w-full border border-gray-300 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-[#0d4039]"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    State
+                  </label>
+
+                  <input
+                    type="text"
+                    name="state"
+                    value={formData.state}
+                    onChange={handleChange}
+                    placeholder="Sindh"
+                    className="w-full border border-gray-300 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-[#0d4039]"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    ZIP
+                  </label>
+
+                  <input
+                    type="text"
+                    name="zip"
+                    value={formData.zip}
+                    onChange={handleChange}
+                    placeholder="74000"
+                    className="w-full border border-gray-300 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-[#0d4039]"
+                    required
+                  />
+                </div>
+
+              </div>
+
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
-                  Confirm Password
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Referral Code
                 </label>
+
                 <input
-                  type="password"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
+                  type="text"
+                  name="referredBy"
+                  value={formData.referredBy}
                   onChange={handleChange}
-                  required
-                  placeholder="••••••••"
-                  className="input-field"
+                  placeholder="Optional"
+                  className="w-full border border-gray-300 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-[#0d4039]"
                 />
               </div>
-            </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn-primary w-full disabled:opacity-70 disabled:cursor-not-allowed mt-6"
-            >
-              {loading ? (
-                <span className="flex items-center justify-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Creating Account...
-                </span>
-              ) : (
-                'Create Account'
-              )}
-            </button>
-          </form>
+              {/* PASSWORDS */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-          {/* Footer */}
-          <div className="mt-8 pt-8 border-t border-slate-200 text-center">
-            <p className="text-slate-600 text-sm">
-              Already have an account?{' '}
-              <Link
-                to="/login"
-                className="font-semibold text-accent-600 hover:text-accent-700 transition-colors"
+                <div>
+
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Password
+                  </label>
+
+                  <div className="relative">
+
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      placeholder="Password"
+                      className="w-full border border-gray-300 rounded-2xl px-5 py-4 pr-14 outline-none focus:ring-2 focus:ring-[#0d4039]"
+                      required
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setShowPassword(!showPassword)
+                      }
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"
+                    >
+
+                      {showPassword ? (
+                        <EyeSlashIcon className="w-6 h-6" />
+                      ) : (
+                        <EyeIcon className="w-6 h-6" />
+                      )}
+
+                    </button>
+
+                  </div>
+
+                </div>
+
+                <div>
+
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Confirm Password
+                  </label>
+
+                  <div className="relative">
+
+                    <input
+                      type={
+                        showConfirmPassword
+                          ? "text"
+                          : "password"
+                      }
+                      name="confirmPassword"
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      placeholder="Confirm Password"
+                      className="w-full border border-gray-300 rounded-2xl px-5 py-4 pr-14 outline-none focus:ring-2 focus:ring-[#0d4039]"
+                      required
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setShowConfirmPassword(
+                          !showConfirmPassword
+                        )
+                      }
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"
+                    >
+
+                      {showConfirmPassword ? (
+                        <EyeSlashIcon className="w-6 h-6" />
+                      ) : (
+                        <EyeIcon className="w-6 h-6" />
+                      )}
+
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-[#0d4039] hover:bg-[#0a2d28] text-white py-4 rounded-2xl font-semibold transition-all duration-300 shadow-lg disabled:opacity-50"
               >
-                Sign in here
-              </Link>
-            </p>
+
+                {loading
+                  ? "Creating Account..."
+                  : "Create Account"}
+
+              </button>
+
+              <div className="text-center text-gray-600 pt-5">
+
+                Already have an account?{" "}
+
+                <Link
+                  to="/"
+                  className="text-[#0d4039] font-bold hover:underline"
+                >
+                  Sign In
+                </Link>
+
+              </div>
+
+            </form>
+
           </div>
+
         </div>
 
-        {/* Bottom accent */}
-        <div className="mt-6 text-center text-white/60 text-sm">
-          <p>Fast, secure restaurant management starts here</p>
-        </div>
       </div>
+
     </div>
   );
 };
 
 export default Signup;
-
