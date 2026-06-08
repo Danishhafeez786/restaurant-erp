@@ -2,10 +2,10 @@ import Sidebar from "../components/Sidebar";
 
 const Dashboard = () => {
   return (
-    <div className="min-h-screen bg-gray-100 flex">
-      <Sidebar />
+    <div className="min-h-screen bg-gray-100 lg:flex">
+        <Sidebar />
 
-      <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto">
         {/* HEADER */}
         <div className="bg-white px-8 py-6 shadow-sm flex items-center justify-between">
           <div>

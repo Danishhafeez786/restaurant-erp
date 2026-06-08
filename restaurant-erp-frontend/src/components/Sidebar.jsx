@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
   HomeIcon,
   ShoppingCartIcon,
@@ -9,12 +12,13 @@ import {
   ChartBarIcon,
   TableCellsIcon,
   ArrowRightOnRectangleIcon,
+  Bars3Icon,
+  XMarkIcon,
 } from "@heroicons/react/24/outline";
-
-import { useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
 
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -75,7 +79,68 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="w-[280px] bg-[#0d4039] text-white flex flex-col shadow-2xl">
+  <>
+    {/* MOBILE HEADER */}
+    <div className="lg:hidden bg-[#0d4039] text-white px-4 py-4 flex justify-between items-center">
+      <h1 className="text-xl font-bold">
+        Foodie
+        <span className="text-yellow-400">POS</span>
+      </h1>
+
+      <button onClick={() => setIsOpen(true)}>
+        <Bars3Icon className="w-8 h-8" />
+      </button>
+    </div>
+
+    {/* OVERLAY */}
+    {isOpen && (
+      <div
+        className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+        onClick={() => setIsOpen(false)}
+      />
+    )}
+
+    {/* MOBILE MENU */}
+    <div
+      className={`
+        fixed top-0 left-0 h-screen w-full
+        bg-[#0d4039]
+        z-50
+        transform transition-transform duration-300
+        lg:hidden
+        ${isOpen ? "translate-x-0" : "-translate-x-full"}
+      `}
+    >
+      {/* CLOSE BUTTON */}
+      <div className="flex justify-between items-center p-5">
+        <h1 className="text-2xl font-bold text-white">
+          Foodie
+          <span className="text-yellow-400">POS</span>
+        </h1>
+
+        <button onClick={() => setIsOpen(false)}>
+          <XMarkIcon className="w-8 h-8 text-white" />
+        </button>
+      </div>
+
+      <nav className="flex flex-col items-center justify-center h-[80%] gap-8 text-white">
+        {menuItems.map((item) => (
+          <button
+            key={item.title}
+            onClick={() => {
+              navigate(item.path);
+              setIsOpen(false);
+            }}
+            className="text-2xl font-medium hover:text-yellow-400"
+          >
+            {item.title}
+          </button>
+        ))}
+      </nav>
+    </div>
+
+    {/* DESKTOP SIDEBAR */}
+    <div className="hidden lg:flex w-[280px] bg-[#0d4039] text-white flex-col shadow-2xl">
       {/* LOGO */}
       <div className="px-8 py-7 border-b border-white/10">
         <h1 className="text-3xl font-extrabold">
@@ -128,14 +193,15 @@ const Sidebar = () => {
         </button>
       </div>
     </div>
-  );
+  </>
+);
 };
 
 const SidebarItem = ({ icon, title, onClick }) => {
   return (
     <button
       onClick={onClick}
-      className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl hover:bg-white/10 text-left"
+      className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl hover:bg-white/10 transition"
     >
       {icon}
       <span>{title}</span>
