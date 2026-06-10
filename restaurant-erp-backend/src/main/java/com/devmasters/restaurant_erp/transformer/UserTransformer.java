@@ -20,6 +20,7 @@ public class UserTransformer extends Transformer<User, UserModel>{
                 .substring(0, 8);
 
         return User.builder()
+                .id(UUID.randomUUID())
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .email(request.getEmail())

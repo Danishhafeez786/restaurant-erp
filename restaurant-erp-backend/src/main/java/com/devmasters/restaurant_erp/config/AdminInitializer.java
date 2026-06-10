@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -25,6 +26,7 @@ public class AdminInitializer implements CommandLineRunner {
         if (!userRepository.existsByEmail(adminEmail)) {
 
             User admin = User.builder()
+                    .id(UUID.randomUUID())
                     .email(adminEmail)
                     .password(passwordEncoder.encode("Admin@123"))
                     .firstName("Super")

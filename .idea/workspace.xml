@@ -6,26 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="d292dd75-23d9-4dde-9b08-d9b52fb3001b" name="Changes" comment="Create All basic Structure">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/attendance/domain/Attendance.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/auth/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/auth/domain/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/auth/service/AuthServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/auth/service/AuthServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/branch/domain/Branch.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/category/domain/Category.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/config/JwtAuthFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/config/JwtAuthFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/config/MongoConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/config/MongoConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/config/OpenApiConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/config/OpenApiConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/customer/domain/Customer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/delivery/domain/Delivery.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/employee/domain/Employee.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/kitchenOrder/domain/KitchenOrder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/menu/domain/MenuItem.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/order/domain/Order.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/order/domain/OrderItem.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/organization/domain/Organization.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/payment/domain/Payment.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/role/domain/Role.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/user/domain/User.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/config/AdminInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/config/AdminInitializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/AuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/AuthServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/AuthServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/transformer/UserTransformer.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/transformer/UserTransformer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
