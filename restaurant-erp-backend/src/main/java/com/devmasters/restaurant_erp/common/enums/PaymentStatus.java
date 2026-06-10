@@ -1,9 +1,0 @@
-package com.devmasters.restaurant_erp.common.enums;
-
-public enum PaymentStatus {
-    PENDING,
-    PAID,
-    FAILED,
-    REFUNDED,
-    PARTIALLY_PAID
-}
