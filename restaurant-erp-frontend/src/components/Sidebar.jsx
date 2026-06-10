@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+
 import {
   HomeIcon,
   ShoppingCartIcon,
@@ -35,6 +36,11 @@ const Sidebar = () => {
       title: "Dashboard",
       icon: <HomeIcon className="w-6 h-6" />,
       path: "/dashboard",
+    },
+    {
+      title: "Create Employee",
+      icon: <HomeIcon className="w-6 h-6" />,
+      path: "/create-employee",
     },
     {
       title: "POS Orders",
@@ -78,8 +84,9 @@ const Sidebar = () => {
     },
   ];
 
-  return (
+return (
   <>
+
     {/* MOBILE HEADER */}
     <div className="lg:hidden bg-[#0d4039] text-white px-4 py-4 flex justify-between items-center">
       <h1 className="text-xl font-bold">
@@ -103,16 +110,18 @@ const Sidebar = () => {
     {/* MOBILE MENU */}
     <div
       className={`
-        fixed top-0 left-0 h-screen w-full
+        fixed top-0 left-0 h-full w-full
         bg-[#0d4039]
         z-50
         transform transition-transform duration-300
         lg:hidden
+        flex flex-col
         ${isOpen ? "translate-x-0" : "-translate-x-full"}
       `}
     >
-      {/* CLOSE BUTTON */}
-      <div className="flex justify-between items-center p-5">
+
+      {/* CLOSE BUTTON / HEADER */}
+      <div className="flex justify-between items-center p-5 border-b border-white/10">
         <h1 className="text-2xl font-bold text-white">
           Foodie
           <span className="text-yellow-400">POS</span>
@@ -123,24 +132,28 @@ const Sidebar = () => {
         </button>
       </div>
 
-      <nav className="flex flex-col items-center justify-center h-[80%] gap-8 text-white">
-        {menuItems.map((item) => (
-          <button
-            key={item.title}
-            onClick={() => {
-              navigate(item.path);
-              setIsOpen(false);
-            }}
-            className="text-2xl font-medium hover:text-yellow-400"
-          >
-            {item.title}
-          </button>
-        ))}
-      </nav>
+      {/* SCROLLABLE MENU AREA */}
+      <div className="flex-1 overflow-y-auto">
+        <nav className="flex flex-col items-center gap-8 text-white py-10">
+          {menuItems.map((item) => (
+            <button
+              key={item.title}
+              onClick={() => {
+                navigate(item.path);
+                setIsOpen(false);
+              }}
+              className="text-2xl font-medium hover:text-yellow-400"
+            >
+              {item.title}
+            </button>
+          ))}
+        </nav>
+      </div>
     </div>
 
     {/* DESKTOP SIDEBAR */}
     <div className="hidden lg:flex w-[280px] bg-[#0d4039] text-white flex-col shadow-2xl">
+
       {/* LOGO */}
       <div className="px-8 py-7 border-b border-white/10">
         <h1 className="text-3xl font-extrabold">
@@ -192,7 +205,9 @@ const Sidebar = () => {
           Logout
         </button>
       </div>
+
     </div>
+
   </>
 );
 };

@@ -4,6 +4,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
+import CreateEmployee from './pages/employees/CreateEmployee';
 import './App.css';
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
           />
           <Route path="/" element={<Navigate to="/dashboard" />} />
           <Route path="*" element={<Navigate to="/dashboard" />} />
+          <Route path="/create-employee" element={<CreateEmployee />} />
         </Routes>
       </AuthProvider>
     </Router>
