@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import CreateEmployee from './pages/employees/CreateEmployee';
+import Employees from './pages/employees/Employees';
 import './App.css';
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <Route path="/" element={<Navigate to="/dashboard" />} />
           <Route path="*" element={<Navigate to="/dashboard" />} />
           <Route path="/create-employee" element={<CreateEmployee />} />
+          <Route path="/employees" element={<Employees />} />
         </Routes>
       </AuthProvider>
     </Router>

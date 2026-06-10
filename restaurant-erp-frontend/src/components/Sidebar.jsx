@@ -43,6 +43,11 @@ const Sidebar = () => {
       path: "/create-employee",
     },
     {
+      title: "Employees",
+      icon: <HomeIcon className="w-6 h-6" />,
+      path: "/employees",
+    },
+    {
       title: "POS Orders",
       icon: <ShoppingCartIcon className="w-6 h-6" />,
       path: "/pos-orders",
