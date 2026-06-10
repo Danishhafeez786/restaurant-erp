@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -57,7 +58,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new AccessDeniedException("Invalid credentials");
+            throw new AccessDeniedException("Incorrect Password");
         }
 
         invalidateOldRefreshTokens(user);
@@ -224,6 +225,7 @@ public class AuthServiceImpl implements AuthService {
     private void saveRefreshToken(User user, String refreshToken) {
         refreshTokenRepository.save(
                 RefreshToken.builder()
+                        .id(UUID.randomUUID())
                         .token(refreshToken)
                         .userId(user.getId())
                         .expiryDate(LocalDateTime.now().plusDays(7))

@@ -21,9 +21,7 @@ public class UserController {
 
     @PostMapping("/create")
     public ResponseEntity<LoginResponse> create(@Valid @RequestBody SignupRequest request) {
-
         LoginResponse response = userHandler.create(request);
-
         if (!response.isSuccess())
             return ResponseEntity.badRequest().body(response);
 
