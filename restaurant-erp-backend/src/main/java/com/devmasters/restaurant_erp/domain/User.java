@@ -1,52 +1,36 @@
 package com.devmasters.restaurant_erp.domain;
 
 import com.devmasters.restaurant_erp.enums.Role;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.index.Indexed;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Document(collection = "users")
 @Data
-@Builder
+@EqualsAndHashCode(callSuper = true)
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
-    @Id
-    private UUID id;
-
-    @Indexed(unique = true)
-    private String email;
-
-    private String password;
-
+@Document(collection = "users")
+public class User extends BaseEntity {
     private String firstName;
     private String lastName;
-
+    @Indexed(unique = true)
+    private String email;
+    private String password;
     private String phone;
-
     private String address;
     private String city;
     private String state;
     private String zip;
-
-    @Indexed(unique = true)
-    private String referralCode;
-
     private String referredBy;
-
     private Role role;
-
-    private boolean isActive;
-
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-
+    private String referralCode;
+    private String accessToken;
+    private String refreshToken;
     private int tokenVersion = 0;
-
 }

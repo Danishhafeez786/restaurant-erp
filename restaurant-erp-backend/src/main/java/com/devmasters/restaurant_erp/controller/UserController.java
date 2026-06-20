@@ -1,8 +1,7 @@
 package com.devmasters.restaurant_erp.controller;
 
 import com.devmasters.restaurant_erp.handler.UserHandler;
-import com.devmasters.restaurant_erp.model.LoginResponse;
-import com.devmasters.restaurant_erp.model.SignupRequest;
+import com.devmasters.restaurant_erp.model.UserModel;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,11 +19,10 @@ public class UserController {
     private final UserHandler userHandler;
 
     @PostMapping("/create")
-    public ResponseEntity<LoginResponse> create(@Valid @RequestBody SignupRequest request) {
-        LoginResponse response = userHandler.create(request);
-        if (!response.isSuccess())
+    public ResponseEntity<UserModel> create(@Valid @RequestBody UserModel request) {
+        UserModel response = userHandler.create(request);
+        if (response == null)
             return ResponseEntity.badRequest().body(response);
-
         return ResponseEntity.ok(response);
     }
 

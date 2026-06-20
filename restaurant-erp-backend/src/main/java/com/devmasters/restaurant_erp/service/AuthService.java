@@ -5,7 +5,7 @@ import com.devmasters.restaurant_erp.model.*;
 
 public interface AuthService {
 
-    LoginResponse signup(SignupRequest request);
+
 
     LoginResponse login(LoginRequest request);
 

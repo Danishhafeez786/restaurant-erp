@@ -1,11 +1,12 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // 👈 required CSS
+import AuthProvider from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import CreateEmployee from './pages/CreateEmployee';
 import Dashboard from './pages/Dashboard';
-import './App.css';
 
 function App() {
   return (
@@ -20,6 +21,10 @@ function App() {
           <Route path="*" element={<Navigate to="/dashboard" />} />
         </Routes>
       </AuthProvider>
+      {/* ✅ Global Toast Container (always available) */}
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false}
+        closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="colored" // or "light" / "dark"
+      />
     </Router>
   );
 }

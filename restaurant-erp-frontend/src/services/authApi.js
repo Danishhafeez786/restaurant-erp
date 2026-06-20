@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8080/api/auth';
+const API_BASE_URL = 'http://192.168.100.3:8080/api/auth';
 
 export const authApi = {
   signup: async (data) => {

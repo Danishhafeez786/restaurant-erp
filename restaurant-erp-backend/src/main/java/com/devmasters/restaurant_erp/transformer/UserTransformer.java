@@ -1,42 +1,20 @@
 package com.devmasters.restaurant_erp.transformer;
 
-import com.devmasters.restaurant_erp.model.SignupRequest;
+import com.devmasters.restaurant_erp.model.UserModel;
 import com.devmasters.restaurant_erp.model.LoginResponse;
 import com.devmasters.restaurant_erp.model.UpdateProfileRequest;
-import com.devmasters.restaurant_erp.model.UserModel;
-import com.devmasters.restaurant_erp.enums.Role;
 import com.devmasters.restaurant_erp.domain.User;
+import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Component
+@AllArgsConstructor
 public class UserTransformer extends Transformer<User, UserModel>{
-
-    // DTO → ENTITY
-    public static User toEntity(SignupRequest request, String encodedPassword) {
-
-        String referralCode = UUID.randomUUID()
-                .toString()
-                .substring(0, 8);
-
-        return User.builder()
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .email(request.getEmail())
-                .password(encodedPassword)
-                .phone(request.getPhone())
-                .address(request.getAddress())
-                .city(request.getCity())
-                .state(request.getState())
-                .zip(request.getZip())
-                .referredBy(request.getReferredBy())
-                .referralCode(referralCode)
-                .role(Role.CUSTOMER)
-                .isActive(true)
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .build();
-    }
+    private final PasswordEncoder passwordEncoder;
 
     // ENTITY → RESPONSE
     public static LoginResponse toAuthResponse(User user,
@@ -68,7 +46,6 @@ public class UserTransformer extends Transformer<User, UserModel>{
                 .address(user.getAddress())
                 .city(user.getCity())
                 .state(user.getState())
-                .zip(user.getZip())
                 .referralCode(user.getReferralCode())
                 .role(user.getRole())
                 .build();
@@ -90,12 +67,45 @@ public class UserTransformer extends Transformer<User, UserModel>{
 
     @Override
     public User toEntity(UserModel model) {
-
-        return null;
+        if(model == null)
+            return null;
+        return User.builder()
+                .id(UUID.randomUUID())
+                .firstName(model.getFirstName())
+                .lastName(model.getLastName())
+                .email(model.getEmail())
+                .password(passwordEncoder.encode(model.getPassword()))
+                .phone(model.getPhone())
+                .address(model.getAddress())
+                .city(model.getCity())
+                .state(model.getState())
+                .zip(model.getZip())
+                .referredBy(model.getReferredBy())
+                .referralCode(UUID.randomUUID().toString().substring(0, 8))
+                .role(model.getRole())
+                .isActive(model.getIsActive())
+                .build();
     }
 
     @Override
     public UserModel toModel(User entity) {
-        return null;
+        if(entity == null)
+            return null;
+        return UserModel.builder()
+                .id(entity.getId())
+                .firstName(entity.getFirstName())
+                .lastName(entity.getLastName())
+                .email(entity.getEmail())
+                .phone(entity.getPhone())
+                .address(entity.getAddress())
+                .city(entity.getCity())
+                .state(entity.getState())
+                .zip(entity.getZip())
+                .referredBy(entity.getReferredBy())
+                .referralCode(entity.getReferralCode())
+                .role(entity.getRole())
+                .isActive(entity.getIsActive())
+                .build();
     }
 }
+

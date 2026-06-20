@@ -1,12 +1,6 @@
-import {
-  EyeIcon,
-  EyeSlashIcon,
-} from "@heroicons/react/24/outline";
-
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
-// import { Link, useNavigate } from "react-router-dom";
 import { Link, useNavigate } from "react-router-dom";
-
 import { loginUser } from "../services/auth/authService";
 
 
@@ -37,74 +31,65 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
 
-  e.preventDefault();
+    e.preventDefault();
 
-  setError("");
+    setError("");
 
-  try {
+    try {
 
-    setLoading(true);
+      setLoading(true);
 
-    const response = await loginUser(formData);
+      const response = await loginUser(formData);
 
-    console.log("LOGIN RESPONSE:", response);
+      console.log("LOGIN RESPONSE:", response);
 
-    if (!response.success) {
+      if (!response.success) {
 
-      setError(
-        response.message || "Login Failed"
+        setError(
+          response.message || "Login Failed"
+        );
+
+        return;
+      }
+
+      // SAVE TOKENS
+
+      localStorage.setItem( "accessToken", response.data.accessToken );
+      localStorage.setItem( "refreshToken", response.data.refreshToken );
+
+      localStorage.setItem(
+        "user", JSON.stringify({
+          email: response.data.email,
+          firstName: response.data.firstName,
+          lastName: response.data.lastName,
+          role: response.data.role,
+        })
       );
+      // REDIRECT TO DASHBOARD
 
-      return;
-    }
+      navigate("/dashboard");
 
-    // SAVE TOKENS
+    } catch (err) {
 
-    localStorage.setItem(
-      "accessToken",
-      response.accessToken
-    );
+      console.error(err);
 
-    localStorage.setItem(
-      "refreshToken",
-      response.refreshToken
-    );
+      if (err.response?.data?.message) {
 
-    localStorage.setItem(
-      "user",
-      JSON.stringify({
-        email: response.email,
-        firstName: response.firstName,
-        lastName: response.lastName,
-        role: response.role,
-      })
-    );
+        setError(err.response.data.message);
 
-    // REDIRECT TO DASHBOARD
+      } else {
 
-    navigate("/dashboard");
+        setError("Server Error");
 
-  } catch (err) {
+      }
 
-    console.error(err);
+    } finally {
 
-    if (err.response?.data?.message) {
-
-      setError(err.response.data.message);
-
-    } else {
-
-      setError("Server Error");
+      setLoading(false);
 
     }
 
-  } finally {
-
-    setLoading(false);
-
-  }
-
-};
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#062b27] via-[#0d4039] to-[#041816] flex items-center justify-center p-4">
@@ -271,7 +256,7 @@ const Login = () => {
                 >
                   Sign Up
                 </Link>
-              </p> 
+              </p>
             </form>
 
           </div>

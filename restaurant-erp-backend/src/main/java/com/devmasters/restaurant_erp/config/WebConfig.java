@@ -13,6 +13,5 @@ public class WebConfig implements WebMvcConfigurer {
                         "http://192.168.100.38:3000", "http://192.168.100.223:3000",
                         "http://10.111.246.248:3000")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
-//                .allowCredentials(true);
     }
 }

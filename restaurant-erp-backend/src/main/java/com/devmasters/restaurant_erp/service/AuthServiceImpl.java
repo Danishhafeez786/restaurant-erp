@@ -14,7 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -30,21 +29,6 @@ public class AuthServiceImpl implements AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
-    public LoginResponse signup(SignupRequest request) {
-
-        LoginResponse validationResponse = validateSignupRequest(request);
-        if (validationResponse != null) return validationResponse;
-
-        User user = createUser(request);
-        User savedUser = userRepository.save(user);
-
-        String accessToken = generateAccessToken(savedUser);
-        String refreshToken = generateAndStoreRefreshToken(savedUser);
-
-        return buildSuccessResponse(savedUser, accessToken, refreshToken);
-    }
-
-    @Override
     public LoginResponse login(LoginRequest request) {
         if (request == null || request.getEmail() == null || request.getPassword() == null) {
             throw new AccessDeniedException("Invalid credentials");
@@ -53,7 +37,7 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new AccessDeniedException("User not exist in this email.r"));
 
-        if (!user.isActive()) {
+        if (!user.getIsActive()) {
             throw new AccessDeniedException("User is inactive");
         }
 
@@ -166,30 +150,9 @@ public class AuthServiceImpl implements AuthService {
                 .build();
     }
 
-    private LoginResponse validateSignupRequest(SignupRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
-            return LoginResponse.builder()
-                    .success(false)
-                    .message("Email already registered")
-                    .build();
-        }
 
-        if (!request.getPassword().equals(request.getConfirmPassword())) {
-            return LoginResponse.builder()
-                    .success(false)
-                    .message("Passwords do not match")
-                    .build();
-        }
 
-        return null;
-    }
 
-    private User createUser(SignupRequest request) {
-        return UserTransformer.toEntity(
-                request,
-                passwordEncoder.encode(request.getPassword())
-        );
-    }
 
     private String generateAccessToken(User user) {
         return jwtTokenProvider.generateAccessToken(
@@ -199,19 +162,7 @@ public class AuthServiceImpl implements AuthService {
         );
     }
 
-    private String generateAndStoreRefreshToken(User user) {
-        String refreshToken = jwtTokenProvider.generateRefreshToken(user.getEmail());
 
-        refreshTokenRepository.save(
-                RefreshToken.builder()
-                        .token(refreshToken)
-                        .userId(user.getId())
-                        .expiryDate(LocalDateTime.now().plusDays(7))
-                        .build()
-        );
-
-        return refreshToken;
-    }
 
     private void invalidateOldRefreshTokens(User user) {
         refreshTokenRepository.deleteByUserId(user.getId());
