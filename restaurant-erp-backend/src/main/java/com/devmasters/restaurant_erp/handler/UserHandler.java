@@ -2,6 +2,8 @@ package com.devmasters.restaurant_erp.handler;
 
 import com.devmasters.restaurant_erp.model.LoginResponse;
 import com.devmasters.restaurant_erp.model.UserModel;
+import com.devmasters.restaurant_erp.model.UserSearchRequest;
+import com.devmasters.restaurant_erp.model.pagination.PageResult;
 import com.devmasters.restaurant_erp.service.UserService;
 import com.devmasters.restaurant_erp.transformer.UserTransformer;
 import jakarta.validation.Valid;
@@ -19,4 +21,10 @@ public class UserHandler {
             return userTransformer.toModel(userService.create(userTransformer.toEntity(model)));
         return null;
     }
+
+
+    public PageResult<UserModel> getAllUsers(UserSearchRequest request) {
+        return userService.getAllUsers(request);
+    }
+
 }

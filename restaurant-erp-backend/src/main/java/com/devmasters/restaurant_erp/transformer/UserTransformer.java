@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -107,6 +109,15 @@ public class UserTransformer extends Transformer<User, UserModel>{
                 .role(entity.getRole())
                 .isActive(entity.getIsActive())
                 .build();
+    }
+
+    @Override
+    public List<UserModel> toModels(List<User> entities) {
+        if (entities == null) return Collections.emptyList();
+
+        return entities.stream()
+                .map(this::toModel)
+                .toList();
     }
 }
 
