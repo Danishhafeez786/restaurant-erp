@@ -38,11 +38,6 @@ const Sidebar = () => {
       path: "/dashboard",
     },
     {
-      title: "Create Employee",
-      icon: <HomeIcon className="w-6 h-6" />,
-      path: "/create-employee",
-    },
-    {
       title: "Employees",
       icon: <HomeIcon className="w-6 h-6" />,
       path: "/employees",
@@ -153,6 +148,18 @@ return (
             </button>
           ))}
         </nav>
+
+          {/* LOGOUT */}
+      <div className="p-5 border-t border-white/10">
+        <button
+          onClick={logout}
+          className="w-full bg-red-500 hover:bg-red-600 rounded-2xl py-4 font-semibold flex items-center justify-center gap-3"
+        >
+          <ArrowRightOnRectangleIcon className="w-6 h-6" />
+          Logout
+        </button>
+      </div>
+
       </div>
     </div>
 
@@ -165,10 +172,6 @@ return (
           Foodie
           <span className="text-yellow-400">POS</span>
         </h1>
-
-        <p className="text-sm text-gray-300 mt-2">
-          Restaurant ERP System
-        </p>
       </div>
 
       {/* USER INFO */}
@@ -176,10 +179,6 @@ return (
         <h2 className="font-semibold text-lg">
           {user?.firstName} {user?.lastName}
         </h2>
-
-        <p className="text-sm text-gray-300 mt-1">
-          {user?.email}
-        </p>
 
         <div className="mt-3 inline-block bg-white/10 px-4 py-2 rounded-xl text-sm">
           {user?.role}
