@@ -1,6 +1,6 @@
 package com.devmasters.restaurant_erp.config;
 
-import com.devmasters.restaurant_erp.auth.domain.Role;
+import com.devmasters.restaurant_erp.enums.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;

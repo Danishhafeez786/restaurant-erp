@@ -1,8 +1,8 @@
 package com.devmasters.restaurant_erp.config;
 
-import com.devmasters.restaurant_erp.auth.domain.Role;
-import com.devmasters.restaurant_erp.auth.domain.User;
-import com.devmasters.restaurant_erp.auth.repository.UserRepository;
+import com.devmasters.restaurant_erp.enums.Role;
+import com.devmasters.restaurant_erp.domain.User;
+import com.devmasters.restaurant_erp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,7 +30,7 @@ public class AdminInitializer implements CommandLineRunner {
                     .firstName("Super")
                     .lastName("Admin")
                     .role(Role.SUPER_ADMIN)
-                    .enabled(true)
+                    .isActive(true)
                     .referralCode("SUPER001")
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
