@@ -59,17 +59,6 @@ public class AuthController {
         );
     }
 
-    @PutMapping("/profile")
-    public ResponseEntity<UserModel> updateProfile(
-            @RequestBody UpdateProfileRequest request,
-            Authentication authentication
-    ) {
-
-        return ResponseEntity.ok(
-                authService.updateProfile(authentication.getName(), request)
-        );
-    }
-
     @PostMapping("/refresh")
     public ResponseEntity<LoginResponse> refreshToken(
             @RequestBody RefreshTokenRequest request

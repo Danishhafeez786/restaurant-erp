@@ -1,6 +1,6 @@
 package com.devmasters.restaurant_erp.config;
 
-import com.devmasters.restaurant_erp.enums.Role;
+import com.devmasters.restaurant_erp.domain.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -32,7 +32,7 @@ public class JwtTokenProvider {
 
         return Jwts.builder()
                 .setSubject(email)
-                .claim("role", role.name())
+                .claim("role", role.getRoleName())
                 .claim("tokenVersion", tokenVersion)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + accessExpiration))

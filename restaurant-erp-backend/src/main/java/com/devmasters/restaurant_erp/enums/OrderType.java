@@ -1,7 +1,9 @@
 package com.devmasters.restaurant_erp.enums;
 
 public enum OrderType {
+
     DINE_IN,
-    TAKEAWAY,
-    DELIVERY
+    TAKE_AWAY,
+    DELIVERY,
+    ONLINE
 }

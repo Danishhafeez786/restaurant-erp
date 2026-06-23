@@ -26,9 +26,7 @@ public class UserController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<PageResult<UserModel>> getAllUsers(
-            @RequestBody UserSearchRequest request
-    ) {
+    public ResponseEntity<PageResult<UserModel>> getAllUsers(@RequestBody UserSearchRequest request) {
         return ResponseEntity.ok(userHandler.getAllUsers(request));
     }
 

@@ -5,26 +5,13 @@ import com.devmasters.restaurant_erp.model.*;
 
 public interface AuthService {
 
-
-
     LoginResponse login(LoginRequest request);
 
-    LoginResponse changePassword(
-            String email,
-            ChangePasswordRequest request
-    );
+    LoginResponse changePassword(String email, ChangePasswordRequest request);
 
     UserModel getCurrentUser(String email);
 
-    UserModel updateProfile(
-            String email,
-            UpdateProfileRequest request
-    );
-
-
-    LoginResponse refreshToken(
-            RefreshTokenRequest request
-    );
+    LoginResponse refreshToken(RefreshTokenRequest request);
 
     void logout(String refreshToken);
 }

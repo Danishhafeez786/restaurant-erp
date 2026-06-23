@@ -11,8 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class LoginResponse {
     private String id;
-    private String firstName;
-    private String lastName;
+    private String fullName;
     private String email;
     private String role;
     private String referralCode;

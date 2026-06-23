@@ -60,8 +60,7 @@ const Login = () => {
       localStorage.setItem(
         "user", JSON.stringify({
           email: response.data.email,
-          firstName: response.data.firstName,
-          lastName: response.data.lastName,
+          fullName: response.data.fullName,
           role: response.data.role,
         })
       );

@@ -1,6 +1,6 @@
 package com.devmasters.restaurant_erp.model;
 
-import com.devmasters.restaurant_erp.enums.Role;
+import com.devmasters.restaurant_erp.domain.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

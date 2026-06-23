@@ -241,7 +241,7 @@ return (
       {/* USER INFO */}
       <div className="px-6 py-8 border-b border-white/10">
         <h2 className="font-bold text-xl text-white">
-          {user?.firstName} {user?.lastName}
+          {user?.fullName}
         </h2>
 
 <<<<<<< HEAD

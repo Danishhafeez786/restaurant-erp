@@ -1,8 +1,8 @@
 package com.devmasters.restaurant_erp.service;
 
+import com.devmasters.restaurant_erp.domain.User;
 import com.devmasters.restaurant_erp.model.LoginRequest;
 import com.devmasters.restaurant_erp.domain.RefreshToken;
-import com.devmasters.restaurant_erp.domain.User;
 import com.devmasters.restaurant_erp.repository.RefreshTokenRepository;
 import com.devmasters.restaurant_erp.repository.UserRepository;
 import com.devmasters.restaurant_erp.config.JwtTokenProvider;
@@ -27,6 +27,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtTokenProvider jwtTokenProvider;
 
     private final RefreshTokenRepository refreshTokenRepository;
+    private final UserTransformer userTransformer;
 
     @Override
     public LoginResponse login(LoginRequest request) {
@@ -77,23 +78,7 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return UserTransformer.toProfileResponse(user);
-    }
-
-    @Override
-    public UserModel updateProfile(
-            String email,
-            UpdateProfileRequest request
-    ) {
-
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        UserTransformer.updateEntity(user, request);
-
-        User savedUser = userRepository.save(user);
-
-        return UserTransformer.toProfileResponse(savedUser);
+        return userTransformer.toModel(user);
     }
 
     @Override
