@@ -7,12 +7,8 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import CreateEmployee from './pages/CreateEmployee';
 import Dashboard from './pages/Dashboard';
-<<<<<<< HEAD
-import CreateEmployee from './pages/employees/CreateEmployee';
 import Employees from './pages/employees/Employees';
 import './App.css';
-=======
->>>>>>> 00f26f8ba28b5ffa3b139efb56502a23b3393a66
 
 function App() {
   return (
@@ -25,7 +21,6 @@ function App() {
           <Route path="/create-employee" element={ <CreateEmployee />} />
           <Route path="/" element={<Navigate to="/dashboard" />} />
           <Route path="*" element={<Navigate to="/dashboard" />} />
-          <Route path="/create-employee" element={<CreateEmployee />} />
           <Route path="/employees" element={<Employees />} />
         </Routes>
       </AuthProvider>
