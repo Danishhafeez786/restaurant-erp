@@ -46,6 +46,18 @@ const Sidebar = () => {
     },
 
     {
+      title: "Subscription Plans",
+      icon: <ChartBarIcon className="w-5 h-5" />,
+      children: [
+        {
+          title: "Subscription Plans",
+          path: "/subscription-plans",
+          icon: <ChartBarIcon className="w-5 h-5" />,
+        }
+      ],
+    },
+
+    {
       title: "Employee Management",
       icon: <UserGroupIcon className="w-5 h-5" />,
       children: [

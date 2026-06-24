@@ -1,0 +1,14 @@
+package com.devmasters.restaurant_erp.service;
+
+import com.devmasters.restaurant_erp.domain.SubscriptionPlan;
+import com.devmasters.restaurant_erp.model.searchcriteria.SubscriptionPlanSearchCriteria;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+public interface SubscriptionPlanService {
+    boolean existsByNameIgnoreCase(String name);
+
+    SubscriptionPlan create(SubscriptionPlan entity);
+
+    Page<SubscriptionPlan> search(SubscriptionPlanSearchCriteria criteria, Pageable pageable);
+}
