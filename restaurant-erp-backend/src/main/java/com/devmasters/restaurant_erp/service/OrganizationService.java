@@ -21,7 +21,7 @@ public interface OrganizationService {
 
     Organization findById(UUID id);
 
-    void delete(UUID id);
+    Organization restore(UUID id);
 
-    void restore(UUID id);
+    Organization delete(UUID id);
 }

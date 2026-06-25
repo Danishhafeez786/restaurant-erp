@@ -18,7 +18,7 @@ public interface SubscriptionPlanService {
 
     SubscriptionPlan findById(UUID id);
 
-    void delete(UUID id);
+    SubscriptionPlan delete(UUID id);
 
-    void restore(UUID id);
+    SubscriptionPlan restore(UUID id);
 }

@@ -9,6 +9,7 @@ import CreateEmployee from './pages/CreateEmployee';
 import Dashboard from './pages/Dashboard';
 import Employees from './pages/employees/Employees';
 import SubscriptionPlans from './pages/SubscriptionPlans/SubscriptionPlans';
+import Organization from "./pages/Organizations/Organizations";
 import './App.css';
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <Route path="/dashboard" element={ <ProtectedRoute> <Dashboard /> </ProtectedRoute>} />
           <Route path="/create-employee" element={ <CreateEmployee />} />
           <Route path="/subscription-plans" element={<SubscriptionPlans />} />
+          <Route path="/organizations"element={<Organization />}/>
           <Route path="/" element={<Navigate to="/dashboard" />} />
           <Route path="*" element={<Navigate to="/dashboard" />} />
           <Route path="/employees" element={<Employees />} />

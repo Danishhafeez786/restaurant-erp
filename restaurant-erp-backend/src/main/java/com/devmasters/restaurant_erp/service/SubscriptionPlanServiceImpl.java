@@ -57,23 +57,25 @@ public class SubscriptionPlanServiceImpl implements SubscriptionPlanService{
     }
 
     @Override
-    public void delete(UUID id) {
+    public SubscriptionPlan delete(UUID id) {
         SubscriptionPlan subscriptionPlan = findById(id);
 
         if (!Boolean.TRUE.equals(subscriptionPlan.getIsActive())) {
-            throw new RuntimeException(
-                    "Subscription Plan already deleted."
-            );
-        }
+            throw new RuntimeException("Subscription Plan already deleted.");}
 
         subscriptionPlan.setIsActive(false);
-        subscriptionPlanRepository.save(subscriptionPlan);
+        return subscriptionPlanRepository.save(subscriptionPlan);
     }
 
     @Override
-    public void restore(UUID id) {
+    public SubscriptionPlan restore(UUID id) {
+
         SubscriptionPlan subscriptionPlan = findById(id);
+
         subscriptionPlan.setIsActive(true);
-        subscriptionPlanRepository.save(subscriptionPlan);
+
+        return subscriptionPlanRepository.save(
+                subscriptionPlan
+        );
     }
 }

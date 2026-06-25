@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-
 import {
   HomeIcon,
   UserGroupIcon,
@@ -17,6 +16,7 @@ import {
   Bars3Icon,
   XMarkIcon,
   ChevronDownIcon,
+  BuildingOfficeIcon,
 } from "@heroicons/react/24/outline";
 
 const Sidebar = () => {
@@ -53,7 +53,12 @@ const Sidebar = () => {
           title: "Subscription Plans",
           path: "/subscription-plans",
           icon: <ChartBarIcon className="w-5 h-5" />,
-        }
+        },
+        {
+          title: "Organizations",
+          path: "/organizations",
+          icon: <BuildingOfficeIcon className="w-5 h-5" />,
+        },
       ],
     },
 
@@ -148,13 +153,9 @@ const Sidebar = () => {
     <>
       {/* USER INFO */}
       <div className="px-6 py-8 border-b border-white/10">
-        <h2 className="font-bold text-xl text-white">
-          {user?.fullName}
-        </h2>
+        <h2 className="font-bold text-xl text-white">{user?.fullName}</h2>
 
-        <p className="text-gray-200 mt-4 font-medium">
-          {user?.role}
-        </p>
+        <p className="text-gray-200 mt-4 font-medium">{user?.role}</p>
       </div>
 
       {/* MENUS */}
@@ -171,9 +172,7 @@ const Sidebar = () => {
                 className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition text-left"
               >
                 {menu.icon}
-                <span className="font-semibold">
-                  {menu.title}
-                </span>
+                <span className="font-semibold">{menu.title}</span>
               </button>
             ) : (
               <>
@@ -181,24 +180,22 @@ const Sidebar = () => {
                 <button
                   onClick={() => toggleMenu(menu.title)}
                   className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition
-                    ${openMenu === menu.title
-                      ? "bg-white/10 border border-white/20"
-                      : "hover:bg-white/10"
+                    ${
+                      openMenu === menu.title
+                        ? "bg-white/10 border border-white/20"
+                        : "hover:bg-white/10"
                     }`}
                 >
                   <div className="flex items-center gap-3">
                     {menu.icon}
 
-                    <span className="font-semibold">
-                      {menu.title}
-                    </span>
+                    <span className="font-semibold">{menu.title}</span>
                   </div>
 
                   <ChevronDownIcon
-                    className={`w-5 h-5 transition-transform duration-300 ${openMenu === menu.title
-                        ? "rotate-180"
-                        : ""
-                      }`}
+                    className={`w-5 h-5 transition-transform duration-300 ${
+                      openMenu === menu.title ? "rotate-180" : ""
+                    }`}
                   />
                 </button>
 
@@ -217,11 +214,8 @@ const Sidebar = () => {
                         <div className="flex items-center gap-3">
                           {child.icon}
 
-                          <span className="font-semibold">
-                            {child.title}
-                          </span>
+                          <span className="font-semibold">{child.title}</span>
                         </div>
-
                       </button>
                     ))}
                   </div>
@@ -272,9 +266,7 @@ const Sidebar = () => {
               {user?.firstName} {user?.lastName}
             </h2>
 
-            <p className="mt-3 text-gray-200">
-              {user?.role}
-            </p>
+            <p className="mt-3 text-gray-200">{user?.role}</p>
           </div>
 
           {/* MENUS */}
@@ -295,18 +287,16 @@ const Sidebar = () => {
                   <>
                     <button
                       onClick={() => toggleMenu(menu.title)}
-                      className={`w-full py-4 px-6 flex justify-center items-center gap-3 font-semibold border-b border-white/10 ${openMenu === menu.title
-                          ? "bg-white/10"
-                          : ""
-                        }`}
+                      className={`w-full py-4 px-6 flex justify-center items-center gap-3 font-semibold border-b border-white/10 ${
+                        openMenu === menu.title ? "bg-white/10" : ""
+                      }`}
                     >
                       <span>{menu.title}</span>
 
                       <ChevronDownIcon
-                        className={`w-5 h-5 transition-transform ${openMenu === menu.title
-                            ? "rotate-180"
-                            : ""
-                          }`}
+                        className={`w-5 h-5 transition-transform ${
+                          openMenu === menu.title ? "rotate-180" : ""
+                        }`}
                       />
                     </button>
 
@@ -353,9 +343,7 @@ const Sidebar = () => {
             <span className="text-yellow-400">POS</span>
           </h1>
 
-          <p className="text-gray-300 mt-2 text-sm">
-            Restaurant ERP System
-          </p>
+          <p className="text-gray-300 mt-2 text-sm">Restaurant ERP System</p>
         </div>
 
         <SidebarContent />

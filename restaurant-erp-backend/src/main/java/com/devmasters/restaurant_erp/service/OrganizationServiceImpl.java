@@ -67,35 +67,20 @@ public class OrganizationServiceImpl
     }
 
     @Override
-    public void delete(UUID id) {
-
+    public Organization delete(UUID id) {
         Organization organization = findById(id);
 
-        if (!Boolean.TRUE.equals(
-                organization.getIsActive())) {
-
-            throw new RuntimeException(
-                    "Organization already deleted."
-            );
-        }
-
+        if (!Boolean.TRUE.equals(organization.getIsActive())) {
+            throw new RuntimeException("Organization already deleted.");}
         organization.setIsActive(false);
-
-        organizationRepository.save(
-                organization
-        );
+        return organizationRepository.save(organization);
     }
 
     @Override
-    public void restore(UUID id) {
+    public Organization restore(UUID id) {
 
-        Organization organization =
-                findById(id);
-
+        Organization organization = findById(id);
         organization.setIsActive(true);
-
-        organizationRepository.save(
-                organization
-        );
+        return organizationRepository.save(organization);
     }
 }

@@ -6,6 +6,7 @@ import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import com.devmasters.restaurant_erp.model.searchcriteria.OrganizationSearchCriteria;
 import com.devmasters.restaurant_erp.service.OrganizationService;
 import com.devmasters.restaurant_erp.transformer.OrganizationTransformer;
+import com.devmasters.restaurant_erp.websocket.OrganizationEventPublisher;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,20 +20,17 @@ public class OrganizationHandler {
 
     private final OrganizationService organizationService;
     private final OrganizationTransformer organizationTransformer;
+    private final OrganizationEventPublisher eventPublisher;
 
     public OrganizationModel create(OrganizationModel model) {
 
         if (organizationService.existsByEmailIgnoreCase(model.getEmail())) {
-
-            throw new RuntimeException(
-                    "Organization already exists with email : "
-                            + model.getEmail()
-            );
+            throw new RuntimeException("Organization already exists with email : " + model.getEmail());
         }
-
         Organization entity = organizationTransformer.toEntity(model);
-
-        return organizationTransformer.toModel(organizationService.create(entity));
+        OrganizationModel response = organizationTransformer.toModel(organizationService.create(entity));
+        eventPublisher.created(response);
+        return response;
     }
 
     public PageResponse<OrganizationModel> getAll(OrganizationSearchCriteria criteria, Pageable pageable) {
@@ -59,26 +57,24 @@ public class OrganizationHandler {
                 .build();
     }
 
-    public OrganizationModel update(
-            UUID id,
-            OrganizationModel model) {
+    public OrganizationModel update(UUID id, OrganizationModel model) {
 
-        Organization entity =
-                organizationTransformer.toEntity(model);
+        Organization entity = organizationTransformer.toEntity(model);
+        OrganizationModel response = organizationTransformer.toModel(organizationService.update(id, entity));
+        eventPublisher.updated(response);
 
-        return organizationTransformer.toModel(
-                organizationService.update(
-                        id,
-                        entity
-                )
-        );
+        return response;
     }
 
     public void delete(UUID id) {
-        organizationService.delete(id);
+
+        Organization deleted = organizationService.delete(id);
+        eventPublisher.deleted(organizationTransformer.toModel(deleted));
     }
 
     public void restore(UUID id) {
-        organizationService.restore(id);
+
+        Organization restored = organizationService.restore(id);
+        eventPublisher.restored(organizationTransformer.toModel(restored));
     }
 }
