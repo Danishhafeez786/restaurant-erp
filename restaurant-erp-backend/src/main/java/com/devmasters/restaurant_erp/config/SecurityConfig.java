@@ -37,7 +37,8 @@ public class SecurityConfig {
                 "http://192.168.100.42:5173", //office network
                 "http://192.168.24.68:5173", //
                 "http://192.168.100.112:5173",
-                "http://192.168.100.140:5173"
+                "http://192.168.100.140:5173",
+                "http://192.168.24.68:5173"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
