@@ -11,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 @AllArgsConstructor
 public class SubscriptionPlanHandler {
@@ -42,5 +44,28 @@ public class SubscriptionPlanHandler {
                 .first(page.isFirst())
                 .last(page.isLast())
                 .build();
+    }
+
+    public SubscriptionModel update(UUID id, SubscriptionModel model) {
+
+        SubscriptionPlan existing = subscriptionPlanService.findById(id);
+
+        if (!existing.getName().equalsIgnoreCase(model.getName())
+                && subscriptionPlanService.existsByNameIgnoreCase(model.getName())) {
+
+            throw new RuntimeException("Subscription Plan already exists : " + model.getName());
+        }
+
+        SubscriptionPlan entity = subscriptionPlanTransformer.toEntity(model);
+
+        return subscriptionPlanTransformer.toModel(subscriptionPlanService.update(id, entity));
+    }
+
+    public void delete(UUID id) {
+        subscriptionPlanService.delete(id);
+    }
+
+    public void restore(UUID id) {
+        subscriptionPlanService.restore(id);
     }
 }

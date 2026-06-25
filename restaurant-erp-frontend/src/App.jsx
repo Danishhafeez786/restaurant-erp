@@ -8,7 +8,7 @@ import Signup from './pages/Signup';
 import CreateEmployee from './pages/CreateEmployee';
 import Dashboard from './pages/Dashboard';
 import Employees from './pages/employees/Employees';
-import SubscriptionPlans from './pages/SubscriptionPlans';
+import SubscriptionPlans from './pages/SubscriptionPlans/SubscriptionPlans';
 import './App.css';
 
 function App() {

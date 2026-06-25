@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -53,6 +55,49 @@ public class SubscriptionPlanController {
                         .success(true)
                         .message("Subscription Plans fetched successfully")
                         .data(response)
+                        .build()
+        );
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<SubscriptionModel>> update(
+            @PathVariable UUID id, @RequestBody SubscriptionModel model) {
+
+        SubscriptionModel response = subscriptionPlanHandler.update(id, model);
+
+        return ResponseEntity.ok(
+                ApiResponse.<SubscriptionModel>builder()
+                        .success(true)
+                        .message("Subscription Plan Updated Successfully")
+                        .data(response)
+                        .build()
+        );
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> delete(
+            @PathVariable UUID id) {
+
+        subscriptionPlanHandler.delete(id);
+
+        return ResponseEntity.ok(
+                ApiResponse.<Void>builder()
+                        .success(true)
+                        .message("Subscription Plan Deleted Successfully")
+                        .build()
+        );
+    }
+
+    @PatchMapping("/{id}/restore")
+    public ResponseEntity<ApiResponse<Void>> restore(
+            @PathVariable UUID id) {
+
+        subscriptionPlanHandler.restore(id);
+
+        return ResponseEntity.ok(
+                ApiResponse.<Void>builder()
+                        .success(true)
+                        .message("Subscription Plan Restored Successfully")
                         .build()
         );
     }
