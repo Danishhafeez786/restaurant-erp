@@ -73,6 +73,68 @@ export default function SubscriptionPlanTable() {
         }
     };
 
+    const handleDelete = async (id) => {
+
+        const confirmed = window.confirm(
+            "Are you sure you want to delete this subscription plan?"
+        );
+
+        if (!confirmed) return;
+
+        try {
+
+            await axiosClient.delete(
+                `/subscription_plans/${id}`
+            );
+
+            alert("Subscription Plan Deleted Successfully");
+
+            loadPlans();
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                error?.response?.data?.message ||
+                "Failed to delete plan"
+            );
+
+        }
+
+    };
+
+    const handleRestore = async (id) => {
+
+        const confirmed = window.confirm(
+            "Are you sure you want to restore this subscription plan?"
+        );
+
+        if (!confirmed) return;
+
+        try {
+            alert("Restoring subscription plan...");
+            await axiosClient.patch(
+                `/subscription_plans/${id}/restore`
+            );
+
+            alert("Subscription Plan Restored Successfully");
+
+            loadPlans();
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                error?.response?.data?.message ||
+                "Failed to restore plan"
+            );
+
+        }
+
+    };
+
     const getStatusColor = (status) => {
         return status
             ? "bg-green-100 text-green-700"
@@ -225,22 +287,36 @@ export default function SubscriptionPlanTable() {
                                         View
                                     </button>
 
-                                    <button
-                                        onClick={() => {
-                                            setModalMode("edit");
-                                            setSelectedPlan(plan);
-                                            setShowModal(true);
-                                        }}
-                                        className="text-blue-600 mr-3"
-                                    >
-                                        Edit
-                                    </button>
+                                    {plan.isActive && (
+                                        <>
+                                            <button
+                                                onClick={() => {
+                                                    setModalMode("edit");
+                                                    setSelectedPlan(plan);
+                                                    setShowModal(true);
+                                                }}
+                                                className="text-blue-600 mr-3"
+                                            >
+                                                Edit
+                                            </button>
 
-                                    <button
-                                        className="text-red-600"
-                                    >
-                                        Delete
-                                    </button>
+                                            <button
+                                                onClick={() => handleDelete(plan.id)}
+                                                className="text-red-600"
+                                            >
+                                                Delete
+                                            </button>
+                                        </>
+                                    )}
+
+                                    {!plan.isActive && (
+                                        <button
+                                            onClick={() => handleRestore(plan.id)}
+                                            className="text-orange-600"
+                                        >
+                                            Restore
+                                        </button>
+                                    )}
 
                                 </td>
 
@@ -311,6 +387,9 @@ export default function SubscriptionPlanTable() {
                                 View
                             </button>
 
+                            {plan.isActive && (
+                                        <>
+
                             <button className="flex-1 bg-blue-500 text-white py-2 rounded-xl"
                                 onClick={() => {
                                     setModalMode("edit");
@@ -320,11 +399,18 @@ export default function SubscriptionPlanTable() {
                                 Edit
                             </button>
 
-                            <button className="flex-1 bg-red-500 text-white py-2 rounded-xl">
+                            <button className="flex-1 bg-red-500 text-white py-2 rounded-xl"
+                                onClick={() => handleDelete(plan.id)}>
                                 Delete
                             </button>
-
-
+                            </>
+                            )}
+                            {!plan.isActive && (
+                                <button className="flex-1 bg-orange-500 text-white py-2 rounded-xl"
+                                    onClick={() => handleRestore(plan.id)}>
+                                    Restore
+                                </button>
+                            )}
 
                         </div>
 

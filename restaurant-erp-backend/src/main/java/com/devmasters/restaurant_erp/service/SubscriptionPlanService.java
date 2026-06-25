@@ -17,4 +17,8 @@ public interface SubscriptionPlanService {
     SubscriptionPlan update(UUID id, SubscriptionPlan entity);
 
     SubscriptionPlan findById(UUID id);
+
+    void delete(UUID id);
+
+    void restore(UUID id);
 }

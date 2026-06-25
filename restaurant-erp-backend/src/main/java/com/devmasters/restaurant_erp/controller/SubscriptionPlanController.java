@@ -73,4 +73,32 @@ public class SubscriptionPlanController {
                         .build()
         );
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> delete(
+            @PathVariable UUID id) {
+
+        subscriptionPlanHandler.delete(id);
+
+        return ResponseEntity.ok(
+                ApiResponse.<Void>builder()
+                        .success(true)
+                        .message("Subscription Plan Deleted Successfully")
+                        .build()
+        );
+    }
+
+    @PatchMapping("/{id}/restore")
+    public ResponseEntity<ApiResponse<Void>> restore(
+            @PathVariable UUID id) {
+
+        subscriptionPlanHandler.restore(id);
+
+        return ResponseEntity.ok(
+                ApiResponse.<Void>builder()
+                        .success(true)
+                        .message("Subscription Plan Restored Successfully")
+                        .build()
+        );
+    }
 }

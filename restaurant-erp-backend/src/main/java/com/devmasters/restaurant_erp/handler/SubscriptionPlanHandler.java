@@ -60,4 +60,12 @@ public class SubscriptionPlanHandler {
 
         return subscriptionPlanTransformer.toModel(subscriptionPlanService.update(id, entity));
     }
+
+    public void delete(UUID id) {
+        subscriptionPlanService.delete(id);
+    }
+
+    public void restore(UUID id) {
+        subscriptionPlanService.restore(id);
+    }
 }

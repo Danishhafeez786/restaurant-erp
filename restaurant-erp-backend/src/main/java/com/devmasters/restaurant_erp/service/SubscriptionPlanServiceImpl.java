@@ -55,4 +55,25 @@ public class SubscriptionPlanServiceImpl implements SubscriptionPlanService{
                 .orElseThrow(() ->
                         new RuntimeException("Subscription Plan not found."));
     }
+
+    @Override
+    public void delete(UUID id) {
+        SubscriptionPlan subscriptionPlan = findById(id);
+
+        if (!Boolean.TRUE.equals(subscriptionPlan.getIsActive())) {
+            throw new RuntimeException(
+                    "Subscription Plan already deleted."
+            );
+        }
+
+        subscriptionPlan.setIsActive(false);
+        subscriptionPlanRepository.save(subscriptionPlan);
+    }
+
+    @Override
+    public void restore(UUID id) {
+        SubscriptionPlan subscriptionPlan = findById(id);
+        subscriptionPlan.setIsActive(true);
+        subscriptionPlanRepository.save(subscriptionPlan);
+    }
 }
