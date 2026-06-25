@@ -77,7 +77,7 @@ export default function SubscriptionPlanModalBox({
     try {
 
       await axiosClient.post(
-        "/subscription-plan",
+        "/subscription_plans",
         {
           ...formData,
           branchesLimit: Number(formData.branchesLimit),
@@ -102,7 +102,7 @@ export default function SubscriptionPlanModalBox({
     try {
 
       await axiosClient.put(
-        `/subscription-plan/${plan.id}`,
+        `/subscription_plans/${plan.id}`,
         {
           ...formData,
           id: plan.id

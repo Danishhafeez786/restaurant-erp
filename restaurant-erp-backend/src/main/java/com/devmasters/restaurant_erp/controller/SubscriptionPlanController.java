@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -52,6 +54,21 @@ public class SubscriptionPlanController {
                 ApiResponse.<PageResponse<SubscriptionModel>>builder()
                         .success(true)
                         .message("Subscription Plans fetched successfully")
+                        .data(response)
+                        .build()
+        );
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<SubscriptionModel>> update(
+            @PathVariable UUID id, @RequestBody SubscriptionModel model) {
+
+        SubscriptionModel response = subscriptionPlanHandler.update(id, model);
+
+        return ResponseEntity.ok(
+                ApiResponse.<SubscriptionModel>builder()
+                        .success(true)
+                        .message("Subscription Plan Updated Successfully")
                         .data(response)
                         .build()
         );
