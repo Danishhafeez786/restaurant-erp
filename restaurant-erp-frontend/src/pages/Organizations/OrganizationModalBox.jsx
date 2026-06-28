@@ -112,144 +112,205 @@ export default function OrganizationModalBox({
         </div>
 
         <div className="p-6 grid md:grid-cols-2 gap-4">
-          <input
-            name="organizationName"
-            value={formData.organizationName}
-            onChange={handleChange}
-            disabled={isView}
-            placeholder="Organization Name"
-            className="border rounded-lg px-4 py-3"
-          />
-
-          <input
-            name="logoUrl"
-            value={formData.logoUrl}
-            onChange={handleChange}
-            disabled={isView}
-            placeholder="Logo URL"
-            className="border rounded-lg px-4 py-3"
-          />
-
-          <input
-            name="ownerName"
-            value={formData.ownerName}
-            onChange={handleChange}
-            disabled={isView}
-            placeholder="Owner Name"
-            className="border rounded-lg px-4 py-3"
-          />
-
-          <input
-            name="contactNumber"
-            value={formData.contactNumber}
-            onChange={handleChange}
-            disabled={isView}
-            placeholder="Contact Number"
-            className="border rounded-lg px-4 py-3"
-          />
-
-          <input
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            disabled={isView}
-            placeholder="Email"
-            className="border rounded-lg px-4 py-3"
-          />
-
-          <input
-            name="address"
-            value={formData.address}
-            onChange={handleChange}
-            disabled={isView}
-            placeholder="Address"
-            className="border rounded-lg px-4 py-3"
-          />
-
-          <input
-            name="city"
-            value={formData.city}
-            onChange={handleChange}
-            disabled={isView}
-            placeholder="City"
-            className="border rounded-lg px-4 py-3"
-          />
-
-          <input
-            name="country"
-            value={formData.country}
-            onChange={handleChange}
-            disabled={isView}
-            placeholder="Country"
-            className="border rounded-lg px-4 py-3"
-          />
-
-          <select
-            disabled={isView}
-            value={formData.subscriptionModel?.id || ""}
-            onChange={(e) => {
-              const selected = subscriptionPlans.find(
-                (p) => p.id === e.target.value,
-              );
-
-              setFormData((prev) => ({
-                ...prev,
-                subscriptionModel: selected,
-              }));
-            }}
-            className="border rounded-lg px-4 py-3"
-          >
-            <option value="">Select Subscription Plan</option>
-
-            {subscriptionPlans.map((plan) => (
-              <option key={plan.id} value={plan.id}>
-                {plan.name}
-              </option>
-            ))}
-          </select>
-
-          <select
-            name="billingCycle"
-            value={formData.billingCycle}
-            onChange={handleChange}
-            disabled={isView}
-            className="border rounded-lg px-4 py-3"
-          >
-            <option value="MONTHLY">MONTHLY</option>
-
-            <option value="QUARTERLY">QUARTERLY</option>
-
-            <option value="YEARLY">YEARLY</option>
-          </select>
-
-          <input
-            type="date"
-            name="subscriptionStartDate"
-            value={formData.subscriptionStartDate || ""}
-            onChange={handleChange}
-            disabled={isView}
-            className="border rounded-lg px-4 py-3"
-          />
-
-          <input
-            type="date"
-            name="subscriptionEndDate"
-            value={formData.subscriptionEndDate || ""}
-            onChange={handleChange}
-            disabled={isView}
-            className="border rounded-lg px-4 py-3"
-          />
-
-          <label className="flex items-center gap-3">
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              Organization Name
+            </label>
             <input
-              type="checkbox"
-              name="isActive"
-              checked={formData.isActive}
+              name="organizationName"
+              value={formData.organizationName}
               onChange={handleChange}
               disabled={isView}
+              placeholder="Enter Organization Name"
+              className="w-full border rounded-lg px-4 py-3"
             />
-            Active Organization
-          </label>
+          </div>
+
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              Logo URL
+            </label>
+            <input
+              name="logoUrl"
+              value={formData.logoUrl}
+              onChange={handleChange}
+              disabled={isView}
+              placeholder="Enter Logo URL"
+              className="w-full border rounded-lg px-4 py-3"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              Owner Name
+            </label>
+            <input
+              name="ownerName"
+              value={formData.ownerName}
+              onChange={handleChange}
+              disabled={isView}
+              placeholder="Enter Owner Name"
+              className="w-full border rounded-lg px-4 py-3"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              Contact Number
+            </label>
+            <input
+              name="contactNumber"
+              value={formData.contactNumber}
+              onChange={handleChange}
+              disabled={isView}
+              placeholder="Enter Contact Number"
+              className="w-full border rounded-lg px-4 py-3"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              Email
+            </label>
+            <input
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              disabled={isView}
+              placeholder="Enter Email"
+              className="w-full border rounded-lg px-4 py-3"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              Address
+            </label>
+            <input
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              disabled={isView}
+              placeholder="Enter Address"
+              className="w-full border rounded-lg px-4 py-3"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              City
+            </label>
+            <input
+              name="city"
+              value={formData.city}
+              onChange={handleChange}
+              disabled={isView}
+              placeholder="Enter City"
+              className="w-full border rounded-lg px-4 py-3"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              Country
+            </label>
+            <input
+              name="country"
+              value={formData.country}
+              onChange={handleChange}
+              disabled={isView}
+              placeholder="Enter Country"
+              className="w-full border rounded-lg px-4 py-3"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              Subscription Plan
+            </label>
+            <select
+              disabled={isView}
+              value={formData.subscriptionModel?.id || ""}
+              onChange={(e) => {
+                const selected = subscriptionPlans.find(
+                  (p) => p.id === e.target.value,
+                );
+
+                setFormData((prev) => ({
+                  ...prev,
+                  subscriptionModel: selected,
+                }));
+              }}
+              className="w-full border rounded-lg px-4 py-3"
+            >
+              <option value="">Select Subscription Plan</option>
+
+              {subscriptionPlans.map((plan) => (
+                <option key={plan.id} value={plan.id}>
+                  {plan.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              Billing Cycle
+            </label>
+            <select
+              name="billingCycle"
+              value={formData.billingCycle}
+              onChange={handleChange}
+              disabled={isView}
+              className="w-full border rounded-lg px-4 py-3"
+            >
+              <option value="MONTHLY">MONTHLY</option>
+              <option value="QUARTERLY">QUARTERLY</option>
+              <option value="YEARLY">YEARLY</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              Subscription Start Date
+            </label>
+            <input
+              type="date"
+              name="subscriptionStartDate"
+              value={formData.subscriptionStartDate || ""}
+              onChange={handleChange}
+              disabled={isView}
+              className="w-full border rounded-lg px-4 py-3"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              Subscription End Date
+            </label>
+            <input
+              type="date"
+              name="subscriptionEndDate"
+              value={formData.subscriptionEndDate || ""}
+              onChange={handleChange}
+              disabled={isView}
+              className="w-full border rounded-lg px-4 py-3"
+            />
+          </div>
+
+          <div className="flex items-center mt-8">
+            <label className="flex items-center gap-3 text-sm font-medium text-gray-700">
+              <input
+                type="checkbox"
+                name="isActive"
+                checked={formData.isActive}
+                onChange={handleChange}
+                disabled={isView}
+                className="h-4 w-4"
+              />
+              Active Organization
+            </label>
+          </div>
         </div>
 
         <div className="border-t p-5 flex justify-end gap-3">

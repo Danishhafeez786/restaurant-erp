@@ -6,7 +6,6 @@ import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import com.devmasters.restaurant_erp.model.searchcriteria.SubscriptionPlanSearchCriteria;
 import com.devmasters.restaurant_erp.service.SubscriptionPlanService;
 import com.devmasters.restaurant_erp.transformer.SubscriptionPlanTransformer;
-import com.devmasters.restaurant_erp.websocket.SubscriptionPlanEventPublisher;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,32 +16,40 @@ import java.util.UUID;
 @Component
 @AllArgsConstructor
 public class SubscriptionPlanHandler {
+
     private final SubscriptionPlanService subscriptionPlanService;
     private final SubscriptionPlanTransformer subscriptionPlanTransformer;
-    private final SubscriptionPlanEventPublisher eventPublisher;
 
     public SubscriptionModel create(SubscriptionModel model) {
+
         if (subscriptionPlanService.existsByNameIgnoreCase(model.getName())) {
             throw new RuntimeException(
-                    "Subscription Plan already exists : "
-                            + model.getName()
+                    "Subscription Plan already exists : " + model.getName()
             );
         }
-        SubscriptionPlan subscriptionPlan = subscriptionPlanTransformer.toEntity(model);
-        SubscriptionModel response =
-                subscriptionPlanTransformer.toModel(subscriptionPlanService.create(subscriptionPlan));
-        eventPublisher.created(response);
 
-        return response;
+        SubscriptionPlan entity =
+                subscriptionPlanTransformer.toEntity(model);
+
+        SubscriptionPlan saved =
+                subscriptionPlanService.create(entity);
+
+        return subscriptionPlanTransformer.toModel(saved);
     }
 
-    public PageResponse<SubscriptionModel> getAll(SubscriptionPlanSearchCriteria criteria,
+    public PageResponse<SubscriptionModel> getAll(
+            SubscriptionPlanSearchCriteria criteria,
             Pageable pageable) {
 
-        Page<SubscriptionPlan> page = subscriptionPlanService.search(criteria, pageable);
+        Page<SubscriptionPlan> page =
+                subscriptionPlanService.search(criteria, pageable);
 
         return PageResponse.<SubscriptionModel>builder()
-                .content(subscriptionPlanTransformer.toModels(page.getContent()))
+                .content(
+                        subscriptionPlanTransformer.toModels(
+                                page.getContent()
+                        )
+                )
                 .totalElements(page.getTotalElements())
                 .totalPages(page.getTotalPages())
                 .page(page.getNumber())
@@ -52,32 +59,35 @@ public class SubscriptionPlanHandler {
                 .build();
     }
 
-    public SubscriptionModel update(UUID id, SubscriptionModel model) {
+    public SubscriptionModel update(
+            UUID id,
+            SubscriptionModel model) {
 
-        SubscriptionPlan existing = subscriptionPlanService.findById(id);
+        SubscriptionPlan existing =
+                subscriptionPlanService.findById(id);
 
         if (!existing.getName().equalsIgnoreCase(model.getName())
                 && subscriptionPlanService.existsByNameIgnoreCase(model.getName())) {
 
-            throw new RuntimeException("Subscription Plan already exists : " + model.getName());
+            throw new RuntimeException(
+                    "Subscription Plan already exists : " + model.getName()
+            );
         }
 
-        SubscriptionPlan entity = subscriptionPlanTransformer.toEntity(model);
+        SubscriptionPlan entity =
+                subscriptionPlanTransformer.toEntity(model);
 
-        SubscriptionModel response =
-                subscriptionPlanTransformer.toModel(subscriptionPlanService.update(id, entity));
-        eventPublisher.updated(response);
+        SubscriptionPlan updated =
+                subscriptionPlanService.update(id, entity);
 
-        return response;
+        return subscriptionPlanTransformer.toModel(updated);
     }
 
     public void delete(UUID id) {
-        SubscriptionPlan deletedPlan = subscriptionPlanService.delete(id);
-        eventPublisher.deleted(subscriptionPlanTransformer.toModel(deletedPlan));
+        subscriptionPlanService.delete(id);
     }
 
     public void restore(UUID id) {
-        SubscriptionPlan restored = subscriptionPlanService.restore(id);
-        eventPublisher.restored(subscriptionPlanTransformer.toModel(restored));
+        subscriptionPlanService.restore(id);
     }
 }

@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../../api/axiosClient";
 
-import {
-  connectOrganizationSocket,
-  disconnectOrganizationSocket,
-} from "../../services/websocket/organizationSocket";
-
 import OrganizationModalBox from "./OrganizationModalBox";
 
 export default function OrganizationTable() {
@@ -19,6 +14,12 @@ export default function OrganizationTable() {
 
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+
+  const [pageSize, setPageSize] = useState(10);
+
+  const [sortBy, setSortBy] = useState("createdAt");
+
+  const [direction, setDirection] = useState("DESC");
 
   const [searchCriteria, setSearchCriteria] = useState({
     organizationName: "",
@@ -49,7 +50,7 @@ export default function OrganizationTable() {
       };
 
       const response = await axiosClient.post(
-        `/organization/search?page=${currentPage}&size=10`,
+        `/organization/search?page=${currentPage}&size=${pageSize}&sortBy=${sortBy}&direction=${direction}`,
         payload,
       );
 
@@ -67,18 +68,17 @@ export default function OrganizationTable() {
   // ===== INIT LOAD =====
   useEffect(() => {
     loadOrganizations();
-  }, [currentPage]);
+  }, [currentPage, pageSize, sortBy, direction]);
 
-  // ===== REALTIME SOCKET =====
   useEffect(() => {
-    connectOrganizationSocket((event) => {
-      console.log("Organization Event:", event);
-      loadOrganizations();
-    });
+    console.log("Connecting to SSE...");
 
-    return () => {
-      disconnectOrganizationSocket();
-    };
+    const eventSource = new EventSource(
+      "http://localhost:8080/api/organization/stream",
+    );
+
+
+    return () => eventSource.close();
   }, []);
 
   // ===== DELETE =====
@@ -135,146 +135,177 @@ export default function OrganizationTable() {
       {/* FILTERS */}
       {/* SEARCH FILTERS */}
 
-      <div className="bg-gray-50 border rounded-2xl p-4 md:p-5 mb-6">
-        <h3 className="text-lg font-semibold mb-4">Search Organizations</h3>
+      {/* Search Toolbar */}
+<div className="bg-white border rounded-xl shadow-sm p-4 mb-6">
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Organization Name */}
-          <input
+    <div className="flex flex-wrap items-center gap-3">
+
+        {/* Organization */}
+        <input
             type="text"
-            placeholder="Organization Name"
+            placeholder="Organization"
             value={searchCriteria.organizationName}
             onChange={(e) =>
-              setSearchCriteria({
-                ...searchCriteria,
-                organizationName: e.target.value,
-              })
+                setSearchCriteria({
+                    ...searchCriteria,
+                    organizationName: e.target.value,
+                })
             }
-            className="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 outline-none"
-          />
+            className="h-10 w-52 rounded-lg border px-3 text-sm focus:border-[#0d4039] focus:ring-2 focus:ring-[#0d4039]/20 outline-none"
+        />
 
-          {/* Owner Name */}
-          <input
+        {/* Owner */}
+        <input
             type="text"
-            placeholder="Owner Name"
+            placeholder="Owner"
             value={searchCriteria.ownerName}
             onChange={(e) =>
-              setSearchCriteria({
-                ...searchCriteria,
-                ownerName: e.target.value,
-              })
+                setSearchCriteria({
+                    ...searchCriteria,
+                    ownerName: e.target.value,
+                })
             }
-            className="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 outline-none"
-          />
+            className="h-10 w-44 rounded-lg border px-3 text-sm focus:border-[#0d4039] focus:ring-2 focus:ring-[#0d4039]/20 outline-none"
+        />
 
-          {/* City */}
-          <input
+        {/* City */}
+        <input
             type="text"
             placeholder="City"
             value={searchCriteria.city}
             onChange={(e) =>
-              setSearchCriteria({
-                ...searchCriteria,
-                city: e.target.value,
-              })
+                setSearchCriteria({
+                    ...searchCriteria,
+                    city: e.target.value,
+                })
             }
-            className="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 outline-none"
-          />
+            className="h-10 w-36 rounded-lg border px-3 text-sm focus:border-[#0d4039] focus:ring-2 focus:ring-[#0d4039]/20 outline-none"
+        />
 
-          {/* Country */}
-          <input
+        {/* Country */}
+        <input
             type="text"
             placeholder="Country"
             value={searchCriteria.country}
             onChange={(e) =>
-              setSearchCriteria({
-                ...searchCriteria,
-                country: e.target.value,
-              })
+                setSearchCriteria({
+                    ...searchCriteria,
+                    country: e.target.value,
+                })
             }
-            className="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 outline-none"
-          />
+            className="h-10 w-36 rounded-lg border px-3 text-sm focus:border-[#0d4039] focus:ring-2 focus:ring-[#0d4039]/20 outline-none"
+        />
 
-          {/* Status */}
-          <select
+        {/* Status */}
+        <select
             value={searchCriteria.isActive}
             onChange={(e) =>
-              setSearchCriteria({
-                ...searchCriteria,
-                isActive: e.target.value,
-              })
+                setSearchCriteria({
+                    ...searchCriteria,
+                    isActive: e.target.value,
+                })
             }
-            className="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 outline-none"
-          >
-            <option value="">All Status</option>
+            className="h-10 rounded-lg border px-3 text-sm"
+        >
+            <option value="">Status</option>
             <option value="true">Active</option>
             <option value="false">Inactive</option>
-          </select>
+        </select>
 
-          {/* Billing Cycle */}
-          <select
+        {/* Billing */}
+        <select
             value={searchCriteria.billingCycle}
             onChange={(e) =>
-              setSearchCriteria({
-                ...searchCriteria,
-                billingCycle: e.target.value,
-              })
+                setSearchCriteria({
+                    ...searchCriteria,
+                    billingCycle: e.target.value,
+                })
             }
-            className="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 outline-none"
-          >
-            <option value="">All Billing Cycles</option>
+            className="h-10 rounded-lg border px-3 text-sm"
+        >
+            <option value="">Billing</option>
             <option value="MONTHLY">Monthly</option>
             <option value="QUARTERLY">Quarterly</option>
             <option value="YEARLY">Yearly</option>
-          </select>
+        </select>
 
-          {/* Subscription Plan Id */}
-          <input
-            type="text"
-            placeholder="Subscription Plan ID"
-            value={searchCriteria.subscriptionPlanId}
-            onChange={(e) =>
-              setSearchCriteria({
-                ...searchCriteria,
-                subscriptionPlanId: e.target.value,
-              })
-            }
-            className="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 outline-none"
-          />
+        {/* Sort */}
+        <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="h-10 rounded-lg border px-3 text-sm"
+        >
+            <option value="createdAt">Created</option>
+            <option value="organizationName">Organization</option>
+            <option value="ownerName">Owner</option>
+            <option value="city">City</option>
+            <option value="country">Country</option>
+        </select>
 
-          {/* Buttons */}
-          <div className="flex gap-2">
-            <button
-              onClick={() => {
+        {/* Direction */}
+        <select
+            value={direction}
+            onChange={(e) => setDirection(e.target.value)}
+            className="h-10 rounded-lg border px-3 text-sm"
+        >
+            <option value="DESC">Newest</option>
+            <option value="ASC">Oldest</option>
+        </select>
+
+        {/* Page Size */}
+        <select
+            value={pageSize}
+            onChange={(e) => {
+                setPageSize(Number(e.target.value));
+                setCurrentPage(0);
+            }}
+            className="h-10 rounded-lg border px-3 text-sm"
+        >
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
+        </select>
+
+        {/* Search */}
+        <button
+            onClick={() => {
                 setCurrentPage(0);
                 loadOrganizations();
-              }}
-              className="flex-1 bg-[#0d4039] hover:bg-[#145148] text-white rounded-xl py-3 font-medium"
-            >
-              Search
-            </button>
+            }}
+            className="h-10 px-5 rounded-lg bg-[#0d4039] text-white hover:bg-[#145148] transition"
+        >
+            Search
+        </button>
 
-            <button
-              onClick={() => {
+        {/* Reset */}
+        <button
+            onClick={() => {
                 setSearchCriteria({
-                  organizationName: "",
-                  ownerName: "",
-                  city: "",
-                  country: "",
-                  isActive: "",
-                  billingCycle: "",
-                  subscriptionPlanId: "",
+                    organizationName: "",
+                    ownerName: "",
+                    city: "",
+                    country: "",
+                    isActive: "",
+                    billingCycle: "",
+                    subscriptionPlanId: "",
                 });
 
+                setSortBy("createdAt");
+                setDirection("DESC");
+                setPageSize(10);
                 setCurrentPage(0);
-              }}
-              className="flex-1 bg-gray-200 hover:bg-gray-300 rounded-xl py-3 font-medium"
-            >
-              Reset
-            </button>
-          </div>
-        </div>
-      </div>
+
+                loadOrganizations();
+            }}
+            className="h-10 px-5 rounded-lg border hover:bg-gray-100 transition"
+        >
+            Reset
+        </button>
+
+    </div>
+
+</div>
 
       {/* TABLE */}
       <div className="hidden md:block overflow-x-auto">

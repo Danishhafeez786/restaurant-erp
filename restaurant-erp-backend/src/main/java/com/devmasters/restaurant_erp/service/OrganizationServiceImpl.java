@@ -12,8 +12,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class OrganizationServiceImpl
-        implements OrganizationService {
+public class OrganizationServiceImpl implements OrganizationService {
 
     private final OrganizationRepository organizationRepository;
 

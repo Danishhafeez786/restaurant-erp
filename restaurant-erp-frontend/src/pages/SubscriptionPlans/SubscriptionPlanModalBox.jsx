@@ -109,79 +109,117 @@ export default function SubscriptionPlanModalBox({
         </div>
 
         <div className="p-6 grid md:grid-cols-2 gap-4">
-          <input
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            disabled={isView}
-            placeholder="Plan Name"
-            className="border rounded-lg px-4 py-3"
-          />
-
-          <input
-            name="branchesLimit"
-            value={formData.branchesLimit}
-            onChange={handleChange}
-            disabled={isView}
-            placeholder="Branches Limit"
-            className="border rounded-lg px-4 py-3"
-          />
-
-          <input
-            name="usersLimit"
-            value={formData.usersLimit}
-            onChange={handleChange}
-            disabled={isView}
-            placeholder="Users Limit"
-            className="border rounded-lg px-4 py-3"
-          />
-
-          <input
-            name="menuItemsLimit"
-            value={formData.menuItemsLimit}
-            onChange={handleChange}
-            disabled={isView}
-            placeholder="Menu Items Limit"
-            className="border rounded-lg px-4 py-3"
-          />
-
-          <input
-            name="ordersPerMonth"
-            value={formData.ordersPerMonth}
-            onChange={handleChange}
-            disabled={isView}
-            placeholder="Orders Per Month"
-            className="border rounded-lg px-4 py-3"
-          />
-
-          <input
-            name="monthlyPrice"
-            value={formData.monthlyPrice}
-            onChange={handleChange}
-            disabled={isView}
-            placeholder="Monthly Price"
-            className="border rounded-lg px-4 py-3"
-          />
-
-          <input
-            name="yearlyPrice"
-            value={formData.yearlyPrice}
-            onChange={handleChange}
-            disabled={isView}
-            placeholder="Yearly Price"
-            className="border rounded-lg px-4 py-3"
-          />
-
-          <label className="flex items-center gap-3">
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              Plan Name
+            </label>
             <input
-              type="checkbox"
-              name="isActive"
-              checked={formData.isActive}
+              name="name"
+              value={formData.name}
               onChange={handleChange}
               disabled={isView}
+              placeholder="Enter Plan Name"
+              className="w-full border rounded-lg px-4 py-3"
             />
-            Active Plan
-          </label>
+          </div>
+
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              Branches Limit
+            </label>
+            <input
+              name="branchesLimit"
+              value={formData.branchesLimit}
+              onChange={handleChange}
+              disabled={isView}
+              placeholder="Enter Branches Limit"
+              className="w-full border rounded-lg px-4 py-3"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              Users Limit
+            </label>
+            <input
+              name="usersLimit"
+              value={formData.usersLimit}
+              onChange={handleChange}
+              disabled={isView}
+              placeholder="Enter Users Limit"
+              className="w-full border rounded-lg px-4 py-3"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              Menu Items Limit
+            </label>
+            <input
+              name="menuItemsLimit"
+              value={formData.menuItemsLimit}
+              onChange={handleChange}
+              disabled={isView}
+              placeholder="Enter Menu Items Limit"
+              className="w-full border rounded-lg px-4 py-3"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              Orders Per Month
+            </label>
+            <input
+              name="ordersPerMonth"
+              value={formData.ordersPerMonth}
+              onChange={handleChange}
+              disabled={isView}
+              placeholder="Enter Orders Per Month"
+              className="w-full border rounded-lg px-4 py-3"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              Monthly Price
+            </label>
+            <input
+              name="monthlyPrice"
+              value={formData.monthlyPrice}
+              onChange={handleChange}
+              disabled={isView}
+              placeholder="Enter Monthly Price"
+              className="w-full border rounded-lg px-4 py-3"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              Yearly Price
+            </label>
+            <input
+              name="yearlyPrice"
+              value={formData.yearlyPrice}
+              onChange={handleChange}
+              disabled={isView}
+              placeholder="Enter Yearly Price"
+              className="w-full border rounded-lg px-4 py-3"
+            />
+          </div>
+
+          <div className="flex items-center mt-8">
+            <label className="flex items-center gap-3 text-sm font-medium text-gray-700">
+              <input
+                type="checkbox"
+                name="isActive"
+                checked={formData.isActive}
+                onChange={handleChange}
+                disabled={isView}
+                className="h-4 w-4"
+              />
+              Active Plan
+            </label>
+          </div>
         </div>
 
         <div className="flex justify-end gap-3 border-t p-5">

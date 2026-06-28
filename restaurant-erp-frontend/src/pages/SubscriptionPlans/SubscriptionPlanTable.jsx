@@ -2,10 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "../../api/axiosClient";
 import SubscriptionPlanModal from "./SubscriptionPlanModalBox";
-import {
-  connectSubscriptionPlanSocket,
-  disconnectSubscriptionPlanSocket,
-} from "../../services/websocket/subscriptionPlanSocket";
 
 export default function SubscriptionPlanTable() {
   const navigate = useNavigate();
@@ -21,8 +17,13 @@ export default function SubscriptionPlanTable() {
   const [selectedPlan, setSelectedPlan] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(0);
-
   const [totalPages, setTotalPages] = useState(0);
+
+  const [pageSize, setPageSize] = useState(10);
+
+  const [sortBy, setSortBy] = useState("createdAt");
+
+  const [direction, setDirection] = useState("DESC");
 
   const [searchCriteria, setSearchCriteria] = useState({
     name: "",
@@ -35,22 +36,15 @@ export default function SubscriptionPlanTable() {
 
   useEffect(() => {
     loadPlans();
-  }, [currentPage]);
+  }, [currentPage, pageSize, sortBy, direction]);
 
   useEffect(() => {
-    loadPlans();
-  }, [currentPage]);
+    console.log("Connecting to Subscription Plan SSE...");
 
-  useEffect(() => {
-    connectSubscriptionPlanSocket((event) => {
-      console.log("Subscription Event Received:", event);
+    const eventSource = new EventSource(
+      "http://localhost:8080/api/subscription_plans/stream",
+    );
 
-      loadPlans();
-    });
-
-    return () => {
-      disconnectSubscriptionPlanSocket();
-    };
   }, []);
 
   const loadPlans = async () => {
@@ -70,7 +64,7 @@ export default function SubscriptionPlanTable() {
       };
 
       const response = await axiosClient.post(
-        `/subscription_plans/search?page=${currentPage}&size=10`,
+        `/subscription_plans/search?page=${currentPage}&size=${pageSize}&sortBy=${sortBy}&direction=${direction}`,
         payload,
       );
 
@@ -153,12 +147,9 @@ export default function SubscriptionPlanTable() {
 
       {/* SEARCH FILTERS */}
 
-      <div className="bg-gray-50 border rounded-2xl p-4 md:p-5 mb-6">
-        <h3 className="text-lg font-semibold mb-4">
-          Search Subscription Plans
-        </h3>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Search Toolbar */}
+      <div className="bg-white border rounded-xl shadow-sm p-4 mb-6">
+        <div className="flex flex-wrap items-center gap-3">
           {/* Plan Name */}
           <input
             type="text"
@@ -170,7 +161,7 @@ export default function SubscriptionPlanTable() {
                 name: e.target.value,
               })
             }
-            className="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 outline-none"
+            className="h-10 w-52 rounded-lg border px-3 text-sm focus:border-[#0d4039] focus:ring-2 focus:ring-[#0d4039]/20 outline-none"
           />
 
           {/* Status */}
@@ -182,9 +173,9 @@ export default function SubscriptionPlanTable() {
                 isActive: e.target.value,
               })
             }
-            className="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 outline-none"
+            className="h-10 rounded-lg border px-3 text-sm"
           >
-            <option value="">All Status</option>
+            <option value="">Status</option>
             <option value="true">Active</option>
             <option value="false">Inactive</option>
           </select>
@@ -192,7 +183,7 @@ export default function SubscriptionPlanTable() {
           {/* Min Monthly Price */}
           <input
             type="number"
-            placeholder="Min Monthly Price"
+            placeholder="Min Price"
             value={searchCriteria.minMonthlyPrice}
             onChange={(e) =>
               setSearchCriteria({
@@ -200,13 +191,13 @@ export default function SubscriptionPlanTable() {
                 minMonthlyPrice: e.target.value,
               })
             }
-            className="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 outline-none"
+            className="h-10 w-36 rounded-lg border px-3 text-sm focus:border-[#0d4039] focus:ring-2 focus:ring-[#0d4039]/20 outline-none"
           />
 
           {/* Max Monthly Price */}
           <input
             type="number"
-            placeholder="Max Monthly Price"
+            placeholder="Max Price"
             value={searchCriteria.maxMonthlyPrice}
             onChange={(e) =>
               setSearchCriteria({
@@ -214,13 +205,13 @@ export default function SubscriptionPlanTable() {
                 maxMonthlyPrice: e.target.value,
               })
             }
-            className="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 outline-none"
+            className="h-10 w-36 rounded-lg border px-3 text-sm focus:border-[#0d4039] focus:ring-2 focus:ring-[#0d4039]/20 outline-none"
           />
 
           {/* Min Users */}
           <input
             type="number"
-            placeholder="Min Users Limit"
+            placeholder="Min Users"
             value={searchCriteria.minUsersLimit}
             onChange={(e) =>
               setSearchCriteria({
@@ -228,13 +219,13 @@ export default function SubscriptionPlanTable() {
                 minUsersLimit: e.target.value,
               })
             }
-            className="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 outline-none"
+            className="h-10 w-32 rounded-lg border px-3 text-sm focus:border-[#0d4039] focus:ring-2 focus:ring-[#0d4039]/20 outline-none"
           />
 
           {/* Max Users */}
           <input
             type="number"
-            placeholder="Max Users Limit"
+            placeholder="Max Users"
             value={searchCriteria.maxUsersLimit}
             onChange={(e) =>
               setSearchCriteria({
@@ -242,21 +233,66 @@ export default function SubscriptionPlanTable() {
                 maxUsersLimit: e.target.value,
               })
             }
-            className="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 outline-none"
+            className="h-10 w-32 rounded-lg border px-3 text-sm focus:border-[#0d4039] focus:ring-2 focus:ring-[#0d4039]/20 outline-none"
           />
 
-          {/* Search Button */}
+          {/* Sort By */}
+          <select
+            value={sortBy}
+            onChange={(e) => {
+              setSortBy(e.target.value);
+              setCurrentPage(0);
+            }}
+            className="h-10 rounded-lg border px-3 text-sm"
+          >
+            <option value="createdAt">Created</option>
+            <option value="name">Plan Name</option>
+            <option value="monthlyPrice">Monthly Price</option>
+            <option value="yearlyPrice">Yearly Price</option>
+            <option value="usersLimit">Users Limit</option>
+            <option value="branchesLimit">Branches Limit</option>
+          </select>
+
+          {/* Sort Direction */}
+          <select
+            value={direction}
+            onChange={(e) => {
+              setDirection(e.target.value);
+              setCurrentPage(0);
+            }}
+            className="h-10 rounded-lg border px-3 text-sm"
+          >
+            <option value="DESC">Newest</option>
+            <option value="ASC">Oldest</option>
+          </select>
+
+          {/* Page Size */}
+          <select
+            value={pageSize}
+            onChange={(e) => {
+              setPageSize(Number(e.target.value));
+              setCurrentPage(0);
+            }}
+            className="h-10 rounded-lg border px-3 text-sm"
+          >
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
+          </select>
+
+          {/* Search */}
           <button
             onClick={() => {
               setCurrentPage(0);
               loadPlans();
             }}
-            className="bg-[#0d4039] hover:bg-[#145148] text-white rounded-xl py-3 font-medium"
+            className="h-10 px-5 rounded-lg bg-[#0d4039] text-white hover:bg-[#145148] transition"
           >
             Search
           </button>
 
-          {/* Reset Button */}
+          {/* Reset */}
           <button
             onClick={() => {
               setSearchCriteria({
@@ -269,9 +305,12 @@ export default function SubscriptionPlanTable() {
               });
 
               setCurrentPage(0);
+              setPageSize(10);
+              setSortBy("createdAt");
+              setDirection("DESC");
+
               loadPlans();
             }}
-            className="bg-gray-200 hover:bg-gray-300 rounded-xl py-3 font-medium"
           >
             Reset
           </button>
