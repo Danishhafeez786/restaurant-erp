@@ -311,6 +311,7 @@ export default function SubscriptionPlanTable() {
 
               loadPlans();
             }}
+            className="h-10 px-5 rounded-lg border hover:bg-gray-100 transition"
           >
             Reset
           </button>

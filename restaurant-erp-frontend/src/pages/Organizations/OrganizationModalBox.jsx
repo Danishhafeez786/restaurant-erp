@@ -128,16 +128,38 @@ export default function OrganizationModalBox({
 
           <div>
             <label className="block mb-2 text-sm font-medium text-gray-700">
-              Logo URL
+              Logo
             </label>
+
             <input
-              name="logoUrl"
-              value={formData.logoUrl}
-              onChange={handleChange}
+              type="file"
+              accept="image/*"
               disabled={isView}
-              placeholder="Enter Logo URL"
+              onChange={(e) => {
+                const file = e.target.files[0];
+
+                if (file) {
+                  setFormData({
+                    ...formData,
+                    logoUrl: file
+                  });
+                }
+              }}
               className="w-full border rounded-lg px-4 py-3"
             />
+
+            {formData.logoUrl && (
+              <img
+                src={
+                  typeof formData.logoUrl === "string"
+                    ? formData.logoUrl
+                    : URL.createObjectURL(formData.logoUrl)
+                }
+                alt="Logo Preview"
+                className="mt-3 w-24 h-24 object-cover rounded-lg border"
+              />
+            )}
+
           </div>
 
           <div>

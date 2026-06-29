@@ -59,6 +59,21 @@ const Sidebar = () => {
           path: "/organizations",
           icon: <BuildingOfficeIcon className="w-5 h-5" />,
         },
+        {
+          title: "Branch",
+          path: "/branch",
+          icon: <BuildingOfficeIcon className="w-5 h-5" />,
+        },
+        {
+          title: "Role",
+          path: "/role",
+          icon: <BuildingOfficeIcon className="w-5 h-5" />,
+        },
+        {
+          title: "Permission",
+          path: "/permission",
+          icon: <BuildingOfficeIcon className="w-5 h-5" />,
+        },
       ],
     },
 

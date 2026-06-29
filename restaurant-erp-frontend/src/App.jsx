@@ -10,6 +10,9 @@ import Dashboard from './pages/Dashboard';
 import Employees from './pages/employees/Employees';
 import SubscriptionPlans from './pages/SubscriptionPlans/SubscriptionPlans';
 import Organization from "./pages/Organizations/Organizations";
+import Branch from "./pages/Branch/Branch";
+import Role from "./pages/Role/Role";
+import Permission from './pages/Permission/Permission';
 import './App.css';
 
 function App() {
@@ -23,6 +26,9 @@ function App() {
           <Route path="/create-employee" element={ <CreateEmployee />} />
           <Route path="/subscription-plans" element={<SubscriptionPlans />} />
           <Route path="/organizations"element={<Organization />}/>
+          <Route path="/branch"element={<Branch />}/>
+          <Route path="/role"element={<Role />}/>
+          <Route path="/permission"element={<Permission />}/>
           <Route path="/" element={<Navigate to="/dashboard" />} />
           <Route path="*" element={<Navigate to="/dashboard" />} />
           <Route path="/employees" element={<Employees />} />
