@@ -13,11 +13,17 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PermissionModel {
+
     private UUID id;
+
+    private String module;
     private String code;
     private String name;
-    private String module;
+
     private Boolean isActive;
+
     private LocalDateTime createdAt;
+
     private LocalDateTime updatedAt;
+
 }

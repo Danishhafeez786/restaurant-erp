@@ -5,22 +5,40 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d292dd75-23d9-4dde-9b08-d9b52fb3001b" name="Changes" comment="Add Organization Module">
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/controller/BranchController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/controller/PermissionController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/controller/RoleController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/enums/PermissionAction.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/handler/BranchHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/handler/PermissionHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/handler/RoleHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/model/searchcriteria/BranchSearchCriteria.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/model/searchcriteria/PermissionSearchCriteria.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/model/searchcriteria/RoleSearchCriteria.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/BranchCustomRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/BranchCustomRepositoryImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/PermissionCustomRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/PermissionCustomRepositoryImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/RoleCustomRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/RoleCustomRepositoryImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/BranchService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/BranchServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/PermissionService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/PermissionServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/RoleService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/RoleServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/controller/OrganizationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/controller/OrganizationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/controller/SubscriptionPlanController.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/controller/SubscriptionPlanController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/handler/OrganizationHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/handler/OrganizationHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/handler/SubscriptionPlanHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/handler/SubscriptionPlanHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/OrganizationServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/OrganizationServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/websocket/OrganizationEvent.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/websocket/OrganizationEventPublisher.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/websocket/SubscriptionPlanEvent.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/websocket/SubscriptionPlanEventPublisher.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Organizations/OrganizationTable.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Organizations/OrganizationTable.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/SubscriptionPlans/SubscriptionPlanModalBox.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/SubscriptionPlans/SubscriptionPlanModalBox.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/SubscriptionPlans/SubscriptionPlanTable.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/SubscriptionPlans/SubscriptionPlanTable.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-frontend/src/services/websocket/organizationSocket.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-frontend/src/services/websocket/subscriptionPlanSocket.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-frontend/src/services/websocket/websocketClient.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/model/PermissionModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/model/PermissionModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/BranchRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/BranchRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/PermissionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/PermissionRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/RoleRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/RoleRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/transformer/BranchTransformer.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/transformer/BranchTransformer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Branch/Branch.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Branch/Branch.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Branch/BranchModalBox.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Branch/BranchModalBox.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Branch/BranchTable.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Branch/BranchTable.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Permission/Permission.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Permission/Permission.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Permission/PermissionModalBox.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Permission/PermissionModalBox.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Permission/PermissionTable.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Permission/PermissionTable.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,9 +48,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Enum" />
         <option value="Interface" />
         <option value="Class" />
+        <option value="Enum" />
       </list>
     </option>
   </component>

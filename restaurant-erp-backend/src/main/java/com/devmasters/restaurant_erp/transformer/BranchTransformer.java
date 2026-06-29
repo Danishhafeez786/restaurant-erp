@@ -5,6 +5,8 @@ import com.devmasters.restaurant_erp.model.BranchModel;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 @AllArgsConstructor
 public class BranchTransformer extends Transformer<Branch, BranchModel>{
@@ -15,7 +17,7 @@ public class BranchTransformer extends Transformer<Branch, BranchModel>{
         if(model == null)
             return null;
         return Branch.builder()
-                .id(model.getId())
+                .id(model.getId() != null ? model.getId() : UUID.randomUUID())
                 .branchName(model.getBranchName())
                 .branchCode(model.getBranchCode())
                 .address(model.getAddress())
