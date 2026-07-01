@@ -12,7 +12,7 @@ export default function PermissionMatrix({
 
     filters = {},
 
-    onToggle
+    onPermissionToggle
 
 }) {
 
@@ -169,7 +169,7 @@ export default function PermissionMatrix({
 
                                                                 onChange={(e) =>
 
-                                                                    onToggle({
+                                                                    onPermissionToggle({
 
                                                                         role,
 

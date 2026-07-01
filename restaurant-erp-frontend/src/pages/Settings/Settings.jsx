@@ -387,59 +387,34 @@ export default function Settings() {
     }) => {
 
         try {
-
             if (checked) {
-
-                if (!assignment) {
-
+                if (assignment.rolePermissionId === null) {
                     await rolePermissionService.create({
-
                         roleModel: {
-
                             id: role.id
-
                         },
-
                         permissionModel: {
-
                             id: permission.id
-
                         },
-
                         isActive: true
-
                     });
-
                 } else if (!assignment.isActive) {
-
                     await rolePermissionService.restore(
                         assignment.rolePermissionId
                     );
-
                 }
-
             } else {
-
                 if (assignment) {
-
                     await rolePermissionService.delete(
                         assignment.rolePermissionId
                     );
-
                 }
-
             }
-
             await loadMatrix();
-
             toast.success("Permission updated successfully.");
-
         } catch (error) {
-
             toast.error("Failed to update permission.");
-
         }
-
     };
 
     return (
