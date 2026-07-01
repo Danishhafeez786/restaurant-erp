@@ -1,432 +1,172 @@
-import {
-    EyeIcon,
-    PencilSquareIcon,
-    TrashIcon,
-    ArrowPathIcon,
-} from "@heroicons/react/24/outline";
+import { CheckIcon } from "@heroicons/react/24/outline";
 
 export default function PermissionMatrix({
 
-    data = [],
+    loading,
 
-    onView,
+    roles = [roles],
 
-    onEdit,
+    modules = [modules],
 
-    onDelete,
+    assignments = [assignments],
 
-    onRestore
+    onToggle
 
 }) {
 
+    const isAssigned = (roleId, permissionId) => {
+
+        return assignments.find(
+
+            x =>
+                x.roleId === roleId &&
+                x.permissionId === permissionId &&
+                x.isActive
+
+        );
+
+    };
+
+    if (loading) {
+
+        return (
+            <div className="bg-white rounded-2xl shadow-md p-10 text-center">
+                Loading...
+            </div>
+        );
+
+    }
+
     return (
 
-        <div className="bg-white rounded-2xl shadow-md overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-md overflow-auto">
 
-            {/* Header */}
+            <table className="min-w-full">
 
-            <div className="border-b px-6 py-5">
+                <thead>
 
-                <h2 className="text-2xl font-bold text-gray-800">
+                    <tr className="bg-gray-50">
 
-                    Permission Matrix
+                        <th className="text-left p-4 border">
 
-                </h2>
+                            Module
 
-                <p className="text-gray-500 text-sm mt-1">
+                        </th>
 
-                    Manage role permissions.
+                        <th className="text-left p-4 border">
 
-                </p>
+                            Permission
 
-            </div>
-
-            {/* Desktop */}
-
-            <div className="hidden lg:block overflow-x-auto">
-
-                <table className="w-full">
-
-                    <thead>
-
-                        <tr className="bg-gray-50 border-b">
-
-                            <th className="text-left px-6 py-4">
-
-                                Module
-
-                            </th>
-
-                            <th className="text-left">
-
-                                Permission
-
-                            </th>
-
-                            <th className="text-left">
-
-                                Role
-
-                            </th>
-
-                            <th className="text-center">
-
-                                Status
-
-                            </th>
-
-                            <th className="text-center">
-
-                                Actions
-
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
+                        </th>
 
                         {
 
-                            data.length === 0 ?
-
-                                (
-
-                                    <tr>
-
-                                        <td
-                                            colSpan={5}
-                                            className="text-center py-12 text-gray-500"
-                                        >
-
-                                            No Permission Found
-
-                                        </td>
-
-                                    </tr>
-
-                                )
-
-                                :
-
-                                (
-
-                                    data.map((item) => (
-
-                                        <tr
-
-                                            key={item.id}
-
-                                            className="border-b hover:bg-gray-50"
-
-                                        >
-
-                                            <td className="px-6 py-4 font-semibold">
-
-                                                {item.permissionModel?.module}
-
-                                            </td>
-
-                                            <td>
-
-                                                {item.permissionModel?.name}
-
-                                            </td>
-
-                                            <td>
-
-                                                {item.roleModel?.roleName}
-
-                                            </td>
-
-                                            <td className="text-center">
-
-                                                <span
-
-                                                    className={`px-3 py-1 rounded-full text-xs font-semibold
-
-                                                    ${
-
-                                                        item.isActive
-
-                                                            ? "bg-green-100 text-green-700"
-
-                                                            : "bg-red-100 text-red-700"
-
-                                                    }`}
-
-                                                >
-
-                                                    {
-
-                                                        item.isActive
-
-                                                            ? "Assigned"
-
-                                                            : "Deleted"
-
-                                                    }
-
-                                                </span>
-
-                                            </td>
-
-                                            <td>
-
-                                                <div className="flex justify-center gap-3">
-
-                                                    <button
-
-                                                        onClick={() => onView(item)}
-
-                                                        className="text-green-600 hover:text-green-800"
-
-                                                    >
-
-                                                        <EyeIcon className="w-5 h-5"/>
-
-                                                    </button>
-
-                                                    <button
-
-                                                        onClick={() => onEdit(item)}
-
-                                                        className="text-blue-600 hover:text-blue-800"
-
-                                                    >
-
-                                                        <PencilSquareIcon className="w-5 h-5"/>
-
-                                                    </button>
-
-                                                    {
-
-                                                        item.isActive ?
-
-                                                            (
-
-                                                                <button
-
-                                                                    onClick={() => onDelete(item)}
-
-                                                                    className="text-red-600 hover:text-red-800"
-
-                                                                >
-
-                                                                    <TrashIcon className="w-5 h-5"/>
-
-                                                                </button>
-
-                                                            )
-
-                                                            :
-
-                                                            (
-
-                                                                <button
-
-                                                                    onClick={() => onRestore(item)}
-
-                                                                    className="text-orange-600 hover:text-orange-800"
-
-                                                                >
-
-                                                                    <ArrowPathIcon className="w-5 h-5"/>
-
-                                                                </button>
-
-                                                            )
-
-                                                    }
-
-                                                </div>
-
-                                            </td>
-
-                                        </tr>
-
-                                    ))
-
-                                )
-
-                        }
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-            {/* Mobile */}
-
-            <div className="lg:hidden p-4 space-y-4">
-
-                {
-
-                    data.length === 0 ?
-
-                        (
-
-                            <div className="text-center py-8 text-gray-500">
-
-                                No Permission Found
-
-                            </div>
-
-                        )
-
-                        :
-
-                        (
-
-                            data.map((item) => (
-
-                                <div
-
-                                    key={item.id}
-
-                                    className="border rounded-xl p-4"
-
+                            roles.map(role => (
+
+                                <th
+                                    key={role.id}
+                                    className="text-center border min-w-[120px]"
                                 >
 
-                                    <div className="flex justify-between">
+                                    {role.roleName}
 
-                                        <div>
-
-                                            <h3 className="font-bold">
-
-                                                {item.permissionModel?.module}
-
-                                            </h3>
-
-                                            <p className="text-sm text-gray-500">
-
-                                                {item.roleModel?.roleName}
-
-                                            </p>
-
-                                        </div>
-
-                                        <span
-
-                                            className={`px-3 py-1 rounded-full text-xs
-
-                                            ${
-
-                                                item.isActive
-
-                                                    ? "bg-green-100 text-green-700"
-
-                                                    : "bg-red-100 text-red-700"
-
-                                            }`}
-
-                                        >
-
-                                            {
-
-                                                item.isActive
-
-                                                    ? "Assigned"
-
-                                                    : "Deleted"
-
-                                            }
-
-                                        </span>
-
-                                    </div>
-
-                                    <div className="mt-3">
-
-                                        <p>
-
-                                            <b>Permission : </b>
-
-                                            {item.permissionModel?.name}
-
-                                        </p>
-
-                                    </div>
-
-                                    <div className="flex justify-between mt-5">
-
-                                        <button
-
-                                            onClick={() => onView(item)}
-
-                                            className="text-green-600"
-
-                                        >
-
-                                            <EyeIcon className="w-6 h-6"/>
-
-                                        </button>
-
-                                        <button
-
-                                            onClick={() => onEdit(item)}
-
-                                            className="text-blue-600"
-
-                                        >
-
-                                            <PencilSquareIcon className="w-6 h-6"/>
-
-                                        </button>
-
-                                        {
-
-                                            item.isActive ?
-
-                                                (
-
-                                                    <button
-
-                                                        onClick={() => onDelete(item)}
-
-                                                        className="text-red-600"
-
-                                                    >
-
-                                                        <TrashIcon className="w-6 h-6"/>
-
-                                                    </button>
-
-                                                )
-
-                                                :
-
-                                                (
-
-                                                    <button
-
-                                                        onClick={() => onRestore(item)}
-
-                                                        className="text-orange-600"
-
-                                                    >
-
-                                                        <ArrowPathIcon className="w-6 h-6"/>
-
-                                                    </button>
-
-                                                )
-
-                                        }
-
-                                    </div>
-
-                                </div>
+                                </th>
 
                             ))
 
-                        )
+                        }
 
-                }
+                    </tr>
 
-            </div>
+                </thead>
+
+                <tbody>
+
+                    {
+
+                        modules.map(module => (
+
+                            module.permissions.map(permission => (
+
+                                <tr
+                                    key={permission.id}
+                                    className="border-b hover:bg-gray-50"
+                                >
+
+                                    <td className="p-4">
+
+                                        {module.module}
+
+                                    </td>
+
+                                    <td className="p-4">
+
+                                        {permission.name}
+
+                                    </td>
+
+                                    {
+
+                                        roles.map(role => {
+
+                                            const assignment =
+                                                isAssigned(
+                                                    role.id,
+                                                    permission.id
+                                                );
+
+                                            return (
+
+                                                <td
+                                                    key={role.id}
+                                                    className="text-center"
+                                                >
+
+                                                    <input
+
+                                                        type="checkbox"
+
+                                                        checked={!!assignment}
+
+                                                        onChange={(e) =>
+
+                                                            onToggle({
+
+                                                                role,
+
+                                                                permission,
+
+                                                                assignment,
+
+                                                                checked: e.target.checked
+
+                                                            })
+
+                                                        }
+
+                                                        className="w-5 h-5 accent-green-700 cursor-pointer"
+
+                                                    />
+
+                                                </td>
+
+                                            );
+
+                                        })
+
+                                    }
+
+                                </tr>
+
+                            ))
+
+                        ))
+
+                    }
+
+                </tbody>
+
+            </table>
 
         </div>
 

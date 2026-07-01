@@ -22,6 +22,12 @@ export default function Settings() {
 
     const [permissions, setPermissions] = useState([]);
 
+    const [matrix, setMatrix] = useState({
+        roles: [],
+        modules: [],
+        assignments: []
+    });
+
     const [rolePermissions, setRolePermissions] = useState([]);
 
     const [selectedRole, setSelectedRole] = useState(null);
@@ -46,13 +52,10 @@ export default function Settings() {
         const stream = rolePermissionService.stream();
 
         stream.onmessage = () => {
-
-            loadRolePermissions();
-
+            loadMatrix();
         };
 
         return () => stream.close();
-
     }, []);
 
     const loadData = async () => {
@@ -61,15 +64,7 @@ export default function Settings() {
 
         try {
 
-            await Promise.all([
-
-                loadRoles(),
-
-                loadPermissions(),
-
-                loadRolePermissions()
-
-            ]);
+            await loadMatrix();
 
         } catch (e) {
 
@@ -97,10 +92,81 @@ export default function Settings() {
         setPermissions(res.content || []);
     };
 
-    const loadRolePermissions = async () => {
-        const res = await rolePermissionService.search({});
-        setRolePermissions(res.content || []);
-    };
+    const loadMatrix = async () => {
+
+    const response = await matrixService.getMatrix();
+
+    // axiosConfig already returns response.data
+    const data = response.data || response;
+
+    setMatrix(data);
+
+    // Roles
+    setRoles(data.roles || []);
+
+    // Flat Permission List (required by dropdown & filters)
+    const permissionList = (data.modules || []).flatMap(module =>
+        (module.permissions || []).map(permission => ({
+            ...permission,
+            module: module.module
+        }))
+    );
+
+    setPermissions(permissionList);
+
+    // Convert Matrix Assignments into old RolePermission structure
+    const rolePermissionList = (data.assignments || []).map(assign => {
+
+        const role =
+            data.roles.find(r => r.id === assign.roleId);
+
+        let permission = null;
+
+        let moduleName = "";
+
+        for (const module of data.modules || []) {
+
+            const p = (module.permissions || []).find(
+                x => x.id === assign.permissionId
+            );
+
+            if (p) {
+
+                permission = p;
+                moduleName = module.module;
+                break;
+
+            }
+
+        }
+
+        return {
+
+            id: assign.rolePermissionId,
+
+            roleModel: role,
+
+            permissionModel: permission
+                ? {
+                    ...permission,
+                    module: moduleName
+                }
+                : null,
+
+            isActive: assign.isActive,
+
+            assigned: assign.assigned
+
+        };
+
+    });
+
+    setRolePermissions(rolePermissionList);
+
+    if (data.roles?.length > 0 && !selectedRole) {
+        setSelectedRole(data.roles[0]);
+    }
+};
 
     const summary = useMemo(() => {
         return {
@@ -263,7 +329,7 @@ export default function Settings() {
 
             setModalOpen(false);
 
-            loadRolePermissions();
+            loadMatrix();
 
         } catch {
 
@@ -281,7 +347,7 @@ export default function Settings() {
 
         toast.success("Permission Deleted");
 
-        loadRolePermissions();
+        loadMatrix();
 
     };
 
@@ -291,9 +357,77 @@ export default function Settings() {
 
         toast.success("Permission Restored");
 
-        loadRolePermissions();
+        loadMatrix();
 
     };
+
+    const handlePermissionToggle = async ({
+
+    role,
+
+    permission,
+
+    assignment,
+
+    checked
+
+}) => {
+
+    try {
+
+        if (checked) {
+
+            if (!assignment) {
+
+                await rolePermissionService.create({
+
+                    roleModel: {
+
+                        id: role.id
+
+                    },
+
+                    permissionModel: {
+
+                        id: permission.id
+
+                    },
+
+                    isActive: true
+
+                });
+
+            } else if (!assignment.isActive) {
+
+                await rolePermissionService.restore(
+                    assignment.rolePermissionId
+                );
+
+            }
+
+        } else {
+
+            if (assignment) {
+
+                await rolePermissionService.delete(
+                    assignment.rolePermissionId
+                );
+
+            }
+
+        }
+
+        await loadMatrix();
+
+        toast.success("Permission updated successfully.");
+
+    } catch (error) {
+
+        toast.error("Failed to update permission.");
+
+    }
+
+};
 
     return (
 
@@ -322,19 +456,11 @@ export default function Settings() {
                     <div className="xl:col-span-3">
 
                         <PermissionMatrix
-
                             loading={loading}
-
-                            permissions={filteredPermissions}
-
-                            onView={openView}
-
-                            onEdit={openEdit}
-
-                            onDelete={deletePermission}
-
-                            onRestore={restorePermission}
-
+                            roles={roles}
+                            modules={matrix.modules}
+                            assignments={matrix.assignments}
+                            onToggle={handlePermissionToggle}
                         />
 
                     </div>
@@ -355,7 +481,7 @@ export default function Settings() {
 
             </div>
 
-            <RolePermissionModal
+            {/* <RolePermissionModal
 
                 open={modalOpen}
 
@@ -371,7 +497,7 @@ export default function Settings() {
 
                 onSave={savePermission}
 
-            />
+            /> */}
 
         </div>
 
