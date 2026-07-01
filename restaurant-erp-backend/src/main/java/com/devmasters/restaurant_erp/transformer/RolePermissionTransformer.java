@@ -12,6 +12,7 @@ import java.util.UUID;
 public class RolePermissionTransformer extends Transformer<RolePermission, RolePermissionModel>{
     private final RoleTransformer roleTransformer;
     private final PermissionTransformer permissionTransformer;
+    private final OrganizationTransformer organizationTransformer;
 
     @Override
     public RolePermission toEntity(RolePermissionModel model) {
@@ -19,6 +20,7 @@ public class RolePermissionTransformer extends Transformer<RolePermission, RoleP
             return null;
         return RolePermission.builder()
                 .id(model.getId() != null ? model.getId() : UUID.randomUUID())
+                .organization(organizationTransformer.toEntity(model.getOrganizationModel()))
                 .role(roleTransformer.toEntity(model.getRoleModel()))
                 .permission(permissionTransformer.toEntity(model.getPermissionModel()))
                 .isActive(model.getIsActive())
@@ -33,6 +35,7 @@ public class RolePermissionTransformer extends Transformer<RolePermission, RoleP
             return null;
         return RolePermissionModel.builder()
                 .id(entity.getId())
+                .organizationModel(organizationTransformer.toModel(entity.getOrganization()))
                 .roleModel(roleTransformer.toModel(entity.getRole()))
                 .permissionModel(permissionTransformer.toModel(entity.getPermission()))
                 .isActive(entity.getIsActive())

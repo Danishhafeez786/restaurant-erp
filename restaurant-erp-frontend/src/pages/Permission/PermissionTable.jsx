@@ -291,15 +291,97 @@ export default function PermissionTable() {
         )}
       </div>
 
+      {/* MOBILE */}
+      <div className="md:hidden space-y-4">
+        {loading ? (
+          <div className="text-center py-10 bg-white rounded-xl border">
+            Loading...
+          </div>
+        ) : (
+          permissions.map((permission) => (
+            <div
+              key={permission.id}
+              className="border rounded-xl p-4 bg-white"
+            >
+              <div className="flex justify-between items-start">
+                <h3 className="font-bold text-lg">
+                  {permission.name}
+                </h3>
+
+                <span
+                  className={`px-3 py-1 rounded-full text-xs ${getStatusColor(
+                    permission.isActive
+                  )}`}
+                >
+                  {permission.isActive ? "ACTIVE" : "INACTIVE"}
+                </span>
+              </div>
+
+              <div className="mt-3 space-y-2 text-sm">
+                <p>
+                  <b>Code:</b> {permission.code}
+                </p>
+
+                <p>
+                  <b>Module:</b> {permission.module}
+                </p>
+              </div>
+
+              <div className="flex gap-2 mt-4">
+                <button
+                  className="flex-1 bg-green-500 text-white py-2 rounded-lg"
+                  onClick={() => {
+                    setModalMode("view");
+                    setSelectedPermission(permission);
+                    setShowModal(true);
+                  }}
+                >
+                  View
+                </button>
+
+                {permission.isActive ? (
+                  <>
+                    <button
+                      className="flex-1 bg-blue-500 text-white py-2 rounded-lg"
+                      onClick={() => {
+                        setModalMode("edit");
+                        setSelectedPermission(permission);
+                        setShowModal(true);
+                      }}
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      className="flex-1 bg-red-500 text-white py-2 rounded-lg"
+                      onClick={() => handleDelete(permission.id)}
+                    >
+                      Delete
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    className="flex-1 bg-orange-500 text-white py-2 rounded-lg"
+                    onClick={() => handleRestore(permission.id)}
+                  >
+                    Restore
+                  </button>
+                )}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+
       {/* PAGINATION */}
       <div className="flex justify-center gap-2 mt-5">
         {pages.map((i) => (
           <button
             key={i}
             onClick={() => setCurrentPage(i)}
-            className={`px-3 py-1 rounded ${
-              currentPage === i ? "bg-green-600 text-white" : "bg-gray-200"
-            }`}
+            className={`px-3 py-1 rounded ${currentPage === i ? "bg-green-600 text-white" : "bg-gray-200"
+              }`}
           >
             {i + 1}
           </button>

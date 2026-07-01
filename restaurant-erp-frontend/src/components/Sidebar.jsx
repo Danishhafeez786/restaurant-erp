@@ -74,6 +74,11 @@ const Sidebar = () => {
           path: "/permission",
           icon: <BuildingOfficeIcon className="w-5 h-5" />,
         },
+        {
+          title: "Settings",
+          path: "/settings",
+          icon: <BuildingOfficeIcon className="w-5 h-5" />,
+        }
       ],
     },
 

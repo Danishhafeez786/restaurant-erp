@@ -16,6 +16,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("role_permissions")
 public class RolePermission extends BaseEntity {
     @DBRef
+    private Organization organization;
+    @DBRef
     private Role role;
     @DBRef
     private Permission permission;

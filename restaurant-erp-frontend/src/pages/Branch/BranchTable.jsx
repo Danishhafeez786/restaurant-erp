@@ -175,7 +175,7 @@ export default function BranchTable() {
         </button>
 
       </div>
-            {/* Filters */}
+      {/* Filters */}
 
       <div className="border rounded-xl p-4 mb-6">
 
@@ -429,7 +429,104 @@ export default function BranchTable() {
         </table>
 
       </div>
-            {/* Pagination */}
+
+      {/* MOBILE */}
+      <div className="md:hidden space-y-4">
+        {loading ? (
+          <div className="text-center py-10 bg-white rounded-xl border">
+            Loading...
+          </div>
+        ) : (
+          branches.map((branch) => (
+            <div
+              key={branch.id}
+              className="border rounded-xl p-4 bg-white"
+            >
+              <div className="flex justify-between items-start">
+                <h3 className="font-bold text-lg">
+                  {branch.branchName}
+                </h3>
+
+                <span
+                  className={`px-3 py-1 rounded-full text-xs ${getStatusColor(
+                    branch.isActive
+                  )}`}
+                >
+                  {branch.isActive ? "ACTIVE" : "INACTIVE"}
+                </span>
+              </div>
+
+              <div className="mt-3 space-y-2 text-sm">
+                <p>
+                  <b>Branch Code:</b> {branch.branchCode}
+                </p>
+
+                <p>
+                  <b>Address:</b> {branch.address}
+                </p>
+
+                <p>
+                  <b>City:</b> {branch.city}
+                </p>
+
+                <p>
+                  <b>Phone:</b> {branch.phone}
+                </p>
+
+                <p>
+                  <b>Organization:</b>{" "}
+                  {branch.organizationModel?.organizationName || "N/A"}
+                </p>
+              </div>
+
+              <div className="flex gap-2 mt-4">
+                <button
+                  className="flex-1 bg-green-500 text-white py-2 rounded-lg"
+                  onClick={() => {
+                    setSelectedBranch(branch);
+                    setModalMode("view");
+                    setShowModal(true);
+                  }}
+                >
+                  View
+                </button>
+
+                {branch.isActive ? (
+                  <>
+                    <button
+                      className="flex-1 bg-blue-500 text-white py-2 rounded-lg"
+                      onClick={() => {
+                        setSelectedBranch(branch);
+                        setModalMode("edit");
+                        setShowModal(true);
+                      }}
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      className="flex-1 bg-red-500 text-white py-2 rounded-lg"
+                      onClick={() => handleDelete(branch.id)}
+                    >
+                      Delete
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    className="flex-1 bg-orange-500 text-white py-2 rounded-lg"
+                    onClick={() => handleRestore(branch.id)}
+                  >
+                    Restore
+                  </button>
+                )}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+
+      {/* Pagination */}
 
       {totalPages > 1 && (
         <div className="flex justify-center items-center gap-2 mt-6">
@@ -446,11 +543,10 @@ export default function BranchTable() {
             <button
               key={index}
               onClick={() => setCurrentPage(index)}
-              className={`px-4 py-2 rounded-lg ${
-                currentPage === index
+              className={`px-4 py-2 rounded-lg ${currentPage === index
                   ? "bg-[#0d4039] text-white"
                   : "border hover:bg-gray-100"
-              }`}
+                }`}
             >
               {index + 1}
             </button>

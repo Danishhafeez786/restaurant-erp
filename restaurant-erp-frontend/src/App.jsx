@@ -13,6 +13,7 @@ import Organization from "./pages/Organizations/Organizations";
 import Branch from "./pages/Branch/Branch";
 import Role from "./pages/Role/Role";
 import Permission from './pages/Permission/Permission';
+import Settings from './pages/Settings/Settings';
 import './App.css';
 
 function App() {
@@ -22,16 +23,17 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="/dashboard" element={ <ProtectedRoute> <Dashboard /> </ProtectedRoute>} />
-          <Route path="/create-employee" element={ <CreateEmployee />} />
-          <Route path="/subscription-plans" element={<SubscriptionPlans />} />
-          <Route path="/organizations"element={<Organization />}/>
-          <Route path="/branch"element={<Branch />}/>
+          <Route path="/create-employee" element={ <ProtectedRoute> <CreateEmployee /> </ProtectedRoute> } />
+          <Route path="/subscription-plans" element={ <ProtectedRoute> <SubscriptionPlans /> </ProtectedRoute> } />
+          <Route path="/organizations"element={ <ProtectedRoute> <Organization /> </ProtectedRoute>}/>
+          <Route path="/branch"element={ <ProtectedRoute> <Branch /> </ProtectedRoute> }/>
           <Route path="/role"element={<Role />}/>
-          <Route path="/permission"element={<Permission />}/>
+          <Route path="/permission"element={ <ProtectedRoute> <Permission /> </ProtectedRoute> }/>
           <Route path="/" element={<Navigate to="/dashboard" />} />
           <Route path="*" element={<Navigate to="/dashboard" />} />
-          <Route path="/employees" element={<Employees />} />
+          <Route path="/employees" element={ <ProtectedRoute> <Employees /> </ProtectedRoute> } />
         </Routes>
       </AuthProvider>
       {/* ✅ Global Toast Container (always available) */}

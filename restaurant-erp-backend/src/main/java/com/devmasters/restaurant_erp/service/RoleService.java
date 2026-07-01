@@ -13,10 +13,7 @@ public interface RoleService {
 
     Role create(Role entity);
 
-    Page<Role> search(
-            RoleSearchCriteria criteria,
-            Pageable pageable
-    );
+    Page<Role> search(RoleSearchCriteria criteria, Pageable pageable);
 
     Role findById(UUID id);
 

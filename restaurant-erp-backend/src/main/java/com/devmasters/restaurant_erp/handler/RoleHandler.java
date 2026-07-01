@@ -22,30 +22,20 @@ public class RoleHandler {
 
     public RoleModel create(RoleModel model) {
 
-        if (roleService.existsByRoleNameIgnoreCase(model.getRoleName())) {
-            throw new RuntimeException(
-                    "Role already exists with name : " + model.getRoleName()
-            );
-        }
+        if (roleService.existsByRoleNameIgnoreCase(model.getRoleName()))
+            throw new RuntimeException("Role already exists with name : " + model.getRoleName());
 
         Role entity = roleTransformer.toEntity(model);
-
         Role saved = roleService.create(entity);
-
         return roleTransformer.toModel(saved);
     }
 
-    public PageResponse<RoleModel> getAll(
-            RoleSearchCriteria criteria,
-            Pageable pageable) {
+    public PageResponse<RoleModel> getAll(RoleSearchCriteria criteria, Pageable pageable) {
 
-        Page<Role> page =
-                roleService.search(criteria, pageable);
+        Page<Role> page = roleService.search(criteria, pageable);
 
         return PageResponse.<RoleModel>builder()
-                .content(
-                        roleTransformer.toModels(page.getContent())
-                )
+                .content(roleTransformer.toModels(page.getContent()))
                 .totalElements(page.getTotalElements())
                 .totalPages(page.getTotalPages())
                 .page(page.getNumber())
@@ -55,32 +45,19 @@ public class RoleHandler {
                 .build();
     }
 
-    public RoleModel update(
-            UUID id,
-            RoleModel model) {
-
-        Role entity =
-                roleTransformer.toEntity(model);
-
-        Role updated =
-                roleService.update(id, entity);
-
+    public RoleModel update(UUID id, RoleModel model) {
+        Role entity = roleTransformer.toEntity(model);
+        Role updated = roleService.update(id, entity);
         return roleTransformer.toModel(updated);
     }
 
     public RoleModel delete(UUID id) {
-
-        Role deleted =
-                roleService.delete(id);
-
+        Role deleted = roleService.delete(id);
         return roleTransformer.toModel(deleted);
     }
 
     public RoleModel restore(UUID id) {
-
-        Role restored =
-                roleService.restore(id);
-
+        Role restored = roleService.restore(id);
         return roleTransformer.toModel(restored);
     }
 }

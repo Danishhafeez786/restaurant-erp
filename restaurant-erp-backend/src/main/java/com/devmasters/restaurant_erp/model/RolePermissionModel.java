@@ -13,6 +13,7 @@ import java.util.UUID;
 @Builder
 public class RolePermissionModel {
     private UUID id;
+    private OrganizationModel organizationModel;
     private RoleModel roleModel;
     private PermissionModel permissionModel;
     private Boolean isActive;

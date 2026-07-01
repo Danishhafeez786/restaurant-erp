@@ -136,176 +136,176 @@ export default function OrganizationTable() {
       {/* SEARCH FILTERS */}
 
       {/* Search Toolbar */}
-<div className="bg-white border rounded-xl shadow-sm p-4 mb-6">
+      <div className="bg-white border rounded-xl shadow-sm p-4 mb-6">
 
-    <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
 
-        {/* Organization */}
-        <input
+          {/* Organization */}
+          <input
             type="text"
             placeholder="Organization"
             value={searchCriteria.organizationName}
             onChange={(e) =>
-                setSearchCriteria({
-                    ...searchCriteria,
-                    organizationName: e.target.value,
-                })
+              setSearchCriteria({
+                ...searchCriteria,
+                organizationName: e.target.value,
+              })
             }
             className="h-10 w-52 rounded-lg border px-3 text-sm focus:border-[#0d4039] focus:ring-2 focus:ring-[#0d4039]/20 outline-none"
-        />
+          />
 
-        {/* Owner */}
-        <input
+          {/* Owner */}
+          <input
             type="text"
             placeholder="Owner"
             value={searchCriteria.ownerName}
             onChange={(e) =>
-                setSearchCriteria({
-                    ...searchCriteria,
-                    ownerName: e.target.value,
-                })
+              setSearchCriteria({
+                ...searchCriteria,
+                ownerName: e.target.value,
+              })
             }
             className="h-10 w-44 rounded-lg border px-3 text-sm focus:border-[#0d4039] focus:ring-2 focus:ring-[#0d4039]/20 outline-none"
-        />
+          />
 
-        {/* City */}
-        <input
+          {/* City */}
+          <input
             type="text"
             placeholder="City"
             value={searchCriteria.city}
             onChange={(e) =>
-                setSearchCriteria({
-                    ...searchCriteria,
-                    city: e.target.value,
-                })
+              setSearchCriteria({
+                ...searchCriteria,
+                city: e.target.value,
+              })
             }
             className="h-10 w-36 rounded-lg border px-3 text-sm focus:border-[#0d4039] focus:ring-2 focus:ring-[#0d4039]/20 outline-none"
-        />
+          />
 
-        {/* Country */}
-        <input
+          {/* Country */}
+          <input
             type="text"
             placeholder="Country"
             value={searchCriteria.country}
             onChange={(e) =>
-                setSearchCriteria({
-                    ...searchCriteria,
-                    country: e.target.value,
-                })
+              setSearchCriteria({
+                ...searchCriteria,
+                country: e.target.value,
+              })
             }
             className="h-10 w-36 rounded-lg border px-3 text-sm focus:border-[#0d4039] focus:ring-2 focus:ring-[#0d4039]/20 outline-none"
-        />
+          />
 
-        {/* Status */}
-        <select
+          {/* Status */}
+          <select
             value={searchCriteria.isActive}
             onChange={(e) =>
-                setSearchCriteria({
-                    ...searchCriteria,
-                    isActive: e.target.value,
-                })
+              setSearchCriteria({
+                ...searchCriteria,
+                isActive: e.target.value,
+              })
             }
             className="h-10 rounded-lg border px-3 text-sm"
-        >
+          >
             <option value="">Status</option>
             <option value="true">Active</option>
             <option value="false">Inactive</option>
-        </select>
+          </select>
 
-        {/* Billing */}
-        <select
+          {/* Billing */}
+          <select
             value={searchCriteria.billingCycle}
             onChange={(e) =>
-                setSearchCriteria({
-                    ...searchCriteria,
-                    billingCycle: e.target.value,
-                })
+              setSearchCriteria({
+                ...searchCriteria,
+                billingCycle: e.target.value,
+              })
             }
             className="h-10 rounded-lg border px-3 text-sm"
-        >
+          >
             <option value="">Billing</option>
             <option value="MONTHLY">Monthly</option>
             <option value="QUARTERLY">Quarterly</option>
             <option value="YEARLY">Yearly</option>
-        </select>
+          </select>
 
-        {/* Sort */}
-        <select
+          {/* Sort */}
+          <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
             className="h-10 rounded-lg border px-3 text-sm"
-        >
+          >
             <option value="createdAt">Created</option>
             <option value="organizationName">Organization</option>
             <option value="ownerName">Owner</option>
             <option value="city">City</option>
             <option value="country">Country</option>
-        </select>
+          </select>
 
-        {/* Direction */}
-        <select
+          {/* Direction */}
+          <select
             value={direction}
             onChange={(e) => setDirection(e.target.value)}
             className="h-10 rounded-lg border px-3 text-sm"
-        >
+          >
             <option value="DESC">Newest</option>
             <option value="ASC">Oldest</option>
-        </select>
+          </select>
 
-        {/* Page Size */}
-        <select
+          {/* Page Size */}
+          <select
             value={pageSize}
             onChange={(e) => {
-                setPageSize(Number(e.target.value));
-                setCurrentPage(0);
+              setPageSize(Number(e.target.value));
+              setCurrentPage(0);
             }}
             className="h-10 rounded-lg border px-3 text-sm"
-        >
+          >
             <option value={10}>10</option>
             <option value={20}>20</option>
             <option value={50}>50</option>
             <option value={100}>100</option>
-        </select>
+          </select>
 
-        {/* Search */}
-        <button
+          {/* Search */}
+          <button
             onClick={() => {
-                setCurrentPage(0);
-                loadOrganizations();
+              setCurrentPage(0);
+              loadOrganizations();
             }}
             className="h-10 px-5 rounded-lg bg-[#0d4039] text-white hover:bg-[#145148] transition"
-        >
+          >
             Search
-        </button>
+          </button>
 
-        {/* Reset */}
-        <button
+          {/* Reset */}
+          <button
             onClick={() => {
-                setSearchCriteria({
-                    organizationName: "",
-                    ownerName: "",
-                    city: "",
-                    country: "",
-                    isActive: "",
-                    billingCycle: "",
-                    subscriptionPlanId: "",
-                });
+              setSearchCriteria({
+                organizationName: "",
+                ownerName: "",
+                city: "",
+                country: "",
+                isActive: "",
+                billingCycle: "",
+                subscriptionPlanId: "",
+              });
 
-                setSortBy("createdAt");
-                setDirection("DESC");
-                setPageSize(10);
-                setCurrentPage(0);
+              setSortBy("createdAt");
+              setDirection("DESC");
+              setPageSize(10);
+              setCurrentPage(0);
 
-                loadOrganizations();
+              loadOrganizations();
             }}
             className="h-10 px-5 rounded-lg border hover:bg-gray-100 transition"
-        >
+          >
             Reset
-        </button>
+          </button>
 
-    </div>
+        </div>
 
-</div>
+      </div>
 
       {/* TABLE */}
       <div className="hidden md:block overflow-x-auto">

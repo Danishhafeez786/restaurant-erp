@@ -1,4 +1,4 @@
-package com.devmasters.restaurant_erp.model.searchcriteria;
+package com.devmasters.restaurant_erp.model.settings;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,12 +8,17 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class RoleSearchCriteria {
-    private String roleName;
-    private String description;
-    private UUID organizationId;
+public class PermissionMatrixModel {
+
+    private UUID id;
+
+    private String name;
+
+    private String code;
+
     private Boolean isActive;
+
 }

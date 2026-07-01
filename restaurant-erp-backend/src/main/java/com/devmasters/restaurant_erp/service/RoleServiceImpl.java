@@ -27,57 +27,39 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Page<Role> search(
-            RoleSearchCriteria criteria,
-            Pageable pageable) {
-
+    public Page<Role> search(RoleSearchCriteria criteria, Pageable pageable) {
         return roleRepository.search(criteria, pageable);
     }
 
     @Override
     public Role findById(UUID id) {
-
         return roleRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Role not found."));
+                .orElseThrow(() -> new RuntimeException("Role not found."));
     }
 
     @Override
-    public Role update(
-            UUID id,
-            Role entity) {
-
+    public Role update(UUID id, Role entity) {
         Role existing = findById(id);
-
         existing.setRoleName(entity.getRoleName());
         existing.setDescription(entity.getDescription());
         existing.setOrganization(entity.getOrganization());
         existing.setIsActive(entity.getIsActive());
-
         return roleRepository.save(existing);
     }
 
     @Override
     public Role delete(UUID id) {
-
         Role role = findById(id);
-
-        if (!Boolean.TRUE.equals(role.getIsActive())) {
+        if (!Boolean.TRUE.equals(role.getIsActive()))
             throw new RuntimeException("Role already deleted.");
-        }
-
         role.setIsActive(false);
-
         return roleRepository.save(role);
     }
 
     @Override
     public Role restore(UUID id) {
-
         Role role = findById(id);
-
         role.setIsActive(true);
-
         return roleRepository.save(role);
     }
 }

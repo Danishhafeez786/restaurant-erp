@@ -54,12 +54,8 @@ public class PermissionController {
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "DESC") String direction) {
 
-        Pageable pageable = PageRequest.of(
-                page,
-                size,
-                Sort.by(
-                        Sort.Direction.valueOf(direction.toUpperCase()),
-                        sortBy));
+        Pageable pageable = PageRequest.of(page, size,
+                Sort.by(Sort.Direction.valueOf(direction.toUpperCase()), sortBy));
 
         return ResponseEntity.ok(
                 ApiResponse.<PageResponse<PermissionModel>>builder()
