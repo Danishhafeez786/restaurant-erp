@@ -94,79 +94,79 @@ export default function Settings() {
 
     const loadMatrix = async () => {
 
-    const response = await matrixService.getMatrix();
+        const response = await matrixService.getMatrix();
 
-    // axiosConfig already returns response.data
-    const data = response.data || response;
+        // axiosConfig already returns response.data
+        const data = response.data || response;
 
-    setMatrix(data);
+        setMatrix(data);
 
-    // Roles
-    setRoles(data.roles || []);
+        // Roles
+        setRoles(data.roles || []);
 
-    // Flat Permission List (required by dropdown & filters)
-    const permissionList = (data.modules || []).flatMap(module =>
-        (module.permissions || []).map(permission => ({
-            ...permission,
-            module: module.module
-        }))
-    );
+        // Flat Permission List (required by dropdown & filters)
+        const permissionList = (data.modules || []).flatMap(module =>
+            (module.permissions || []).map(permission => ({
+                ...permission,
+                module: module.module
+            }))
+        );
 
-    setPermissions(permissionList);
+        setPermissions(permissionList);
 
-    // Convert Matrix Assignments into old RolePermission structure
-    const rolePermissionList = (data.assignments || []).map(assign => {
+        // Convert Matrix Assignments into old RolePermission structure
+        const rolePermissionList = (data.assignments || []).map(assign => {
 
-        const role =
-            data.roles.find(r => r.id === assign.roleId);
+            const role =
+                data.roles.find(r => r.id === assign.roleId);
 
-        let permission = null;
+            let permission = null;
 
-        let moduleName = "";
+            let moduleName = "";
 
-        for (const module of data.modules || []) {
+            for (const module of data.modules || []) {
 
-            const p = (module.permissions || []).find(
-                x => x.id === assign.permissionId
-            );
+                const p = (module.permissions || []).find(
+                    x => x.id === assign.permissionId
+                );
 
-            if (p) {
+                if (p) {
 
-                permission = p;
-                moduleName = module.module;
-                break;
+                    permission = p;
+                    moduleName = module.module;
+                    break;
+
+                }
 
             }
 
+            return {
+
+                id: assign.rolePermissionId,
+
+                roleModel: role,
+
+                permissionModel: permission
+                    ? {
+                        ...permission,
+                        module: moduleName
+                    }
+                    : null,
+
+                isActive: assign.isActive,
+
+                assigned: assign.assigned
+
+            };
+
+        });
+
+        setRolePermissions(rolePermissionList);
+
+        if (data.roles?.length > 0 && !selectedRole) {
+            setSelectedRole(data.roles[0]);
         }
-
-        return {
-
-            id: assign.rolePermissionId,
-
-            roleModel: role,
-
-            permissionModel: permission
-                ? {
-                    ...permission,
-                    module: moduleName
-                }
-                : null,
-
-            isActive: assign.isActive,
-
-            assigned: assign.assigned
-
-        };
-
-    });
-
-    setRolePermissions(rolePermissionList);
-
-    if (data.roles?.length > 0 && !selectedRole) {
-        setSelectedRole(data.roles[0]);
-    }
-};
+    };
 
     const summary = useMemo(() => {
         return {
@@ -183,69 +183,82 @@ export default function Settings() {
 
     }, [roles, permissions, rolePermissions]);
 
-    const filteredPermissions = useMemo(() => {
+    const filteredModules = useMemo(() => {
 
-        return rolePermissions.filter(item => {
+    const search = filters.search.trim().toLowerCase();
 
-            const roleName = item.roleModel?.roleName?.toLowerCase() || "";
+    return (matrix.modules || [])
+        .map(module => {
 
-            const module = item.permissionModel?.module?.toLowerCase() || "";
+            const permissions = module.permissions.filter(permission => {
 
-            const permission = item.permissionModel?.name?.toLowerCase() || "";
+                // Search
+                if (search) {
 
-            if (
-                filters.search &&
-                !roleName.includes(filters.search.toLowerCase()) &&
-                !module.includes(filters.search.toLowerCase()) &&
-                !permission.includes(filters.search.toLowerCase())
-            ) {
+                    const match =
+                        module.module.toLowerCase().includes(search) ||
+                        permission.name.toLowerCase().includes(search) ||
+                        permission.code.toLowerCase().includes(search);
 
-                return false;
+                    if (!match) {
+                        return false;
+                    }
+                }
 
-            }
-
-            if (
-                filters.role &&
-                item.roleModel?.id !== filters.role
-            ) {
-
-                return false;
-
-            }
-
-            if (
-                filters.module &&
-                item.permissionModel?.module !== filters.module
-            ) {
-
-                return false;
-
-            }
-
-            if (filters.status !== "") {
-
-                if (item.isActive !== (filters.status === "true")) {
-
+                // Module Filter
+                if (
+                    filters.module &&
+                    module.module !== filters.module
+                ) {
                     return false;
+                }
+
+                // Role / Status Filter
+                if (filters.role || filters.status !== "") {
+
+                    const assignments = matrix.assignments.filter(a =>
+                        a.permissionId === permission.id
+                    );
+
+                    const exists = assignments.some(a => {
+
+                        if (
+                            filters.role &&
+                            a.roleId !== filters.role
+                        ) {
+                            return false;
+                        }
+
+                        if (
+                            filters.status !== "" &&
+                            a.isActive !== (filters.status === "true")
+                        ) {
+                            return false;
+                        }
+
+                        return true;
+
+                    });
+
+                    if (!exists) {
+                        return false;
+                    }
 
                 }
 
-            }
+                return true;
 
-            return true;
+            });
 
-        });
+            return {
+                ...module,
+                permissions
+            };
 
-    }, [
+        })
+        .filter(module => module.permissions.length > 0);
 
-        rolePermissions,
-
-        filters.search,
-        filters.role,
-        filters.module,
-        filters.status
-
-    ]);
+}, [matrix, filters]);
 
     const openCreate = () => {
 
@@ -363,71 +376,71 @@ export default function Settings() {
 
     const handlePermissionToggle = async ({
 
-    role,
+        role,
 
-    permission,
+        permission,
 
-    assignment,
+        assignment,
 
-    checked
+        checked
 
-}) => {
+    }) => {
 
-    try {
+        try {
 
-        if (checked) {
+            if (checked) {
 
-            if (!assignment) {
+                if (!assignment) {
 
-                await rolePermissionService.create({
+                    await rolePermissionService.create({
 
-                    roleModel: {
+                        roleModel: {
 
-                        id: role.id
+                            id: role.id
 
-                    },
+                        },
 
-                    permissionModel: {
+                        permissionModel: {
 
-                        id: permission.id
+                            id: permission.id
 
-                    },
+                        },
 
-                    isActive: true
+                        isActive: true
 
-                });
+                    });
 
-            } else if (!assignment.isActive) {
+                } else if (!assignment.isActive) {
 
-                await rolePermissionService.restore(
-                    assignment.rolePermissionId
-                );
+                    await rolePermissionService.restore(
+                        assignment.rolePermissionId
+                    );
+
+                }
+
+            } else {
+
+                if (assignment) {
+
+                    await rolePermissionService.delete(
+                        assignment.rolePermissionId
+                    );
+
+                }
 
             }
 
-        } else {
+            await loadMatrix();
 
-            if (assignment) {
+            toast.success("Permission updated successfully.");
 
-                await rolePermissionService.delete(
-                    assignment.rolePermissionId
-                );
+        } catch (error) {
 
-            }
+            toast.error("Failed to update permission.");
 
         }
 
-        await loadMatrix();
-
-        toast.success("Permission updated successfully.");
-
-    } catch (error) {
-
-        toast.error("Failed to update permission.");
-
-    }
-
-};
+    };
 
     return (
 
@@ -445,6 +458,7 @@ export default function Settings() {
                         roles={roles}
                         permissions={permissions}
                         filters={filters}
+                        modules={filteredModules}
                         setFilters={setFilters}
                         onAdd={openCreate}
                     />
@@ -457,10 +471,11 @@ export default function Settings() {
 
                         <PermissionMatrix
                             loading={loading}
+                            modules={filteredModules}
                             roles={roles}
-                            modules={matrix.modules}
                             assignments={matrix.assignments}
-                            onToggle={handlePermissionToggle}
+                            filters={filters}
+                            onPermissionToggle={handlePermissionToggle}
                         />
 
                     </div>

@@ -4,27 +4,24 @@ export default function PermissionMatrix({
 
     loading,
 
-    roles = [roles],
+    roles = [],
 
-    modules = [modules],
+    modules = [],
 
-    assignments = [assignments],
+    assignments = [],
+
+    filters = {},
 
     onToggle
 
 }) {
 
     const isAssigned = (roleId, permissionId) => {
-
         return assignments.find(
-
-            x =>
-                x.roleId === roleId &&
-                x.permissionId === permissionId &&
-                x.isActive
-
+            item =>
+                item.roleId === roleId &&
+                item.permissionId === permissionId
         );
-
     };
 
     if (loading) {
@@ -36,6 +33,11 @@ export default function PermissionMatrix({
         );
 
     }
+
+    const visibleRoles = roles.filter(role => {
+        if (!filters.role) return true;
+        return role.id === filters.role;
+    });
 
     return (
 
@@ -61,18 +63,28 @@ export default function PermissionMatrix({
 
                         {
 
-                            roles.map(role => (
+                            roles
+                                .filter(role => {
 
-                                <th
-                                    key={role.id}
-                                    className="text-center border min-w-[120px]"
-                                >
+                                    if (filters.role) {
+                                        return role.id === filters.role;
+                                    }
 
-                                    {role.roleName}
+                                    return true;
 
-                                </th>
+                                })
+                                .map(role => (
 
-                            ))
+                                    <th
+                                        key={role.id}
+                                        className="text-center border min-w-[120px]"
+                                    >
+
+                                        {role.roleName}
+
+                                    </th>
+
+                                ))
 
                         }
 
@@ -86,79 +98,106 @@ export default function PermissionMatrix({
 
                         modules.map(module => (
 
-                            module.permissions.map(permission => (
+                            module.permissions
+                                .filter(permission => {
 
-                                <tr
-                                    key={permission.id}
-                                    className="border-b hover:bg-gray-50"
-                                >
-
-                                    <td className="p-4">
-
-                                        {module.module}
-
-                                    </td>
-
-                                    <td className="p-4">
-
-                                        {permission.name}
-
-                                    </td>
-
-                                    {
-
-                                        roles.map(role => {
-
-                                            const assignment =
-                                                isAssigned(
-                                                    role.id,
-                                                    permission.id
-                                                );
-
-                                            return (
-
-                                                <td
-                                                    key={role.id}
-                                                    className="text-center"
-                                                >
-
-                                                    <input
-
-                                                        type="checkbox"
-
-                                                        checked={!!assignment}
-
-                                                        onChange={(e) =>
-
-                                                            onToggle({
-
-                                                                role,
-
-                                                                permission,
-
-                                                                assignment,
-
-                                                                checked: e.target.checked
-
-                                                            })
-
-                                                        }
-
-                                                        className="w-5 h-5 accent-green-700 cursor-pointer"
-
-                                                    />
-
-                                                </td>
-
-                                            );
-
-                                        })
-
+                                    if (filters.status === "") {
+                                        return true;
                                     }
 
-                                </tr>
+                                    const hasAssignment = assignments.some(a =>
 
-                            ))
+                                        a.permissionId === permission.id &&
+                                        a.isActive === (filters.status === "true")
+
+                                    );
+
+                                    return hasAssignment;
+
+                                })
+                                .map(permission => (
+
+                                    <tr
+                                        key={permission.id}
+                                        className="border-b hover:bg-gray-50"
+                                    >
+
+                                        <td className="p-4">
+
+                                            {module.module}
+
+                                        </td>
+
+                                        <td className="p-4">
+
+                                            {permission.name}
+
+                                        </td>
+
+                                        {
+
+                                            roles
+                                                .filter(role => {
+
+                                                    if (filters.role) {
+                                                        return role.id === filters.role;
+                                                    }
+
+                                                    return true;
+
+                                                })
+                                                .map(role => {
+
+                                                    const assignment =
+                                                        isAssigned(
+                                                            role.id,
+                                                            permission.id
+                                                        );
+
+                                                    return (
+
+                                                        <td
+                                                            key={role.id}
+                                                            className="text-center"
+                                                        >
+
+                                                            <input
+
+                                                                type="checkbox"
+
+                                                                checked={assignment?.isActive || false}
+
+                                                                onChange={(e) =>
+
+                                                                    onToggle({
+
+                                                                        role,
+
+                                                                        permission,
+
+                                                                        assignment,
+
+                                                                        checked: e.target.checked
+
+                                                                    })
+
+                                                                }
+
+                                                                className="w-5 h-5 accent-green-700 cursor-pointer"
+
+                                                            />
+
+                                                        </td>
+
+                                                    );
+
+                                                })
+
+                                        }
+
+                                    </tr>
+
+                                ))
 
                         ))
 
