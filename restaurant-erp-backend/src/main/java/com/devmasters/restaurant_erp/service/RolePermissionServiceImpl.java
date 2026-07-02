@@ -142,15 +142,28 @@ public class RolePermissionServiceImpl implements RolePermissionService{
         return moduleModels;
     }
 
-    private static @NonNull Map<String, RolePermission> getStringRolePermissionMap(List<RolePermission> rolePermissions) {
-        Map<String, RolePermission> assignmentMap =
-                rolePermissions.stream()
-                        .collect(Collectors.toMap(
-                                rp -> rp.getRole().getId() + "_" + rp.getPermission().getId(),
-                                Function.identity(),
-                                (existing, replacement) -> existing
-                        ));
-        return assignmentMap;
+//    private static @NonNull Map<String, RolePermission> getStringRolePermissionMap(List<RolePermission> rolePermissions) {
+//        Map<String, RolePermission> assignmentMap =
+//                rolePermissions.stream()
+//                        .collect(Collectors.toMap(
+//                                rp -> rp.getRole().getId() + "_" + rp.getPermission().getId(),
+//                                Function.identity(),
+//                                (existing, replacement) -> existing
+//                        ));
+//        return assignmentMap;
+//    }
+
+    private static @NonNull Map<String, RolePermission> getStringRolePermissionMap(
+            List<RolePermission> rolePermissions) {
+
+        return rolePermissions.stream()
+                .filter(rp -> rp.getRole() != null)
+                .filter(rp -> rp.getPermission() != null)
+                .collect(Collectors.toMap(
+                        rp -> rp.getRole().getId() + "_" + rp.getPermission().getId(),
+                        Function.identity(),
+                        (a, b) -> a
+                ));
     }
 
     private static @NonNull List<RolePermissionAssignmentModel> getRolePermissionAssignmentModels(List<Role> roles, List<Permission> permissions, Map<String, RolePermission> assignmentMap) {
