@@ -4,41 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d292dd75-23d9-4dde-9b08-d9b52fb3001b" name="Changes" comment="Add Organization Module">
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/controller/BranchController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/controller/PermissionController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/controller/RoleController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/enums/PermissionAction.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/handler/BranchHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/handler/PermissionHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/handler/RoleHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/model/searchcriteria/BranchSearchCriteria.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/model/searchcriteria/PermissionSearchCriteria.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/model/searchcriteria/RoleSearchCriteria.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/BranchCustomRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/BranchCustomRepositoryImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/PermissionCustomRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/PermissionCustomRepositoryImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/RoleCustomRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/RoleCustomRepositoryImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/BranchService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/BranchServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/PermissionService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/PermissionServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/RoleService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/RoleServiceImpl.java" afterDir="false" />
+    <list default="true" id="d292dd75-23d9-4dde-9b08-d9b52fb3001b" name="Changes" comment="Chnage Code">
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/controller/CustomerController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/handler/CustomerHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/model/searchcriteria/CustomerSearchCriteria.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/CustomerRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/CustomerCustomRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/CustomerCustomRepositoryImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/CustomerService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/CustomerServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/model/PermissionModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/model/PermissionModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/BranchRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/BranchRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/PermissionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/PermissionRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/RoleRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/RoleRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/transformer/BranchTransformer.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/transformer/BranchTransformer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Branch/Branch.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Branch/Branch.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Branch/BranchModalBox.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Branch/BranchModalBox.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Branch/BranchTable.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Branch/BranchTable.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Permission/Permission.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Permission/Permission.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Permission/PermissionModalBox.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Permission/PermissionModalBox.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Permission/PermissionTable.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Permission/PermissionTable.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/transformer/CustomerTransformer.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/transformer/CustomerTransformer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,9 +24,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Enum" />
         <option value="Interface" />
         <option value="Class" />
-        <option value="Enum" />
       </list>
     </option>
   </component>
@@ -209,7 +185,15 @@
       <option name="project" value="LOCAL" />
       <updated>1782398623774</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Chnage Code">
+      <option name="closed" value="true" />
+      <created>1783001971276</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1783001971277</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -221,6 +205,7 @@
     <MESSAGE value="Create All basic Structure" />
     <MESSAGE value="Simple changes" />
     <MESSAGE value="Add Organization Module" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add Organization Module" />
+    <MESSAGE value="Chnage Code" />
+    <option name="LAST_COMMIT_MESSAGE" value="Chnage Code" />
   </component>
 </project>
