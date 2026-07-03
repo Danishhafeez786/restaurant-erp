@@ -1,8 +1,9 @@
-package com.devmasters.restaurant_erp.service;
+package com.devmasters.restaurant_erp.service.impl;
 
 import com.devmasters.restaurant_erp.domain.Branch;
 import com.devmasters.restaurant_erp.model.searchcriteria.BranchSearchCriteria;
 import com.devmasters.restaurant_erp.repository.BranchRepository;
+import com.devmasters.restaurant_erp.service.BranchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -23,8 +23,7 @@ public class OrganizationCustomRepositoryImpl
     private final MongoTemplate mongoTemplate;
 
     @Override
-    public Page<Organization> search(
-            OrganizationSearchCriteria criteria,
+    public Page<Organization> search(OrganizationSearchCriteria criteria,
             Pageable pageable) {
 
         Query query = new Query();

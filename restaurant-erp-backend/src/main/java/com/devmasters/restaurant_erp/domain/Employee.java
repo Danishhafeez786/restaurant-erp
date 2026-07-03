@@ -1,5 +1,6 @@
 package com.devmasters.restaurant_erp.domain;
 
+import com.devmasters.restaurant_erp.enums.EmploymentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,8 +23,12 @@ public class Employee extends BaseEntity {
     private String cnic;
     private String phone;
     private String address;
+    private String emergencyContact;
     private LocalDate joiningDate;
     private Double salary;
+    private EmploymentStatus employmentStatus;
+    @DBRef
+    private Role role;
     @DBRef
     private Organization organization;
     @DBRef

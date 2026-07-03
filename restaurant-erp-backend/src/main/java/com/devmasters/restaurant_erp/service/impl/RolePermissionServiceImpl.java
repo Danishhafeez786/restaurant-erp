@@ -1,4 +1,4 @@
-package com.devmasters.restaurant_erp.service;
+package com.devmasters.restaurant_erp.service.impl;
 
 import com.devmasters.restaurant_erp.domain.Permission;
 import com.devmasters.restaurant_erp.domain.Role;
@@ -8,6 +8,7 @@ import com.devmasters.restaurant_erp.model.settings.*;
 import com.devmasters.restaurant_erp.repository.PermissionRepository;
 import com.devmasters.restaurant_erp.repository.RolePermissionRepository;
 import com.devmasters.restaurant_erp.repository.RoleRepository;
+import com.devmasters.restaurant_erp.service.RolePermissionService;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class RolePermissionServiceImpl implements RolePermissionService{
+public class RolePermissionServiceImpl implements RolePermissionService {
     private final RolePermissionRepository rolePermissionRepository;
     private final RoleRepository roleRepository;
     private final PermissionRepository permissionRepository;

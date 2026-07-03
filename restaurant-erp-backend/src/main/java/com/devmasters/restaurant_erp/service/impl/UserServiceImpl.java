@@ -1,4 +1,4 @@
-package com.devmasters.restaurant_erp.service;
+package com.devmasters.restaurant_erp.service.impl;
 
 import com.devmasters.restaurant_erp.domain.User;
 import com.devmasters.restaurant_erp.model.UserModel;
@@ -6,6 +6,7 @@ import com.devmasters.restaurant_erp.model.UserSearchRequest;
 import com.devmasters.restaurant_erp.model.pagination.PageInfo;
 import com.devmasters.restaurant_erp.model.pagination.PageResult;
 import com.devmasters.restaurant_erp.repository.UserRepository;
+import com.devmasters.restaurant_erp.service.UserService;
 import com.devmasters.restaurant_erp.transformer.UserTransformer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -30,8 +31,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(User entity) {
-        userRepository.save(entity);
-        return entity;
+        return userRepository.save(entity);
     }
 
     @Override

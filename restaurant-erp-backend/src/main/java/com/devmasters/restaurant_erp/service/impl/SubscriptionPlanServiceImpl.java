@@ -1,8 +1,9 @@
-package com.devmasters.restaurant_erp.service;
+package com.devmasters.restaurant_erp.service.impl;
 
 import com.devmasters.restaurant_erp.domain.SubscriptionPlan;
 import com.devmasters.restaurant_erp.model.searchcriteria.SubscriptionPlanSearchCriteria;
 import com.devmasters.restaurant_erp.repository.SubscriptionPlanRepository;
+import com.devmasters.restaurant_erp.service.SubscriptionPlanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +13,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class SubscriptionPlanServiceImpl implements SubscriptionPlanService{
+public class SubscriptionPlanServiceImpl implements SubscriptionPlanService {
 
     private final SubscriptionPlanRepository subscriptionPlanRepository;
 

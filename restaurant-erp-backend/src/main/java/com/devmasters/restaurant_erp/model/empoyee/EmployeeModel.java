@@ -1,5 +1,10 @@
-package com.devmasters.restaurant_erp.model;
+package com.devmasters.restaurant_erp.model.empoyee;
 
+import com.devmasters.restaurant_erp.enums.EmploymentStatus;
+import com.devmasters.restaurant_erp.model.BranchModel;
+import com.devmasters.restaurant_erp.model.OrganizationModel;
+import com.devmasters.restaurant_erp.model.RoleModel;
+import com.devmasters.restaurant_erp.model.UserModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,8 +25,11 @@ public class EmployeeModel {
     private String cnic;
     private String phone;
     private String address;
+    private String emergencyContact;
     private LocalDate joiningDate;
     private Double salary;
+    private EmploymentStatus employmentStatus;
+    private RoleModel roleModel;
     private OrganizationModel organizationModel;
     private BranchModel branchModel;
     private UserModel userModel;

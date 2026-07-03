@@ -8,8 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface OrganizationRepository
-        extends MongoRepository<Organization, UUID>,
+public interface OrganizationRepository extends MongoRepository<Organization, UUID>,
         OrganizationCustomRepository {
 
     boolean existsByEmailIgnoreCase(String email);

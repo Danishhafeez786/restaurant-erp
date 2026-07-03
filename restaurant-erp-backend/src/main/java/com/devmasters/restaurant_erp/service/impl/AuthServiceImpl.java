@@ -1,4 +1,4 @@
-package com.devmasters.restaurant_erp.service;
+package com.devmasters.restaurant_erp.service.impl;
 
 import com.devmasters.restaurant_erp.domain.User;
 import com.devmasters.restaurant_erp.model.LoginRequest;
@@ -6,6 +6,7 @@ import com.devmasters.restaurant_erp.domain.RefreshToken;
 import com.devmasters.restaurant_erp.repository.RefreshTokenRepository;
 import com.devmasters.restaurant_erp.repository.UserRepository;
 import com.devmasters.restaurant_erp.config.JwtTokenProvider;
+import com.devmasters.restaurant_erp.service.AuthService;
 import com.devmasters.restaurant_erp.transformer.UserTransformer;
 import com.devmasters.restaurant_erp.model.*;
 import lombok.RequiredArgsConstructor;
@@ -84,8 +85,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void logout(String email) {
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow();
+        User user = userRepository.findByEmail(email).orElseThrow();
 
         user.setTokenVersion(user.getTokenVersion() + 1);
 
@@ -93,13 +93,9 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public LoginResponse refreshToken(
-            RefreshTokenRequest request
-    ) {
+    public LoginResponse refreshToken(RefreshTokenRequest request) {
 
-        RefreshToken refreshToken =
-                refreshTokenRepository
-                        .findByToken(request.getRefreshToken())
+        RefreshToken refreshToken = refreshTokenRepository.findByToken(request.getRefreshToken())
                         .orElse(null);
 
         if (refreshToken == null) {
@@ -110,8 +106,7 @@ public class AuthServiceImpl implements AuthService {
                     .build();
         }
 
-        if (refreshToken.getExpiryDate()
-                .isBefore(LocalDateTime.now())) {
+        if (refreshToken.getExpiryDate().isBefore(LocalDateTime.now())) {
 
             refreshTokenRepository.delete(refreshToken);
 
@@ -121,12 +116,9 @@ public class AuthServiceImpl implements AuthService {
                     .build();
         }
 
-        User user = userRepository.findById(
-                refreshToken.getUserId()
-        ).orElseThrow();
+        User user = userRepository.findById(refreshToken.getUserId()).orElseThrow();
 
-        String newAccessToken =
-                jwtTokenProvider.generateAccessToken(user.getEmail(), user.getRole(), user.getTokenVersion());
+        String newAccessToken = jwtTokenProvider.generateAccessToken(user.getEmail(), user.getRole(), user.getTokenVersion());
 
         return LoginResponse.builder()
                 .accessToken(newAccessToken)

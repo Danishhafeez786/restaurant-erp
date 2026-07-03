@@ -1,9 +1,10 @@
-package com.devmasters.restaurant_erp.service;
+package com.devmasters.restaurant_erp.service.impl;
 
 import com.devmasters.restaurant_erp.domain.Permission;
 import com.devmasters.restaurant_erp.enums.PermissionAction;
 import com.devmasters.restaurant_erp.model.searchcriteria.PermissionSearchCriteria;
 import com.devmasters.restaurant_erp.repository.PermissionRepository;
+import com.devmasters.restaurant_erp.service.PermissionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

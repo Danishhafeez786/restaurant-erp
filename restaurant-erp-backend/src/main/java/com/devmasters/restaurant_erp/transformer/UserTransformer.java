@@ -13,6 +13,8 @@ import java.util.UUID;
 public class UserTransformer extends Transformer<User, UserModel>{
     private final PasswordEncoder passwordEncoder;
     private final RoleTransformer roleTransformer;
+    private final OrganizationTransformer organizationTransformer;
+    private final BranchTransformer branchTransformer;
 
     // ENTITY → RESPONSE
     public static LoginResponse toAuthResponse(User user, String accessToken,
@@ -40,6 +42,8 @@ public class UserTransformer extends Transformer<User, UserModel>{
                 .password(passwordEncoder.encode(model.getPassword()))
                 .phone(model.getPhone())
                 .referralCode(UUID.randomUUID().toString().substring(0, 8))
+                .organization(organizationTransformer.toEntity(model.getOrganizationModel()))
+                .branch(branchTransformer.toEntity(model.getBranchModel()))
                 .role(roleTransformer.toEntity(model.getRole()))
                 .isActive(model.getIsActive())
                 .build();
@@ -56,6 +60,8 @@ public class UserTransformer extends Transformer<User, UserModel>{
                 .phone(entity.getPhone())
                 .referralCode(entity.getReferralCode())
                 .role(roleTransformer.toModel(entity.getRole()))
+                .organizationModel(organizationTransformer.toModel(entity.getOrganization()))
+                .branchModel(branchTransformer.toModel(entity.getBranch()))
                 .isActive(entity.getIsActive())
                 .build();
     }

@@ -1,7 +1,7 @@
 package com.devmasters.restaurant_erp.transformer;
 
 import com.devmasters.restaurant_erp.domain.Employee;
-import com.devmasters.restaurant_erp.model.EmployeeModel;
+import com.devmasters.restaurant_erp.model.empoyee.EmployeeModel;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +13,7 @@ public class EmployeeTransformer extends Transformer<Employee, EmployeeModel>{
     private final OrganizationTransformer organizationTransformer;
     private final BranchTransformer branchTransformer;
     private final UserTransformer userTransformer;
+    private final RoleTransformer roleTransformer;
 
     @Override
     public Employee toEntity(EmployeeModel model) {
@@ -25,8 +26,11 @@ public class EmployeeTransformer extends Transformer<Employee, EmployeeModel>{
                 .cnic(model.getCnic())
                 .phone(model.getPhone())
                 .address(model.getAddress())
+                .emergencyContact(model.getEmergencyContact())
                 .joiningDate(model.getJoiningDate())
                 .salary(model.getSalary())
+                .employmentStatus(model.getEmploymentStatus())
+                .role(roleTransformer.toEntity(model.getRoleModel()))
                 .organization(organizationTransformer.toEntity(model.getOrganizationModel()))
                 .branch(branchTransformer.toEntity(model.getBranchModel()))
                 .user(userTransformer.toEntity(model.getUserModel()))
@@ -47,8 +51,11 @@ public class EmployeeTransformer extends Transformer<Employee, EmployeeModel>{
                 .cnic(entity.getCnic())
                 .phone(entity.getPhone())
                 .address(entity.getAddress())
+                .emergencyContact(entity.getEmergencyContact())
                 .joiningDate(entity.getJoiningDate())
                 .salary(entity.getSalary())
+                .employmentStatus(entity.getEmploymentStatus())
+                .roleModel(roleTransformer.toModel(entity.getRole()))
                 .organizationModel(organizationTransformer.toModel(entity.getOrganization()))
                 .branchModel(branchTransformer.toModel(entity.getBranch()))
                 .userModel(userTransformer.toModel(entity.getUser()))

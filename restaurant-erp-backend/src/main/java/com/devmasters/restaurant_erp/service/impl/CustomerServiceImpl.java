@@ -1,8 +1,9 @@
-package com.devmasters.restaurant_erp.service;
+package com.devmasters.restaurant_erp.service.impl;
 
 import com.devmasters.restaurant_erp.domain.Customer;
 import com.devmasters.restaurant_erp.model.searchcriteria.CustomerSearchCriteria;
 import com.devmasters.restaurant_erp.repository.CustomerRepository;
+import com.devmasters.restaurant_erp.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
