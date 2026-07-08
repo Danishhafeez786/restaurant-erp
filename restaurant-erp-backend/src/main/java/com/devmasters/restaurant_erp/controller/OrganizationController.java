@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -133,20 +134,19 @@ public class OrganizationController {
 
     private void sendEvent(String eventName, Object data) {
 
-        emitters.forEach(emitter -> {
+        List<SseEmitter> deadEmitters = new ArrayList<>();
+        for (SseEmitter emitter : emitters) {
             try {
-
                 emitter.send(
                         SseEmitter.event()
                                 .name(eventName)
                                 .data(data));
 
-            } catch (IOException e) {
-
-                emitter.completeWithError(e);
-                emitters.remove(emitter);
-
+            } catch (Exception ex) {
+                emitter.complete();
+                deadEmitters.add(emitter);
             }
-        });
+        }
+        emitters.removeAll(deadEmitters);
     }
 }

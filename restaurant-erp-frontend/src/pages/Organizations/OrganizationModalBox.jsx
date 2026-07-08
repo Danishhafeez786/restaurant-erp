@@ -12,7 +12,18 @@ export default function OrganizationModalBox({
   const isEdit = mode === "edit";
   const isCreate = mode === "create";
 
+  const fileToDataUrl = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(new Error("Failed to read image"));
+
+      reader.readAsDataURL(file);
+    });
+
   const [subscriptionPlans, setSubscriptionPlans] = useState([]);
+  const [saveError, setSaveError] = useState("");
 
   const [formData, setFormData] = useState({
     organizationName: "",
@@ -135,31 +146,42 @@ export default function OrganizationModalBox({
               type="file"
               accept="image/*"
               disabled={isView}
-              onChange={(e) => {
-                const file = e.target.files[0];
+              className="w-full border rounded-lg px-4 py-3"
+              onChange={async (e) => {
+                setSaveError("");
 
-                if (file) {
-                  setFormData({
-                    ...formData,
-                    logoUrl: file
-                  });
+                const file = e.target.files?.[0];
+                if (!file) return;
+
+                if (file.size > 50 * 1024) {
+                  setSaveError("Maximum file size is 50 KB");
+                  return;
+                }
+
+                try {
+                  const dataUrl = await fileToDataUrl(file);
+
+                  setFormData((prev) => ({
+                    ...prev,
+                    logoUrl: dataUrl,
+                  }));
+                } catch (err) {
+                  setSaveError(err?.message || "Failed to read image");
                 }
               }}
-              className="w-full border rounded-lg px-4 py-3"
             />
+
+            {saveError && (
+              <p className="mt-2 text-sm text-red-600">{saveError}</p>
+            )}
 
             {formData.logoUrl && (
               <img
-                src={
-                  typeof formData.logoUrl === "string"
-                    ? formData.logoUrl
-                    : URL.createObjectURL(formData.logoUrl)
-                }
+                src={formData.logoUrl}
                 alt="Logo Preview"
                 className="mt-3 w-24 h-24 object-cover rounded-lg border"
               />
             )}
-
           </div>
 
           <div>
