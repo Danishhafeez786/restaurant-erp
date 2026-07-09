@@ -7,6 +7,8 @@ export default function OrganizationTable() {
   const [organizations, setOrganizations] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const user = JSON.parse(localStorage.getItem("user"));
+  
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState("create");
 
@@ -120,7 +122,7 @@ export default function OrganizationTable() {
       <div className="flex justify-between items-center mb-5">
         <h2 className="text-2xl font-bold">Organizations</h2>
 
-        <button
+        {user?.permissions?.includes("ORGANIZATION_CREATE") && <button
           onClick={() => {
             setModalMode("create");
             setSelectedOrganization(null);
@@ -129,7 +131,7 @@ export default function OrganizationTable() {
           className="px-6 py-2 bg-[#0d4039] text-white rounded-lg"
         >
           + Add Organization
-        </button>
+        </button>}
       </div>
 
       {/* FILTERS */}
@@ -346,7 +348,7 @@ export default function OrganizationTable() {
                 </td>
 
                 <td>
-                  <button
+                  {user?.permissions?.includes("ORGANIZATION_VIEW") && <button
                     onClick={() => {
                       setModalMode("view");
                       setSelectedOrganization(org);
@@ -355,31 +357,28 @@ export default function OrganizationTable() {
                     className="text-green-600 mr-3"
                   >
                     View
-                  </button>
+                  </button>}
+                  {user?.permissions?.includes("ORGANIZATION_UPDATE") && <button
+                    onClick={() => {
+                      setModalMode("edit");
+                      setSelectedOrganization(org);
+                      setShowModal(true);
+                    }}
+                    className="text-blue-600 mr-3"
+                  >
+                  Edit
+                  </button>}
 
-                  {org.isActive && (
-                    <>
-                      <button
-                        onClick={() => {
-                          setModalMode("edit");
-                          setSelectedOrganization(org);
-                          setShowModal(true);
-                        }}
-                        className="text-blue-600 mr-3"
-                      >
-                        Edit
-                      </button>
-
+                  {org.isActive && user?.permissions?.includes("ORGANIZATION_DELETE")(
                       <button
                         onClick={() => handleDelete(org.id)}
                         className="text-red-600"
                       >
                         Delete
                       </button>
-                    </>
                   )}
 
-                  {!org.isActive && (
+                  {!org.isActive && user?.permissions?.includes("ORGANIZATION_REACTIVATE") && (
                     <button
                       onClick={() => handleRestore(org.id)}
                       className="text-orange-600"
@@ -433,7 +432,7 @@ export default function OrganizationTable() {
             </div>
 
             <div className="flex gap-2 mt-4">
-              <button
+              {user?.permissions?.includes("ORGANIZATION_VIEW") && <button
                 className="flex-1 bg-green-500 text-white py-2 rounded-lg"
                 onClick={() => {
                   setModalMode("view");
@@ -442,31 +441,29 @@ export default function OrganizationTable() {
                 }}
               >
                 View
-              </button>
+              </button>}
+              
+              {user?.permissions?.includes("ORGANIZATION_UPDATE") && <button
+                className="flex-1 bg-blue-500 text-white py-2 rounded-lg"
+                onClick={() => {
+                  setModalMode("edit");
+                  setSelectedOrganization(organization);
+                  setShowModal(true);
+                }}
+              >
+                Edit
+              </button>}
 
-              {organization.isActive && (
-                <>
-                  <button
-                    className="flex-1 bg-blue-500 text-white py-2 rounded-lg"
-                    onClick={() => {
-                      setModalMode("edit");
-                      setSelectedOrganization(organization);
-                      setShowModal(true);
-                    }}
-                  >
-                    Edit
-                  </button>
-
-                  <button
-                    className="flex-1 bg-red-500 text-white py-2 rounded-lg"
-                    onClick={() => handleDelete(organization.id)}
-                  >
-                    Delete
-                  </button>
-                </>
+              {organization.isActive && user?.permissions?.includes("ORGANIZATION_DELETE") (
+                <button
+                  className="flex-1 bg-red-500 text-white py-2 rounded-lg"
+                  onClick={() => handleDelete(organization.id)}
+                >
+                  Delete
+                </button>
               )}
 
-              {!organization.isActive && (
+              {!organization.isActive && user?.permissions?.includes("ORGANIZATION_REACTIVATE")(
                 <button
                   className="flex-1 bg-orange-500 text-white py-2 rounded-lg"
                   onClick={() => handleRestore(organization.id)}

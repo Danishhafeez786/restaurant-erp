@@ -1,9 +1,11 @@
 package com.devmasters.restaurant_erp.service.impl;
 
 import com.devmasters.restaurant_erp.domain.Branch;
+import com.devmasters.restaurant_erp.model.OrganizationModel;
 import com.devmasters.restaurant_erp.model.searchcriteria.BranchSearchCriteria;
 import com.devmasters.restaurant_erp.repository.BranchRepository;
 import com.devmasters.restaurant_erp.service.BranchService;
+import com.devmasters.restaurant_erp.transformer.OrganizationTransformer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +18,7 @@ import java.util.UUID;
 public class BranchServiceImpl implements BranchService {
 
     private final BranchRepository branchRepository;
+    private final OrganizationTransformer organizationTransformer;
 
     @Override
     public boolean existsByBranchNameIgnoreCase(String branchName) {
@@ -88,5 +91,10 @@ public class BranchServiceImpl implements BranchService {
         branch.setIsActive(true);
 
         return branchRepository.save(branch);
+    }
+
+    @Override
+    public String createBranchCode(OrganizationModel organizationModel) {
+        return String.valueOf(branchRepository.countByOrganization(organizationTransformer.toEntity(organizationModel)) + 1);
     }
 }

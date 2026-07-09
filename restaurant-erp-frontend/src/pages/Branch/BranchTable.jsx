@@ -11,6 +11,8 @@ export default function BranchTable() {
   const [modalMode, setModalMode] = useState("create");
   const [selectedBranch, setSelectedBranch] = useState(null);
 
+  const user = JSON.parse(localStorage.getItem("user"));
+
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
@@ -161,18 +163,16 @@ export default function BranchTable() {
 
         </h2>
 
-        <button
+        {user.permissions.includes("BRANCH_CREATE") && <button
           onClick={() => {
-
             setModalMode("create");
             setSelectedBranch(null);
             setShowModal(true);
-
           }}
           className="bg-[#0d4039] text-white px-6 py-2 rounded-lg"
         >
           + Add Branch
-        </button>
+        </button>}
 
       </div>
       {/* Filters */}
@@ -380,8 +380,9 @@ export default function BranchTable() {
 
                   <td className="space-x-3">
 
-                    <button
+                    {user.permissions.includes("BRANCH_VIEW") &&<button
                       className="text-green-600"
+                      disabled={!user.permissions.includes("BRANCH_VIEW")}
                       onClick={() => {
                         setSelectedBranch(branch);
                         setModalMode("view");
@@ -389,9 +390,9 @@ export default function BranchTable() {
                       }}
                     >
                       View
-                    </button>
+                    </button>}
 
-                    <button
+                    {user.permissions.includes("BRANCH_UPDATE") && <button
                       className="text-blue-600"
                       onClick={() => {
                         setSelectedBranch(branch);
@@ -400,22 +401,26 @@ export default function BranchTable() {
                       }}
                     >
                       Edit
-                    </button>
+                    </button>}
 
                     {branch.isActive ? (
-                      <button
-                        className="text-red-600"
-                        onClick={() => handleDelete(branch.id)}
-                      >
-                        Delete
-                      </button>
+                      user?.permissions?.includes("BRANCH_DELETE") && (
+                        <button
+                          className="text-red-600"
+                          onClick={() => handleDelete(branch.id)}
+                        >
+                          Delete
+                        </button>
+                      )
                     ) : (
-                      <button
-                        className="text-green-600"
-                        onClick={() => handleRestore(branch.id)}
-                      >
-                        Restore
-                      </button>
+                      user?.permissions?.includes("BRANCH_REACTIVATE") && (
+                        <button
+                          className="text-green-600"
+                          onClick={() => handleRestore(branch.id)}
+                        >
+                          Restore
+                        </button>
+                      )
                     )}
 
                   </td>
@@ -480,7 +485,7 @@ export default function BranchTable() {
               </div>
 
               <div className="flex gap-2 mt-4">
-                <button
+                {user.permissions.includes("BRANCH_VIEW") &&<button
                   className="flex-1 bg-green-500 text-white py-2 rounded-lg"
                   onClick={() => {
                     setSelectedBranch(branch);
@@ -489,31 +494,31 @@ export default function BranchTable() {
                   }}
                 >
                   View
-                </button>
+                </button>}
 
+                {user.permissions.includes("BRANCH_UPDATE") && <button
+                  className="flex-1 bg-blue-500 text-white py-2 rounded-lg"
+                  onClick={() => {
+                    setSelectedBranch(branch);
+                    setModalMode("edit");
+                    setShowModal(true);
+                  }}
+                >
+                  Edit
+                </button>}
                 {branch.isActive ? (
-                  <>
-                    <button
-                      className="flex-1 bg-blue-500 text-white py-2 rounded-lg"
-                      onClick={() => {
-                        setSelectedBranch(branch);
-                        setModalMode("edit");
-                        setShowModal(true);
-                      }}
-                    >
-                      Edit
-                    </button>
-
+                  user.permissions.includes("BRANCH_DELETE") &&
                     <button
                       className="flex-1 bg-red-500 text-white py-2 rounded-lg"
                       onClick={() => handleDelete(branch.id)}
                     >
                       Delete
                     </button>
-                  </>
                 ) : (
+                  user.permissions.includes("BRANCH_REACTIVATE") &&
                   <button
                     className="flex-1 bg-orange-500 text-white py-2 rounded-lg"
+                    disabled={!user?.permissions?.includes("BRANCH_REACTIVATE")}
                     onClick={() => handleRestore(branch.id)}
                   >
                     Restore
@@ -544,8 +549,8 @@ export default function BranchTable() {
               key={index}
               onClick={() => setCurrentPage(index)}
               className={`px-4 py-2 rounded-lg ${currentPage === index
-                  ? "bg-[#0d4039] text-white"
-                  : "border hover:bg-gray-100"
+                ? "bg-[#0d4039] text-white"
+                : "border hover:bg-gray-100"
                 }`}
             >
               {index + 1}

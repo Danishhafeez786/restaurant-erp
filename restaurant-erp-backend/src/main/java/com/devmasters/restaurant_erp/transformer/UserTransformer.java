@@ -1,10 +1,14 @@
 package com.devmasters.restaurant_erp.transformer;
 
+import com.devmasters.restaurant_erp.domain.RolePermission;
 import com.devmasters.restaurant_erp.domain.User;
 import com.devmasters.restaurant_erp.model.*;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -17,7 +21,7 @@ public class UserTransformer extends Transformer<User, UserModel>{
     private final BranchTransformer branchTransformer;
 
     // ENTITY → RESPONSE
-    public static LoginResponse toAuthResponse(User user, String accessToken,
+    public static LoginResponse toAuthResponse(User user, List<RolePermission> rolePermissions, String accessToken,
                                                String refreshToken, String message) {
         return LoginResponse.builder()
                 .accessToken(accessToken)
@@ -25,10 +29,17 @@ public class UserTransformer extends Transformer<User, UserModel>{
                 .email(user.getEmail())
                 .fullName(user.getFullName())
                 .role(user.getRole().getRoleName())
+                .permissions(createPermissions(rolePermissions))
                 .referralCode(user.getReferralCode())
                 .message(message)
                 .success(true)
                 .build();
+    }
+
+    private static List<String> createPermissions(List<RolePermission> rolePermissions) {
+        return rolePermissions.stream()
+            .map(rolePermission -> rolePermission.getPermission().getCode())
+            .toList();
     }
 
     @Override

@@ -96,7 +96,6 @@ export default function Settings() {
 
         const response = await matrixService.getMatrix();
 
-        // axiosConfig already returns response.data
         const data = response.data || response;
 
         setMatrix(data);
@@ -117,27 +116,22 @@ export default function Settings() {
         // Convert Matrix Assignments into old RolePermission structure
         const rolePermissionList = (data.assignments || []).map(assign => {
 
-            const role =
-                data.roles.find(r => r.id === assign.roleId);
+            const role = data.roles.find(r => r.id === assign.roleId);
 
             let permission = null;
 
             let moduleName = "";
 
             for (const module of data.modules || []) {
-
                 const p = (module.permissions || []).find(
                     x => x.id === assign.permissionId
                 );
 
                 if (p) {
-
                     permission = p;
                     moduleName = module.module;
                     break;
-
                 }
-
             }
 
             return {
@@ -206,10 +200,7 @@ export default function Settings() {
                 }
 
                 // Module Filter
-                if (
-                    filters.module &&
-                    module.module !== filters.module
-                ) {
+                if (filters.module && module.module !== filters.module) {
                     return false;
                 }
 
@@ -221,18 +212,11 @@ export default function Settings() {
                     );
 
                     const exists = assignments.some(a => {
-
-                        if (
-                            filters.role &&
-                            a.roleId !== filters.role
-                        ) {
+                        if (filters.role && a.roleId !== filters.role) {
                             return false;
                         }
 
-                        if (
-                            filters.status !== "" &&
-                            a.isActive !== (filters.status === "true")
-                        ) {
+                        if (filters.status !== "" && a.isActive !== (filters.status === "true")) {
                             return false;
                         }
 
@@ -243,11 +227,9 @@ export default function Settings() {
                     if (!exists) {
                         return false;
                     }
-
                 }
 
                 return true;
-
             });
 
             return {

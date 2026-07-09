@@ -143,7 +143,7 @@ export default function PermissionModalBox({
               value={formData.module}
               onChange={handleChange}
               disabled={isView}
-              placeholder="Enter Module Name"
+              placeholder="e.g. User Management"
               className="w-full border rounded-lg px-4 py-3"
             />
           </div>

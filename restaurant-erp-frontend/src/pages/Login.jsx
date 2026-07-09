@@ -62,6 +62,7 @@ const Login = () => {
           email: response.data.email,
           fullName: response.data.fullName,
           role: response.data.role,
+          permissions : response.data.permissions
         })
       );
       // REDIRECT TO DASHBOARD

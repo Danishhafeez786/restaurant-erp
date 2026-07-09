@@ -156,7 +156,7 @@ export default function BranchModalBox({
               name="branchCode"
               value={formData.branchCode}
               onChange={handleChange}
-              disabled={isView}
+              disabled={true}
               className="w-full rounded-lg border px-4 py-3"
               placeholder="Enter Branch Code"
             />

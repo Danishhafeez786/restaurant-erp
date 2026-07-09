@@ -1,9 +1,11 @@
 package com.devmasters.restaurant_erp.service.impl;
 
+import com.devmasters.restaurant_erp.domain.RolePermission;
 import com.devmasters.restaurant_erp.domain.User;
 import com.devmasters.restaurant_erp.model.LoginRequest;
 import com.devmasters.restaurant_erp.domain.RefreshToken;
 import com.devmasters.restaurant_erp.repository.RefreshTokenRepository;
+import com.devmasters.restaurant_erp.repository.RolePermissionRepository;
 import com.devmasters.restaurant_erp.repository.UserRepository;
 import com.devmasters.restaurant_erp.config.JwtTokenProvider;
 import com.devmasters.restaurant_erp.service.AuthService;
@@ -15,18 +17,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
-
     private final UserRepository userRepository;
-
+    private final RolePermissionRepository rolePermissionRepository;
     private final PasswordEncoder passwordEncoder;
-
     private final JwtTokenProvider jwtTokenProvider;
-
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserTransformer userTransformer;
 
@@ -169,8 +169,10 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private LoginResponse buildSuccessResponse(User user, String accessToken, String refreshToken) {
+        List<RolePermission> rolePermissions = rolePermissionRepository.findByRoleAndIsActiveTrue(user.getRole());
         return UserTransformer.toAuthResponse(
                 user,
+                rolePermissions,
                 accessToken,
                 refreshToken,
                 "Login successful"

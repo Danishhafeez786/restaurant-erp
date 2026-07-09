@@ -1,6 +1,7 @@
 package com.devmasters.restaurant_erp.service;
 
 import com.devmasters.restaurant_erp.domain.Branch;
+import com.devmasters.restaurant_erp.model.OrganizationModel;
 import com.devmasters.restaurant_erp.model.searchcriteria.BranchSearchCriteria;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,10 +16,7 @@ public interface BranchService {
 
     Branch create(Branch entity);
 
-    Page<Branch> search(
-            BranchSearchCriteria criteria,
-            Pageable pageable
-    );
+    Page<Branch> search(BranchSearchCriteria criteria,Pageable pageable);
 
     Branch findById(UUID id);
 
@@ -27,4 +25,6 @@ public interface BranchService {
     Branch delete(UUID id);
 
     Branch restore(UUID id);
+
+    String createBranchCode(OrganizationModel organizationModel);
 }
