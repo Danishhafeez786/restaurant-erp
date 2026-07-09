@@ -369,7 +369,7 @@ export default function OrganizationTable() {
                   Edit
                   </button>}
 
-                  {org.isActive && user?.permissions?.includes("ORGANIZATION_DELETE")(
+                  {org.isActive && user?.permissions?.includes("ORGANIZATION_DELETE") && (
                       <button
                         onClick={() => handleDelete(org.id)}
                         className="text-red-600"
@@ -454,7 +454,7 @@ export default function OrganizationTable() {
                 Edit
               </button>}
 
-              {organization.isActive && user?.permissions?.includes("ORGANIZATION_DELETE") (
+              {organization.isActive && user.permissions.includes("ORGANIZATION_DELETE") &&(
                 <button
                   className="flex-1 bg-red-500 text-white py-2 rounded-lg"
                   onClick={() => handleDelete(organization.id)}
@@ -463,7 +463,7 @@ export default function OrganizationTable() {
                 </button>
               )}
 
-              {!organization.isActive && user?.permissions?.includes("ORGANIZATION_REACTIVATE")(
+              {!organization.isActive && user?.permissions?.includes("ORGANIZATION_REACTIVATE") && (
                 <button
                   className="flex-1 bg-orange-500 text-white py-2 rounded-lg"
                   onClick={() => handleRestore(organization.id)}
