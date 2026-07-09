@@ -474,7 +474,7 @@ export default function EmployeeTable() {
 
                                         <td className="py-3 space-x-3">
 
-                                            {user?.permissions?.includes("EMPLOYEE_VIEW") && (
+                                            {canView && (
                                                 <button
                                                     className="text-green-600"
                                                     onClick={() => {
@@ -487,7 +487,7 @@ export default function EmployeeTable() {
                                                 </button>
                                             )}
 
-                                            {user?.permissions?.includes("EMPLOYEE_UPDATE") && (
+                                            {canUpdate && (
                                                 <button
                                                     className="text-blue-600"
                                                     onClick={() => {
@@ -501,7 +501,7 @@ export default function EmployeeTable() {
                                             )}
 
                                             {employee.isActive &&
-                                                user?.permissions?.includes("EMPLOYEE_DELETE") && (
+                                                canDelete && (
                                                     <button
                                                         className="text-red-600"
                                                         onClick={() => handleDelete(employee.id)}
@@ -511,7 +511,7 @@ export default function EmployeeTable() {
                                                 )}
 
                                             {!employee.isActive &&
-                                                user?.permissions?.includes("EMPLOYEE_REACTIVATE") && (
+                                                canRestore && (
                                                     <button
                                                         className="text-orange-600"
                                                         onClick={() => handleRestore(employee.id)}
@@ -581,7 +581,7 @@ export default function EmployeeTable() {
 
                         <div className="flex gap-2 mt-4">
 
-                            {user?.permissions?.includes("EMPLOYEE_VIEW") && (
+                            {canView && (
                                 <button
                                     className="flex-1 bg-green-500 text-white py-2 rounded-lg"
                                     onClick={() => {
@@ -594,7 +594,7 @@ export default function EmployeeTable() {
                                 </button>
                             )}
 
-                            {user?.permissions?.includes("EMPLOYEE_UPDATE") && (
+                            {canUpdate && (
                                 <button
                                     className="flex-1 bg-blue-500 text-white py-2 rounded-lg"
                                     onClick={() => {
@@ -608,7 +608,7 @@ export default function EmployeeTable() {
                             )}
 
                             {employee.isActive &&
-                                user?.permissions?.includes("EMPLOYEE_DELETE") && (
+                                canDelete && (
                                     <button
                                         className="flex-1 bg-red-500 text-white py-2 rounded-lg"
                                         onClick={() => handleDelete(employee.id)}
@@ -618,7 +618,7 @@ export default function EmployeeTable() {
                                 )}
 
                             {!employee.isActive &&
-                                user?.permissions?.includes("EMPLOYEE_REACTIVATE") && (
+                                canRestore && (
                                     <button
                                         className="flex-1 bg-orange-500 text-white py-2 rounded-lg"
                                         onClick={() => handleRestore(employee.id)}
