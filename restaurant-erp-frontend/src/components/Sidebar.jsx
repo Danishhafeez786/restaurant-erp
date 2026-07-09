@@ -93,7 +93,7 @@ const Sidebar = () => {
         },
         {
           title: "Employee List",
-          path: "/employees",
+          path: "/employee",
           icon: <ClipboardDocumentListIcon className="w-5 h-5" />,
         },
       ],

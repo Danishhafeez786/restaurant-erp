@@ -7,7 +7,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import CreateEmployee from './pages/CreateEmployee';
 import Dashboard from './pages/Dashboard';
-import Employees from './pages/employees/Employees';
+import Employee from './pages/employees/Employee';
 import SubscriptionPlans from './pages/SubscriptionPlans/SubscriptionPlans';
 import Organization from "./pages/Organizations/Organizations";
 import Branch from "./pages/Branch/Branch";
@@ -33,7 +33,7 @@ function App() {
           <Route path="/permission"element={ <ProtectedRoute> <Permission /> </ProtectedRoute> }/>
           <Route path="/" element={<Navigate to="/dashboard" />} />
           <Route path="*" element={<Navigate to="/dashboard" />} />
-          <Route path="/employees" element={ <ProtectedRoute> <Employees /> </ProtectedRoute> } />
+          <Route path="/employee" element={ <ProtectedRoute> <Employee /> </ProtectedRoute> } />
         </Routes>
       </AuthProvider>
       {/* ✅ Global Toast Container (always available) */}
