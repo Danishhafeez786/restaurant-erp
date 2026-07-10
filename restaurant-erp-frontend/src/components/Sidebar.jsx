@@ -122,6 +122,28 @@ const Sidebar = () => {
     },
 
     {
+      title: "Restaurant Management",
+      icon: <TableCellsIcon className="w-5 h-5" />,
+      children: [
+        {
+          title: "Category",
+          path: "/category-management",
+          icon: <Squares2X2Icon className="w-5 h-5" />,
+        },
+        {
+          title: "Floor",
+          path: "/floor-management",
+          icon: <ClipboardDocumentListIcon className="w-5 h-5" />,
+        },
+        {
+          title: "Table",
+          path: "/table-management",
+          icon: <Squares2X2Icon className="w-5 h-5" />,
+        },
+      ],
+    },
+
+    {
       title: "Restaurant",
       icon: <TableCellsIcon className="w-5 h-5" />,
       children: [
