@@ -30,6 +30,18 @@ export default function RoleTable() {
 
   });
 
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    const canCreate = user?.permissions?.includes("ROLE_CREATE");
+
+    const canView = user?.permissions?.includes("ROLE_VIEW");
+
+    const canUpdate = user?.permissions?.includes("ROLE_UPDATE");
+
+    const canDelete = user?.permissions?.includes("ROLE_DELETE");
+
+    const canRestore = user?.permissions?.includes("ROLE_REACTIVATE");
+
   // ===== LOAD DATA =====
 
   const loadRoles = async () => {
@@ -288,16 +300,21 @@ export default function RoleTable() {
                   </span>
                 </td>
                 <td className="py-3">
+
+                  {canView && (
                   <button
                     onClick={() => {
                       setModalMode("view");
                       setSelectedRole(role);
                       setShowModal(true);
-                    }}
+                  }}
                     className="text-green-600 mr-3"
                   >
                     View
                   </button>
+                  )}
+
+                  {canUpdate && (
                   <button
                     onClick={() => {
                       setModalMode("edit");
@@ -308,12 +325,27 @@ export default function RoleTable() {
                   >
                     Edit
                   </button>
+                    )}
+
+                  {role.isActive &&
+                    canDelete && (
                   <button
                     onClick={() => handleDelete(role.id)}
                     className="text-red-600"
                   >
                     Delete
                   </button>
+                    )}
+
+                  {!role.isActive &&
+                    canRestore && (
+                  <button
+                    className="text-orange-600"
+                    onClick={() => handleRestore(role.id)}
+                  >
+                    Restore
+                  </button>
+                    )}
                 </td>
               </tr>
             ))}
@@ -356,46 +388,54 @@ export default function RoleTable() {
             </div>
 
             <div className="flex gap-2 mt-4">
-              <button
-                className="flex-1 bg-green-500 text-white py-2 rounded-lg"
-                onClick={() => {
-                  setModalMode("view");
-                  setSelectedRole(role);
-                  setShowModal(true);
-                }}
-              >
-                View
-              </button>
 
-              {role.isActive ? (
-                <>
-                  <button
-                    className="flex-1 bg-blue-500 text-white py-2 rounded-lg"
-                    onClick={() => {
-                      setModalMode("edit");
-                      setSelectedRole(role);
-                      setShowModal(true);
-                    }}
-                  >
-                    Edit
-                  </button>
+                            {canView && (
+                                <button
+                                    className="flex-1 bg-green-500 text-white py-2 rounded-lg"
+                                    onClick={() => {
+                                        setModalMode("view");
+                                        setSelectedRole(role);
+                                        setShowModal(true);
+                                    }}
+                                >
+                                    View
+                                </button>
+                            )}
 
-                  <button
-                    className="flex-1 bg-red-500 text-white py-2 rounded-lg"
-                    onClick={() => handleDelete(role.id)}
-                  >
-                    Delete
-                  </button>
-                </>
-              ) : (
-                <button
-                  className="flex-1 bg-orange-500 text-white py-2 rounded-lg"
-                  onClick={() => handleRestore(role.id)}
-                >
-                  Restore
-                </button>
-              )}
-            </div>
+                            {canUpdate && (
+                                <button
+                                    className="flex-1 bg-blue-500 text-white py-2 rounded-lg"
+                                    onClick={() => {
+                                        setModalMode("edit");
+                                        setSelectedRole(role);
+                                        setShowModal(true);
+                                    }}
+                                >
+                                    Edit
+                                </button>
+                            )}
+
+                            {role.isActive &&
+                                canDelete && (
+                                    <button
+                                        className="flex-1 bg-red-500 text-white py-2 rounded-lg"
+                                        onClick={() => handleDelete(role.id)}
+                                    >
+                                        Delete
+                                    </button>
+                                )}
+
+                            {!role.isActive &&
+                                canRestore && (
+                                    <button
+                                        className="flex-1 bg-orange-500 text-white py-2 rounded-lg"
+                                        onClick={() => handleRestore(role.id)}
+                                    >
+                                        Restore
+                                    </button>
+                                )}
+
+                        </div>
           </div>
         ))}
       </div>

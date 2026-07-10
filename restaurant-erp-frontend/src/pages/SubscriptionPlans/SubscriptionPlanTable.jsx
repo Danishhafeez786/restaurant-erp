@@ -34,6 +34,18 @@ export default function SubscriptionPlanTable() {
     maxUsersLimit: "",
   });
 
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    const canCreate = user?.permissions?.includes("PLAN_CREATE");
+
+    const canView = user?.permissions?.includes("PLAN_VIEW");
+
+    const canUpdate = user?.permissions?.includes("PLAN_UPDATE");
+
+    const canDelete = user?.permissions?.includes("PLAN_DELETE");
+
+    const canRestore = user?.permissions?.includes("PLAN_REACTIVATE");
+
   useEffect(() => {
     loadPlans();
   }, [currentPage, pageSize, sortBy, direction]);
@@ -357,48 +369,53 @@ export default function SubscriptionPlanTable() {
                   </span>
                 </td>
 
-                <td>
+                <td className="py-3">
+
+                  {canView && (
                   <button
                     onClick={() => {
                       setModalMode("view");
                       setSelectedPlan(plan);
                       setShowModal(true);
-                    }}
+                  }}
                     className="text-green-600 mr-3"
                   >
                     View
                   </button>
-
-                  {plan.isActive && (
-                    <>
-                      <button
-                        onClick={() => {
-                          setModalMode("edit");
-                          setSelectedPlan(plan);
-                          setShowModal(true);
-                        }}
-                        className="text-blue-600 mr-3"
-                      >
-                        Edit
-                      </button>
-
-                      <button
-                        onClick={() => handleDelete(plan.id)}
-                        className="text-red-600"
-                      >
-                        Delete
-                      </button>
-                    </>
                   )}
 
-                  {!plan.isActive && (
-                    <button
-                      onClick={() => handleRestore(plan.id)}
-                      className="text-orange-600"
-                    >
-                      Restore
-                    </button>
-                  )}
+                  {canUpdate && (
+                  <button
+                    onClick={() => {
+                      setModalMode("edit");
+                      setSelectedPlan(plan);
+                      setShowModal(true);
+                    }}
+                    className="text-blue-600 mr-3"
+                  >
+                    Edit
+                  </button>
+                    )}
+
+                  {plan.isActive &&
+                    canDelete && (
+                  <button
+                    onClick={() => handleDelete(plan.id)}
+                    className="text-red-600"
+                  >
+                    Delete
+                  </button>
+                    )}
+
+                  {!plan.isActive &&
+                    canRestore && (
+                  <button
+                    className="text-orange-600"
+                    onClick={() => handleRestore(plan.id)}
+                  >
+                    Restore
+                  </button>
+                    )}
                 </td>
               </tr>
             ))}
@@ -437,48 +454,55 @@ export default function SubscriptionPlanTable() {
               </p>
             </div>
 
-            <div className="flex gap-3 mt-4">
-              <button
-                className="flex-1 bg-green-500 text-white py-2 rounded-xl"
-                onClick={() => {
-                  setModalMode("view");
-                  setSelectedPlan(plan);
-                  setShowModal(true);
-                }}
-              >
-                View
-              </button>
+            <div className="flex gap-2 mt-4">
 
-              {plan.isActive && (
-                <>
-                  <button
-                    className="flex-1 bg-blue-500 text-white py-2 rounded-xl"
-                    onClick={() => {
-                      setModalMode("edit");
-                      setSelectedPlan(plan);
-                      setShowModal(true);
-                    }}
-                  >
-                    Edit
-                  </button>
+                            {canView && (
+                                <button
+                                    className="flex-1 bg-green-500 text-white py-2 rounded-lg"
+                                    onClick={() => {
+                                        setModalMode("view");
+                                        setSelectedPlan(plan);
+                                        setShowModal(true);
+                                    }}
+                                >
+                                    View
+                                </button>
+                            )}
 
-                  <button
-                    className="flex-1 bg-red-500 text-white py-2 rounded-xl"
-                    onClick={() => handleDelete(plan.id)}
-                  >
-                    Delete
-                  </button>
-                </>
-              )}
-              {!plan.isActive && (
-                <button
-                  className="flex-1 bg-orange-500 text-white py-2 rounded-xl"
-                  onClick={() => handleRestore(plan.id)}
-                >
-                  Restore
-                </button>
-              )}
-            </div>
+                            {canUpdate && (
+                                <button
+                                    className="flex-1 bg-blue-500 text-white py-2 rounded-lg"
+                                    onClick={() => {
+                                        setModalMode("edit");
+                                        setSelectedPlan(plan);
+                                        setShowModal(true);
+                                    }}
+                                >
+                                    Edit
+                                </button>
+                            )}
+
+                            {plan.isActive &&
+                                canDelete && (
+                                    <button
+                                        className="flex-1 bg-red-500 text-white py-2 rounded-lg"
+                                        onClick={() => handleDelete(plan.id)}
+                                    >
+                                        Delete
+                                    </button>
+                                )}
+
+                            {!plan.isActive &&
+                                canRestore && (
+                                    <button
+                                        className="flex-1 bg-orange-500 text-white py-2 rounded-lg"
+                                        onClick={() => handleRestore(plan.id)}
+                                    >
+                                        Restore
+                                    </button>
+                                )}
+
+                        </div>
           </div>
         ))}
       </div>
