@@ -1,7 +1,7 @@
 package com.devmasters.restaurant_erp.transformer;
 
-import com.devmasters.restaurant_erp.domain.RestaurantTable;
-import com.devmasters.restaurant_erp.model.RestaurantTableModel;
+import com.devmasters.restaurant_erp.domain.Floor;
+import com.devmasters.restaurant_erp.model.FloorModel;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -9,20 +9,23 @@ import java.util.UUID;
 
 @Component
 @AllArgsConstructor
-public class RestaurantTableTransformer extends Transformer<RestaurantTable, RestaurantTableModel>{
-    private final BranchTransformer branchTransformer;
+public class FloorTransformer
+        extends Transformer<Floor, FloorModel> {
+
     private final OrganizationTransformer organizationTransformer;
+    private final BranchTransformer branchTransformer;
 
     @Override
-    public RestaurantTable toEntity(RestaurantTableModel model) {
-        if(model == null)
+    public Floor toEntity(FloorModel model) {
+
+        if (model == null)
             return null;
-        return RestaurantTable.builder()
+
+        return Floor.builder()
                 .id(model.getId() != null ? model.getId() : UUID.randomUUID())
-                .tableNumber(model.getTableNumber())
-                .tableName(model.getTableName())
-                .capacity(model.getCapacity())
-                .qrCode(model.getQrToken())
+                .floorName(model.getFloorName())
+                .displayOrder(model.getDisplayOrder())
+                .description(model.getDescription())
                 .organization(organizationTransformer.toEntity(model.getOrganizationModel()))
                 .branch(branchTransformer.toEntity(model.getBranchModel()))
                 .isActive(model.getIsActive())
@@ -32,17 +35,18 @@ public class RestaurantTableTransformer extends Transformer<RestaurantTable, Res
     }
 
     @Override
-    public RestaurantTableModel toModel(RestaurantTable entity) {
-        if(entity == null)
+    public FloorModel toModel(Floor entity) {
+
+        if (entity == null)
             return null;
-        return RestaurantTableModel.builder()
+
+        return FloorModel.builder()
                 .id(entity.getId())
-                .tableNumber(entity.getTableNumber())
-                .tableName(entity.getTableName())
-                .capacity(entity.getCapacity())
-                .qrToken(entity.getQrCode())
-                .branchModel(branchTransformer.toModel(entity.getBranch()))
+                .floorName(entity.getFloorName())
+                .displayOrder(entity.getDisplayOrder())
+                .description(entity.getDescription())
                 .organizationModel(organizationTransformer.toModel(entity.getOrganization()))
+                .branchModel(branchTransformer.toModel(entity.getBranch()))
                 .isActive(entity.getIsActive())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
