@@ -94,8 +94,8 @@ export default function SubscriptionPlanModalBox({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+      <div className="w-full max-w-6xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-xl">
         <div className="flex justify-between items-center border-b p-5">
           <h2 className="text-xl font-bold">
             {isCreate && "Create Subscription Plan"}

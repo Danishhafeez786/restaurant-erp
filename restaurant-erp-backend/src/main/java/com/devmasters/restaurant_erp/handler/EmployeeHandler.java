@@ -106,7 +106,7 @@ public class EmployeeHandler {
     private Employee buildEmployee(EmployeeRequestModel request, Role role, Organization organization, Branch branch, User user) {
         return Employee.builder()
                 .id(UUID.randomUUID())
-                .employeeCode("Emp - " + employeeService.count())
+                .employeeCode("Emp - " + employeeService.count() + 1)
                 .fullName(request.getFullName())
                 .cnic(request.getCnic())
                 .phone(request.getPhone())
