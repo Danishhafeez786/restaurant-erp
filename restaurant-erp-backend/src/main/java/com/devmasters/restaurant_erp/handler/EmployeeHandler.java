@@ -6,6 +6,7 @@ import com.devmasters.restaurant_erp.model.empoyee.EmployeeRequestModel;
 import com.devmasters.restaurant_erp.model.empoyee.EmployeeSearchCriteria;
 import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import com.devmasters.restaurant_erp.service.*;
+import com.devmasters.restaurant_erp.service.Sequence.CodeGeneratorService;
 import com.devmasters.restaurant_erp.transformer.EmployeeTransformer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -25,8 +26,10 @@ public class EmployeeHandler {
     private final BranchService branchService;
     private final EmployeeTransformer employeeTransformer;
     private final PasswordEncoder passwordEncoder;
+    private final CodeGeneratorService codeGeneratorService;
 
     public EmployeeModel create(EmployeeRequestModel request) {
+
         if (userService.existsByEmail(request.getEmail()))
             throw new RuntimeException("Email already exists.");
 
@@ -36,6 +39,12 @@ public class EmployeeHandler {
         User user = buildUser(request, organization, branch, role);
         user = userService.create(user);
         Employee employee = buildEmployee(request, role, organization, branch, user);
+
+        employee.setEmployeeCode(
+                codeGeneratorService.generateEmployeeCode(
+                        organization.getId()
+                )
+        );
         return employeeTransformer.toModel(employeeService.create(employee));
     }
 

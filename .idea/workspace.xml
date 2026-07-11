@@ -4,44 +4,74 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d292dd75-23d9-4dde-9b08-d9b52fb3001b" name="Changes" comment="Chnage Code">
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/controller/CategoryController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/controller/FloorController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/controller/RestaurantTableController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/domain/Floor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/domain/Menu/Category.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/enums/TableStatus.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/handler/CategoryHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/handler/FloorHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/handler/RestaurantTableHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/model/FloorModel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/model/Menu/CategoryModel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/model/searchcriteria/CategorySearchCriteria.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/model/searchcriteria/FloorSearchCriteria.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/model/searchcriteria/RestaurantTableSearchCriteria.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/CategoryRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/FloorRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/RestaurantTableRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/CategoryCustomRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/CategoryCustomRepositoryImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/FloorCustomRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/FloorCustomRepositoryImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/RestaurantTableCustomRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/RestaurantTableCustomRepositoryImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/CategoryService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/FloorService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/RestaurantTableService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/impl/CategoryServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/impl/FloorServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/impl/RestaurantTableServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/transformer/CategoryTransformer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/transformer/FloorTransformer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+    <list default="true" id="d292dd75-23d9-4dde-9b08-d9b52fb3001b" name="Changes" comment="Create Table,Floor and Category Module">
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/controller/MenuItemController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/controller/MenuItemModifierGroupController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/controller/MenuVariantController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/controller/ModifierController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/controller/ModifierGroupController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/domain/Counter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/domain/Menu/MenuItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/domain/Menu/MenuItemModifierGroup.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/domain/Menu/MenuVariant.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/domain/Menu/Modifier.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/domain/Menu/ModifierGroup.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/enums/AvailabilityStatus.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/enums/MenuItemType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/enums/Unit.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/enums/WeightUnit.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/handler/MenuItemHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/handler/MenuItemModifierGroupHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/handler/MenuVariantHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/handler/ModifierGroupHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/handler/ModifierHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/model/Menu/MenuItemModel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/model/Menu/MenuItemModifierGroupModel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/model/Menu/MenuVariantModel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/model/Menu/ModifierGroupModel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/model/Menu/ModifierModel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/model/searchcriteria/MenuItemModifierGroupSearchCriteria.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/model/searchcriteria/MenuItemSearchCriteria.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/model/searchcriteria/MenuVariantSearchCriteria.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/model/searchcriteria/ModifierGroupSearchCriteria.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/model/searchcriteria/ModifierSearchCriteria.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/MenuItemModifierGroupRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/MenuItemRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/MenuVariantRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/ModifierGroupRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/ModifierRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/MenuItemCustomRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/MenuItemCustomRepositoryImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/MenuItemModifierGroupCustomRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/MenuItemModifierGroupCustomRepositoryImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/MenuVariantCustomRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/MenuVariantCustomRepositoryImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/ModifierCustomRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/ModifierCustomRepositoryImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/ModifierGroupCustomRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/custom/ModifierGroupCustomRepositoryImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/MenuItemModifierGroupService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/MenuItemService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/MenuVariantService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/ModifierGroupService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/ModifierService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/Sequence/CodeGeneratorService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/Sequence/SequenceGeneratorService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/impl/MenuItemModifierGroupServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/impl/MenuItemServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/impl/MenuVariantServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/impl/ModifierGroupServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/service/impl/ModifierServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/transformer/MenuItemModifierGroupTransformer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/transformer/MenuItemTransformer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/transformer/MenuVariantTransformer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/transformer/ModifierGroupTransformer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/transformer/ModifierTransformer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/domain/RestaurantTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/domain/RestaurantTable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/model/RestaurantTableModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/model/RestaurantTableModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/transformer/RestaurantTableTransformer.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/transformer/RestaurantTableTransformer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/handler/BranchHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/handler/BranchHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/handler/CategoryHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/handler/CategoryHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/handler/EmployeeHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/handler/EmployeeHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/BranchRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/repository/BranchRepository.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,33 +131,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "Application.RestaurantErpApplication.executor": "Debug",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "main",
-    "junie.onboarding.icon.badge.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/Tehseen/restaurant-erp/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/tenant",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "to.speed.mode.migration.done": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Application.RestaurantErpApplication.executor&quot;: &quot;Debug&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Tehseen/restaurant-erp/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/tenant&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Tehseen\restaurant-erp\restaurant-erp-backend\src\main\java\com\devmasters\restaurant_erp\tenant" />
@@ -220,7 +250,15 @@
       <option name="project" value="LOCAL" />
       <updated>1783001971277</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Create Table,Floor and Category Module">
+      <option name="closed" value="true" />
+      <created>1783667349127</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1783667349129</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -244,6 +282,7 @@
     <MESSAGE value="Simple changes" />
     <MESSAGE value="Add Organization Module" />
     <MESSAGE value="Chnage Code" />
-    <option name="LAST_COMMIT_MESSAGE" value="Chnage Code" />
+    <MESSAGE value="Create Table,Floor and Category Module" />
+    <option name="LAST_COMMIT_MESSAGE" value="Create Table,Floor and Category Module" />
   </component>
 </project>

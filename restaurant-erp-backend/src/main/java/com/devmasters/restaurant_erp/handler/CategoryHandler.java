@@ -6,6 +6,7 @@ import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import com.devmasters.restaurant_erp.model.searchcriteria.CategorySearchCriteria;
 import com.devmasters.restaurant_erp.service.CategoryService;
 
+import com.devmasters.restaurant_erp.service.Sequence.CodeGeneratorService;
 import com.devmasters.restaurant_erp.transformer.CategoryTransformer;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,14 +21,10 @@ public class CategoryHandler {
 
     private final CategoryService categoryService;
     private final CategoryTransformer categoryTransformer;
+    private final CodeGeneratorService codeGeneratorService;
 
     public CategoryModel create(CategoryModel model) {
 
-        if (categoryService.existsByCategoryCodeIgnoreCaseAndBranch_Id(
-                model.getCategoryCode(),
-                model.getBranchModel().getId())) {
-            throw new RuntimeException("Category Code already exists : " + model.getCategoryCode());
-        }
 
         if (categoryService.existsByCategoryNameIgnoreCaseAndBranch_Id(model.getCategoryName(),
                 model.getBranchModel().getId())) {
@@ -35,6 +32,11 @@ public class CategoryHandler {
         }
 
         Category entity = categoryTransformer.toEntity(model);
+
+        entity.setCategoryCode(
+                codeGeneratorService.generateCategoryCode()
+        );
+
         Category saved = categoryService.create(entity);
         return categoryTransformer.toModel(saved);
     }

@@ -9,8 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface BranchRepository extends MongoRepository<Branch, UUID>,
-        BranchCustomRepository {
+public interface BranchRepository extends MongoRepository<Branch, UUID>, BranchCustomRepository {
 
     boolean existsByBranchNameIgnoreCase(String branchName);
 
