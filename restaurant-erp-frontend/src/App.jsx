@@ -14,6 +14,10 @@ import Branch from "./pages/Branch/Branch";
 import Role from "./pages/Role/Role";
 import Permission from './pages/Permission/Permission';
 import Settings from './pages/Settings/Settings';
+import Category from './pages/Category/Category';
+import Tables from './pages/Tables/Tables';
+import ModifierGroup from './pages/ModifierGroup/ModifierGroup';
+import Modifier from './pages/Modifier/Modifier';
 import './App.css';
 
 function App() {
@@ -34,6 +38,10 @@ function App() {
           <Route path="/" element={<Navigate to="/dashboard" />} />
           <Route path="*" element={<Navigate to="/dashboard" />} />
           <Route path="/employee" element={ <ProtectedRoute> <Employee /> </ProtectedRoute> } />
+          <Route path="/category-management" element={ <ProtectedRoute> <Category /> </ProtectedRoute> } />
+          <Route path="/table-management" element={ <ProtectedRoute> <Tables /> </ProtectedRoute> } />
+          <Route path="/modifier-group" element={ <ProtectedRoute> <ModifierGroup /> </ProtectedRoute> } />
+          <Route path="/modifier" element={ <ProtectedRoute> <Modifier /> </ProtectedRoute> } />
         </Routes>
       </AuthProvider>
       {/* ✅ Global Toast Container (always available) */}

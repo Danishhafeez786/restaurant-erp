@@ -140,6 +140,16 @@ const Sidebar = () => {
           path: "/table-management",
           icon: <Squares2X2Icon className="w-5 h-5" />,
         },
+        {
+          title: "Modifier Group",
+          path: "/modifier-group",
+          icon: <Squares2X2Icon className="w-5 h-5" />,
+        },
+        {
+          title: "Modifier",
+          path: "/modifier",
+          icon: <Squares2X2Icon className="w-5 h-5" />,
+        },
       ],
     },
 
