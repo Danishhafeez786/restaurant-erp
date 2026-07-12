@@ -1,7 +1,7 @@
 package com.devmasters.restaurant_erp.transformer;
 
 import com.devmasters.restaurant_erp.domain.Employee;
-import com.devmasters.restaurant_erp.model.empoyee.EmployeeModel;
+import com.devmasters.restaurant_erp.model.employee.EmployeeModel;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 

@@ -2,9 +2,9 @@ package com.devmasters.restaurant_erp.controller;
 
 import com.devmasters.restaurant_erp.handler.EmployeeHandler;
 import com.devmasters.restaurant_erp.model.ApiResponse;
-import com.devmasters.restaurant_erp.model.empoyee.EmployeeModel;
-import com.devmasters.restaurant_erp.model.empoyee.EmployeeRequestModel;
-import com.devmasters.restaurant_erp.model.empoyee.EmployeeSearchCriteria;
+import com.devmasters.restaurant_erp.model.employee.EmployeeModel;
+import com.devmasters.restaurant_erp.model.employee.EmployeeRequestModel;
+import com.devmasters.restaurant_erp.model.employee.EmployeeSearchCriteria;
 import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;

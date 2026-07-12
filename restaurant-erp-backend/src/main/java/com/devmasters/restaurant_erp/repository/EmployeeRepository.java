@@ -4,10 +4,7 @@ import com.devmasters.restaurant_erp.domain.Branch;
 import com.devmasters.restaurant_erp.domain.Employee;
 import com.devmasters.restaurant_erp.domain.Organization;
 import com.devmasters.restaurant_erp.domain.User;
-import com.devmasters.restaurant_erp.model.empoyee.EmployeeSearchCriteria;
-import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import com.devmasters.restaurant_erp.repository.custom.EmployeeRepositoryCustomRepository;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

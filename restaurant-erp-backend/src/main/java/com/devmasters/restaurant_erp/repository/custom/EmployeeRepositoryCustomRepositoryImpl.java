@@ -1,7 +1,7 @@
 package com.devmasters.restaurant_erp.repository.custom;
 
 import com.devmasters.restaurant_erp.domain.Employee;
-import com.devmasters.restaurant_erp.model.empoyee.EmployeeSearchCriteria;
+import com.devmasters.restaurant_erp.model.employee.EmployeeSearchCriteria;
 import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

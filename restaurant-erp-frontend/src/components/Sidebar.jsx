@@ -388,7 +388,7 @@ const Sidebar = () => {
       )}
 
       {/* DESKTOP SIDEBAR */}
-      <div className="hidden lg:flex w-[280px] h-screen bg-[#0d4039] text-white flex-col shadow-2xl">
+      <div className="hidden lg:flex w-[300px] h-screen bg-[#0d4039] text-white flex-col shadow-2xl">
         <div className="px-6 py-6 border-b border-white/10">
           <h1 className="text-3xl font-bold">
             Foodie

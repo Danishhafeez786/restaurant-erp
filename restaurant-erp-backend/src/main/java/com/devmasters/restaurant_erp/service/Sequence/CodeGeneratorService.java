@@ -87,4 +87,74 @@ public class CodeGeneratorService {
 
         return "MOD" + String.format("%05d", sequence);
     }
+
+    public String generateExpenseCategoryCode(UUID organizationId) {
+
+        String sequenceName = "EXPENSE_CATEGORY_" + organizationId;
+
+        long sequence = sequenceGeneratorService.generateSequence(sequenceName);
+
+        return "EXPCAT" + String.format("%05d", sequence);
+    }
+
+    public String generateExpenseTypeCode(UUID organizationId) {
+
+        String sequenceName = "EXPENSE_TYPE_" + organizationId;
+
+        long sequence =
+                sequenceGeneratorService.generateSequence(sequenceName);
+
+        return "EXPTYP" + String.format("%05d", sequence);
+    }
+
+    public String generatePaymentMethodCode(UUID organizationId) {
+
+        String sequenceName = "PAYMENT_METHOD_" + organizationId;
+
+        long sequence =
+                sequenceGeneratorService.generateSequence(sequenceName);
+
+        return "PAY" + String.format("%05d", sequence);
+    }
+
+    public String generateExpenseVendorCode(UUID organizationId) {
+
+        String sequenceName = "EXPENSE_VENDOR_" + organizationId;
+
+        long sequence =
+                sequenceGeneratorService.generateSequence(sequenceName);
+
+        return "VEN" + String.format("%05d", sequence);
+    }
+
+    public String generateExpenseStatusCode(UUID organizationId) {
+
+        String sequenceName = "EXPENSE_STATUS_" + organizationId;
+
+        long sequence =
+                sequenceGeneratorService.generateSequence(sequenceName);
+
+        return "EST" + String.format("%05d", sequence);
+    }
+
+    public String generateExpenseCode(UUID organizationId) {
+
+        String sequenceName = "EXPENSE_" + organizationId;
+
+        long sequence =
+                sequenceGeneratorService.generateSequence(sequenceName);
+
+        return "EXP" + String.format("%06d", sequence);
+    }
+
+    public String generateExpenseAttachmentCode(UUID organizationId) {
+
+        String sequenceName =
+                "EXPENSE_ATTACHMENT_" + organizationId;
+
+        long sequence =
+                sequenceGeneratorService.generateSequence(sequenceName);
+
+        return "ATT" + String.format("%05d", sequence);
+    }
 }

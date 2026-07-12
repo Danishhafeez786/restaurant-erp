@@ -1,8 +1,8 @@
 package com.devmasters.restaurant_erp.service.impl;
 
 import com.devmasters.restaurant_erp.domain.*;
-import com.devmasters.restaurant_erp.model.empoyee.EmployeeModel;
-import com.devmasters.restaurant_erp.model.empoyee.EmployeeSearchCriteria;
+import com.devmasters.restaurant_erp.model.employee.EmployeeModel;
+import com.devmasters.restaurant_erp.model.employee.EmployeeSearchCriteria;
 import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import com.devmasters.restaurant_erp.repository.EmployeeRepository;
 import com.devmasters.restaurant_erp.repository.UserRepository;
