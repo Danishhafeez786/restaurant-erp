@@ -23,7 +23,7 @@ import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @RestController
-@RequestMapping("/api/table")
+@RequestMapping("/api/table-management")
 @RequiredArgsConstructor
 public class RestaurantTableController {
 

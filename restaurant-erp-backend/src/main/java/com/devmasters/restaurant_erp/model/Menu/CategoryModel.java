@@ -32,7 +32,6 @@ public class CategoryModel {
     @Size(max = 500, message = "Description cannot exceed 500 characters")
     private String description;
 
-    @Size(max = 500, message = "Image URL cannot exceed 500 characters")
     private String imageUrl;
 
     @NotNull(message = "Display order is required")

@@ -54,19 +54,42 @@ export default function CategoryModalBox({
         }
     }, [category]);
 
+    const handleSave = async () => {
+    try {
+
+        await axiosClient.post(
+            "/category",
+            formData
+        );
+
+        onSuccess();
+        onClose();
+
+    } catch(error) {
+
+        console.error(error);
+
+        alert(
+            error?.response?.data?.message ||
+            "Unable to save category."
+        );
+    }
+};
+
     const resetForm = () => {
-        setFormData({
-            categoryCode: "",
-            categoryName: "",
-            description: "",
-            imageUrl: "",
-            displayOrder: "",
-            available: true,
-            organizationModel: null,
-            branchModel: null,
-            isActive: true,
-        });
-    };
+    setFormData({
+        id: null,
+        categoryCode: "",
+        categoryName: "",
+        description: "",
+        imageUrl: "",
+        displayOrder: "",
+        available: true,
+        organizationModel: null,
+        branchModel: null,
+        isActive: true,
+    });
+};
 
     const loadOrganizations = async () => {
         try {
@@ -126,75 +149,67 @@ export default function CategoryModalBox({
         }));
     };
 
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
+    const fileToDataUrl = (file) =>
+    new Promise((resolve, reject) => {
 
-        if (!file) return;
+        const reader = new FileReader();
+
+        reader.onload = () => resolve(reader.result);
+
+        reader.onerror = () =>
+            reject(new Error("Failed to read image"));
+
+        reader.readAsDataURL(file);
+    });
+
+
+const handleImageChange = async (e) => {
+
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+
+    try {
+
+        const dataUrl = await fileToDataUrl(file);
+
 
         setFormData((prev) => ({
             ...prev,
-            imageUrl: file,
+            imageUrl: dataUrl
         }));
-    };
 
-    const handleSave = async () => {
-        try {
-            const data = new FormData();
 
-            data.append("categoryCode", formData.categoryCode);
-            data.append("categoryName", formData.categoryName);
-            data.append("description", formData.description);
-            data.append("displayOrder", formData.displayOrder);
-            data.append("available", formData.available);
-            data.append("isActive", formData.isActive);
+    } catch(error) {
 
-            if (formData.organizationModel) {
-                data.append(
-                    "organizationId",
-                    formData.organizationModel.id
-                );
-            }
+        console.log(error);
+    }
+};
 
-            if (formData.branchModel) {
-                data.append(
-                    "branchId",
-                    formData.branchModel.id
-                );
-            }
+   const handleUpdate = async () => {
 
-            if (formData.imageUrl instanceof File) {
-                data.append("image", formData.imageUrl);
-            }
+    try {
 
-            if (isCreate) {
-                await axiosClient.post("/category", data, {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                });
-            } else {
-                await axiosClient.put(
-                    `/category/${category.id}`,
-                    data,
-                    {
-                        headers: {
-                            "Content-Type": "multipart/form-data",
-                        },
-                    }
-                );
-            }
+        await axiosClient.put(
+            `/category/${formData.id}`,
+            formData
+        );
 
-            onSuccess();
-            onClose();
-        } catch (error) {
-            console.error(error);
 
-            alert(
-                error?.response?.data?.message ||
-                "Unable to save category."
-            );
-        }
-    };
+        onSuccess();
+        onClose();
+
+    } catch(error) {
+
+        console.error(error);
+
+        alert(
+            error?.response?.data?.message ||
+            "Unable to update category."
+        );
+    }
+};
 
     if (!isOpen) return null;
 
@@ -327,51 +342,30 @@ export default function CategoryModalBox({
 
                     <div className="md:col-span-2">
 
-                        <label className="block mb-2 text-sm font-medium">
-                            Category Image
-                        </label>
+    <label className="block mb-2 text-sm font-medium">
+        Category Image
+    </label>
 
-                        {!isView ? (
-                            <input
-                                type="file"
-                                accept="image/*"
-                                onChange={handleImageChange}
-                                className="w-full rounded-lg border px-4 py-3"
-                            />
-                        ) : (
-                            formData.imageUrl && (
-                                <img
-                                    src={
-                                        formData.imageUrl instanceof File
-                                            ? URL.createObjectURL(formData.imageUrl)
-                                            : formData.imageUrl
-                                    }
-                                    alt="Category"
-                                    className="h-32 w-32 rounded-lg border object-cover"
-                                />
-                            )
-                        )}
 
-                        {!isView &&
-                            formData.imageUrl &&
-                            !(formData.imageUrl instanceof File) && (
-                                <img
-                                    src={formData.imageUrl}
-                                    alt="Category"
-                                    className="mt-3 h-32 w-32 rounded-lg border object-cover"
-                                />
-                            )}
+    {!isView && (
+        <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="w-full rounded-lg border px-4 py-3"
+        />
+    )}
 
-                        {!isView &&
-                            formData.imageUrl instanceof File && (
-                                <img
-                                    src={URL.createObjectURL(formData.imageUrl)}
-                                    alt="Preview"
-                                    className="mt-3 h-32 w-32 rounded-lg border object-cover"
-                                />
-                            )}
 
-                    </div>
+    {formData.imageUrl && (
+        <img
+            src={formData.imageUrl}
+            alt="Category"
+            className="mt-3 h-32 w-32 rounded-lg border object-cover"
+        />
+    )}
+
+</div>
 
                     {/* Organization */}
 
@@ -477,15 +471,15 @@ export default function CategoryModalBox({
 
                     {!isView && (
                         <button
-                            onClick={handleSave}
-                            className={`w-full sm:w-auto rounded-lg px-5 py-2 text-white ${
-                                isCreate
-                                    ? "bg-green-600 hover:bg-green-700"
-                                    : "bg-blue-600 hover:bg-blue-700"
-                            }`}
-                        >
-                            {isCreate ? "Save" : "Update"}
-                        </button>
+    onClick={isCreate ? handleSave : handleUpdate}
+    className={`w-full sm:w-auto rounded-lg px-5 py-2 text-white ${
+        isCreate
+            ? "bg-green-600 hover:bg-green-700"
+            : "bg-blue-600 hover:bg-blue-700"
+    }`}
+>
+    {isCreate ? "Save" : "Update"}
+</button>
                     )}
 
                 </div>
