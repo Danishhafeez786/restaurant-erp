@@ -5,6 +5,7 @@ import com.devmasters.restaurant_erp.model.ApiResponse;
 import com.devmasters.restaurant_erp.model.Expense.ExpenseAttachmentModel;
 import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import com.devmasters.restaurant_erp.model.searchcriteria.ExpenseAttachmentSearchCriteria;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.http.*;
@@ -27,7 +28,7 @@ public class ExpenseAttachmentController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<ExpenseAttachmentModel>> create(
-            @RequestBody ExpenseAttachmentModel model) {
+            @Valid @RequestBody ExpenseAttachmentModel model) {
 
         ExpenseAttachmentModel response = handler.create(model);
         sendEvent(
@@ -71,7 +72,7 @@ public class ExpenseAttachmentController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<ExpenseAttachmentModel>> update(
-            @PathVariable UUID id,
+            @Valid @PathVariable UUID id,
             @RequestBody ExpenseAttachmentModel model) {
         ExpenseAttachmentModel response =
                 handler.update(

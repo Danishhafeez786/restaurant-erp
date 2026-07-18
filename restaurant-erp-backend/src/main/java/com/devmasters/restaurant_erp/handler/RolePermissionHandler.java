@@ -2,7 +2,7 @@ package com.devmasters.restaurant_erp.handler;
 
 import com.devmasters.restaurant_erp.domain.RolePermission;
 import com.devmasters.restaurant_erp.model.RolePermissionModel;
-import com.devmasters.restaurant_erp.model.RolePermissionSearchCriteria;
+import com.devmasters.restaurant_erp.model.searchcriteria.RolePermissionSearchCriteria;
 import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import com.devmasters.restaurant_erp.model.settings.PermissionMatrixResponse;
 import com.devmasters.restaurant_erp.service.RolePermissionService;

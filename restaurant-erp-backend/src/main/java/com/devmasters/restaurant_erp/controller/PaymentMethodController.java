@@ -5,6 +5,7 @@ import com.devmasters.restaurant_erp.model.ApiResponse;
 import com.devmasters.restaurant_erp.model.PaymentMethodModel;
 import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import com.devmasters.restaurant_erp.model.searchcriteria.PaymentMethodSearchCriteria;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.http.*;
@@ -26,7 +27,7 @@ public class PaymentMethodController {
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
     @PostMapping
-    public ResponseEntity<ApiResponse<PaymentMethodModel>> create(@RequestBody PaymentMethodModel model) {
+    public ResponseEntity<ApiResponse<PaymentMethodModel>> create(@Valid @RequestBody PaymentMethodModel model) {
 
         PaymentMethodModel response = handler.create(model);
         sendEvent("payment-method-created", response);
@@ -67,7 +68,7 @@ public class PaymentMethodController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<PaymentMethodModel>> update(
-            @PathVariable UUID id,
+            @Valid @PathVariable UUID id,
             @RequestBody PaymentMethodModel model) {
 
         PaymentMethodModel response = handler.update(id, model);

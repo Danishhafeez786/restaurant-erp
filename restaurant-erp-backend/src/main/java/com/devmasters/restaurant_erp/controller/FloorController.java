@@ -5,6 +5,7 @@ import com.devmasters.restaurant_erp.model.ApiResponse;
 import com.devmasters.restaurant_erp.model.FloorModel;
 import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import com.devmasters.restaurant_erp.model.searchcriteria.FloorSearchCriteria;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +31,7 @@ public class FloorController {
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
     @PostMapping
-    public ResponseEntity<ApiResponse<FloorModel>> create(@RequestBody FloorModel model) {
+    public ResponseEntity<ApiResponse<FloorModel>> create(@Valid @RequestBody FloorModel model) {
 
         FloorModel response = floorHandler.create(model);
         sendEvent("floor-created", response);
@@ -66,7 +67,7 @@ public class FloorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<FloorModel>> update(@PathVariable UUID id, @RequestBody FloorModel model) {
+    public ResponseEntity<ApiResponse<FloorModel>> update(@Valid @PathVariable UUID id, @RequestBody FloorModel model) {
 
         FloorModel response = floorHandler.update(id, model);
         sendEvent("floor-updated", response);

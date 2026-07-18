@@ -5,6 +5,7 @@ import com.devmasters.restaurant_erp.model.ApiResponse;
 import com.devmasters.restaurant_erp.model.RoleModel;
 import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import com.devmasters.restaurant_erp.model.searchcriteria.RoleSearchCriteria;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +31,7 @@ public class RoleController {
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
     @PostMapping
-    public ResponseEntity<ApiResponse<RoleModel>> create(@RequestBody RoleModel model) {
+    public ResponseEntity<ApiResponse<RoleModel>> create(@Valid @RequestBody RoleModel model) {
 
         RoleModel response = roleHandler.create(model);
         sendEvent("role-created", response);
@@ -63,7 +64,7 @@ public class RoleController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<RoleModel>> update(@PathVariable UUID id,
+    public ResponseEntity<ApiResponse<RoleModel>> update(@Valid @PathVariable UUID id,
                                                          @RequestBody RoleModel model) {
         RoleModel response = roleHandler.update(id, model);
         sendEvent("role-updated", response);

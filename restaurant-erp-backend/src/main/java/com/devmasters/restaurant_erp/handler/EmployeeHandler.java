@@ -3,7 +3,7 @@ package com.devmasters.restaurant_erp.handler;
 import com.devmasters.restaurant_erp.domain.*;
 import com.devmasters.restaurant_erp.model.employee.EmployeeModel;
 import com.devmasters.restaurant_erp.model.employee.EmployeeRequestModel;
-import com.devmasters.restaurant_erp.model.employee.EmployeeSearchCriteria;
+import com.devmasters.restaurant_erp.model.searchcriteria.EmployeeSearchCriteria;
 import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import com.devmasters.restaurant_erp.service.*;
 import com.devmasters.restaurant_erp.service.Sequence.CodeGeneratorService;
@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Component
@@ -122,7 +123,7 @@ public class EmployeeHandler {
                 .address(request.getAddress())
                 .emergencyContact(request.getEmergencyContact())
                 .joiningDate(request.getJoiningDate())
-                .salary(request.getSalary())
+                .salary(BigDecimal.valueOf(request.getSalary()))
                 .role(role)
                 .organization(organization)
                 .branch(branch)

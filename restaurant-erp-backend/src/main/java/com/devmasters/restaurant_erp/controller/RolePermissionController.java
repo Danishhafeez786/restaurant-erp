@@ -3,9 +3,10 @@ package com.devmasters.restaurant_erp.controller;
 import com.devmasters.restaurant_erp.handler.RolePermissionHandler;
 import com.devmasters.restaurant_erp.model.ApiResponse;
 import com.devmasters.restaurant_erp.model.RolePermissionModel;
-import com.devmasters.restaurant_erp.model.RolePermissionSearchCriteria;
+import com.devmasters.restaurant_erp.model.searchcriteria.RolePermissionSearchCriteria;
 import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import com.devmasters.restaurant_erp.model.settings.PermissionMatrixResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +31,7 @@ public class RolePermissionController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<RolePermissionModel>> create(
-            @RequestBody RolePermissionModel model){
+            @Valid @RequestBody RolePermissionModel model){
 
         RolePermissionModel response = rolePermissionHandler.create(model);
         sendEvent("role-permission-created", response);
@@ -64,7 +65,7 @@ public class RolePermissionController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<RolePermissionModel>> update(
-            @PathVariable UUID id, @RequestBody RolePermissionModel model) {
+            @Valid @PathVariable UUID id, @RequestBody RolePermissionModel model) {
 
         RolePermissionModel response = rolePermissionHandler.update(id, model);
         sendEvent("role-permission-updated", response);

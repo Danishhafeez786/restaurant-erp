@@ -4,8 +4,9 @@ import com.devmasters.restaurant_erp.handler.EmployeeHandler;
 import com.devmasters.restaurant_erp.model.ApiResponse;
 import com.devmasters.restaurant_erp.model.employee.EmployeeModel;
 import com.devmasters.restaurant_erp.model.employee.EmployeeRequestModel;
-import com.devmasters.restaurant_erp.model.employee.EmployeeSearchCriteria;
+import com.devmasters.restaurant_erp.model.searchcriteria.EmployeeSearchCriteria;
 import com.devmasters.restaurant_erp.model.pagination.PageResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,7 +37,7 @@ public class EmployeeController {
      */
     @PostMapping
     public ResponseEntity<ApiResponse<EmployeeModel>> create(
-            @RequestBody EmployeeRequestModel model) {
+            @Valid @RequestBody EmployeeRequestModel model) {
 
         EmployeeModel response = employeeHandler.create(model);
 
@@ -95,7 +96,7 @@ public class EmployeeController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<EmployeeModel>> update(
-            @PathVariable UUID id, @RequestBody EmployeeModel model) {
+            @Valid @PathVariable UUID id, @RequestBody EmployeeModel model) {
 
         EmployeeModel response = employeeHandler.update(id, model);
         sendEvent("employee-updated", response);

@@ -5,6 +5,7 @@ import com.devmasters.restaurant_erp.model.ApiResponse;
 import com.devmasters.restaurant_erp.model.Menu.ModifierModel;
 import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import com.devmasters.restaurant_erp.model.searchcriteria.ModifierSearchCriteria;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +31,7 @@ public class ModifierController {
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
     @PostMapping
-    public ResponseEntity<ApiResponse<ModifierModel>> create(@RequestBody ModifierModel model) {
+    public ResponseEntity<ApiResponse<ModifierModel>> create(@Valid @RequestBody ModifierModel model) {
 
         ModifierModel response = modifierHandler.create(model);
         sendEvent("modifier-created", response);
@@ -80,7 +81,7 @@ public class ModifierController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<ModifierModel>> update(@PathVariable UUID id,
+    public ResponseEntity<ApiResponse<ModifierModel>> update(@Valid @PathVariable UUID id,
             @RequestBody ModifierModel model) {
         ModifierModel response = modifierHandler.update(id, model);
         sendEvent(

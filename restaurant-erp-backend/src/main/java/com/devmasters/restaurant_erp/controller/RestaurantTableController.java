@@ -5,6 +5,7 @@ import com.devmasters.restaurant_erp.model.ApiResponse;
 import com.devmasters.restaurant_erp.model.RestaurantTableModel;
 import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import com.devmasters.restaurant_erp.model.searchcriteria.RestaurantTableSearchCriteria;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +30,7 @@ public class RestaurantTableController {
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
     @PostMapping
-    public ResponseEntity<ApiResponse<RestaurantTableModel>> create(@RequestBody RestaurantTableModel model) {
+    public ResponseEntity<ApiResponse<RestaurantTableModel>> create(@Valid @RequestBody RestaurantTableModel model) {
 
         RestaurantTableModel response = restaurantTableHandler.create(model);
         sendEvent("table-created", response);
@@ -69,7 +70,7 @@ public class RestaurantTableController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<RestaurantTableModel>> update(@PathVariable UUID id, @RequestBody RestaurantTableModel model) {
+    public ResponseEntity<ApiResponse<RestaurantTableModel>> update(@Valid @PathVariable UUID id, @RequestBody RestaurantTableModel model) {
 
         RestaurantTableModel response = restaurantTableHandler.update(id, model);
         sendEvent("table-updated", response);

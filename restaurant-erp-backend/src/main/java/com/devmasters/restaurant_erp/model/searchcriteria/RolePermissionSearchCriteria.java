@@ -1,4 +1,4 @@
-package com.devmasters.restaurant_erp.model;
+package com.devmasters.restaurant_erp.model.searchcriteria;
 
 import lombok.Data;
 

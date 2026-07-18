@@ -5,6 +5,7 @@ import com.devmasters.restaurant_erp.model.ApiResponse;
 import com.devmasters.restaurant_erp.model.SubscriptionModel;
 import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import com.devmasters.restaurant_erp.model.searchcriteria.SubscriptionPlanSearchCriteria;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
@@ -31,7 +32,7 @@ public class SubscriptionPlanController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<SubscriptionModel>> create(
-            @RequestBody SubscriptionModel model) {
+            @Valid @RequestBody SubscriptionModel model) {
 
         SubscriptionModel response = subscriptionPlanHandler.create(model);
 
@@ -86,7 +87,7 @@ public class SubscriptionPlanController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<SubscriptionModel>> update(
-            @PathVariable UUID id,
+            @Valid  @PathVariable UUID id,
             @RequestBody SubscriptionModel model) {
 
         SubscriptionModel response =

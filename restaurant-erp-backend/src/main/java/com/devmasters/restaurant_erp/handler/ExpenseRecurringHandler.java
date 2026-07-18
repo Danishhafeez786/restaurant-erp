@@ -166,18 +166,15 @@ public class ExpenseRecurringHandler {
                     "Title is required");
         }
 
-
         if (model.getAmount() == null) {
             throw new RuntimeException(
                     "Amount is required");
         }
 
-
-        if (model.getFrequency() == null || model.getFrequency().isBlank()) {
+        if (model.getFrequency() == null) {
             throw new RuntimeException(
                     "Frequency is required");
         }
-
     }
 
 

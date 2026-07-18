@@ -5,6 +5,7 @@ import com.devmasters.restaurant_erp.model.ApiResponse;
 import com.devmasters.restaurant_erp.model.Expense.ExpenseRecurringModel;
 import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import com.devmasters.restaurant_erp.model.searchcriteria.ExpenseRecurringSearchCriteria;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.http.*;
@@ -26,7 +27,7 @@ public class ExpenseRecurringController {
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
     @PostMapping
-    public ResponseEntity<ApiResponse<ExpenseRecurringModel>> create(@RequestBody ExpenseRecurringModel model) {
+    public ResponseEntity<ApiResponse<ExpenseRecurringModel>> create(@Valid @RequestBody ExpenseRecurringModel model) {
 
         ExpenseRecurringModel response = handler.create(model);
         sendEvent("expense-recurring-created", response);
@@ -63,7 +64,7 @@ public class ExpenseRecurringController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<ExpenseRecurringModel>> update(@PathVariable UUID id, @RequestBody ExpenseRecurringModel model) {
+    public ResponseEntity<ApiResponse<ExpenseRecurringModel>> update(@Valid @PathVariable UUID id, @RequestBody ExpenseRecurringModel model) {
 
         ExpenseRecurringModel response =
                 handler.update(

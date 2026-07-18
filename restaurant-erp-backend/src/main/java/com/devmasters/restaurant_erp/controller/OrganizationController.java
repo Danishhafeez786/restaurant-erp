@@ -5,6 +5,7 @@ import com.devmasters.restaurant_erp.model.ApiResponse;
 import com.devmasters.restaurant_erp.model.OrganizationModel;
 import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import com.devmasters.restaurant_erp.model.searchcriteria.OrganizationSearchCriteria;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +32,7 @@ public class OrganizationController {
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
     @PostMapping
-    public ResponseEntity<ApiResponse<OrganizationModel>> create(@RequestBody OrganizationModel model) {
+    public ResponseEntity<ApiResponse<OrganizationModel>> create(@Valid @RequestBody OrganizationModel model) {
 
         OrganizationModel response = organizationHandler.create(model);
 
@@ -70,7 +71,7 @@ public class OrganizationController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<OrganizationModel>> update(
-            @PathVariable UUID id,
+            @Valid @PathVariable UUID id,
             @RequestBody OrganizationModel model) {
 
         OrganizationModel response =

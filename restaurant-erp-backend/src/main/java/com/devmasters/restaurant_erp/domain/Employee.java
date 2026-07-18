@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
@@ -25,7 +26,7 @@ public class Employee extends BaseEntity {
     private String address;
     private String emergencyContact;
     private LocalDate joiningDate;
-    private Double salary;
+    private BigDecimal salary;
     private EmploymentStatus employmentStatus;
     @DBRef
     private Role role;

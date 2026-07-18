@@ -5,6 +5,7 @@ import com.devmasters.restaurant_erp.model.ApiResponse;
 import com.devmasters.restaurant_erp.model.BranchModel;
 import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import com.devmasters.restaurant_erp.model.searchcriteria.BranchSearchCriteria;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +31,7 @@ public class BranchController {
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
     @PostMapping
-    public ResponseEntity<ApiResponse<BranchModel>> create(@RequestBody BranchModel model) {
+    public ResponseEntity<ApiResponse<BranchModel>> create(@Valid @RequestBody BranchModel model) {
         BranchModel response = branchHandler.create(model);
         sendEvent("branch-created", response);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -61,7 +62,7 @@ public class BranchController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<BranchModel>> update(@PathVariable UUID id,
+    public ResponseEntity<ApiResponse<BranchModel>> update(@Valid @PathVariable UUID id,
             @RequestBody BranchModel model) {
         BranchModel response = branchHandler.update(id, model);
         sendEvent("branch-updated", response);

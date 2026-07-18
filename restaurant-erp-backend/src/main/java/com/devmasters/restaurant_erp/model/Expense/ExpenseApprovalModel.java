@@ -1,5 +1,7 @@
 package com.devmasters.restaurant_erp.model.Expense;
 
+import com.devmasters.restaurant_erp.enums.ApprovalStatus;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -13,16 +15,24 @@ public class ExpenseApprovalModel {
 
     private UUID id;
 
+    @NotNull(message = "Expense is required")
     private UUID expenseId;
 
+    @NotNull(message = "Approver is required")
     private UUID approvedById;
 
+    @NotNull(message = "Approval level is required")
+    @Min(value = 1, message = "Approval level must be at least 1")
+    @Max(value = 10, message = "Approval level cannot exceed 10")
     private Integer approvalLevel;
 
-    private String approvalStatus;
+    @NotBlank(message = "Approval status is required")
+    private ApprovalStatus approvalStatus;
 
+    @NotNull(message = "Approval decision is required")
     private Boolean approved;
 
+    @Size(max = 500, message = "Remarks cannot exceed 500 characters")
     private String remarks;
 
     private LocalDateTime submittedAt;

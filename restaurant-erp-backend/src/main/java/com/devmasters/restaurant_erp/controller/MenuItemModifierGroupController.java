@@ -5,6 +5,7 @@ import com.devmasters.restaurant_erp.model.ApiResponse;
 import com.devmasters.restaurant_erp.model.Menu.MenuItemModifierGroupModel;
 import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import com.devmasters.restaurant_erp.model.searchcriteria.MenuItemModifierGroupSearchCriteria;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +31,8 @@ public class MenuItemModifierGroupController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<MenuItemModifierGroupModel>> create(
-            @RequestBody MenuItemModifierGroupModel model) {
+            @Valid @RequestBody MenuItemModifierGroupModel model) {
+
         MenuItemModifierGroupModel response = handler.create(model);
         sendEvent("menu-item-modifier-group-created", response);
         return ResponseEntity
@@ -80,7 +82,7 @@ public class MenuItemModifierGroupController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<MenuItemModifierGroupModel>> update(@PathVariable UUID id, @RequestBody MenuItemModifierGroupModel model) {
+    public ResponseEntity<ApiResponse<MenuItemModifierGroupModel>> update(@Valid @PathVariable UUID id, @RequestBody MenuItemModifierGroupModel model) {
 
         MenuItemModifierGroupModel response = handler.update(id, model);
         sendEvent("menu-item-modifier-group-updated", response);

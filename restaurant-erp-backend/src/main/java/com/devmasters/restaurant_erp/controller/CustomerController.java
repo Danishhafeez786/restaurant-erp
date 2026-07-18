@@ -5,6 +5,7 @@ import com.devmasters.restaurant_erp.model.ApiResponse;
 import com.devmasters.restaurant_erp.model.CustomerModel;
 import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import com.devmasters.restaurant_erp.model.searchcriteria.CustomerSearchCriteria;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +31,7 @@ public class CustomerController {
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
     @PostMapping
-    public ResponseEntity<ApiResponse<CustomerModel>> create(@RequestBody CustomerModel model) {
+    public ResponseEntity<ApiResponse<CustomerModel>> create(@Valid @RequestBody CustomerModel model) {
 
         CustomerModel response = customerHandler.create(model);
 
@@ -67,7 +68,7 @@ public class CustomerController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<CustomerModel>> update(
-            @PathVariable UUID id, @RequestBody CustomerModel model) {
+            @Valid @PathVariable UUID id, @RequestBody CustomerModel model) {
 
         CustomerModel response = customerHandler.update(id, model);
 

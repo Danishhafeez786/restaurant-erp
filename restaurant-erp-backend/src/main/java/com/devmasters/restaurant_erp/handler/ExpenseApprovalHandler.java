@@ -3,6 +3,7 @@ package com.devmasters.restaurant_erp.handler;
 import com.devmasters.restaurant_erp.domain.Employee;
 import com.devmasters.restaurant_erp.domain.Expense.Expense;
 import com.devmasters.restaurant_erp.domain.Expense.ExpenseApproval;
+import com.devmasters.restaurant_erp.enums.ApprovalStatus;
 import com.devmasters.restaurant_erp.model.Expense.ExpenseApprovalModel;
 import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import com.devmasters.restaurant_erp.model.searchcriteria.ExpenseApprovalSearchCriteria;
@@ -62,7 +63,7 @@ public class ExpenseApprovalHandler {
 
 
         if (approval.getApprovalStatus() == null) {
-            approval.setApprovalStatus("PENDING");
+            approval.setApprovalStatus(ApprovalStatus.PENDING);
         }
 
         if (approval.getApproved() == null) {
@@ -74,7 +75,7 @@ public class ExpenseApprovalHandler {
         }
 
 
-        if ("APPROVED".equals(approval.getApprovalStatus())) {
+        if (approval.getApprovalStatus() == ApprovalStatus.APPROVED) {
             approval.setApproved(true);
             approval.setApprovedAt(LocalDateTime.now());
         }

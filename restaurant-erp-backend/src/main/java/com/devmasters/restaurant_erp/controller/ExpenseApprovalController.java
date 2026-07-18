@@ -5,6 +5,7 @@ import com.devmasters.restaurant_erp.model.ApiResponse;
 import com.devmasters.restaurant_erp.model.Expense.ExpenseApprovalModel;
 import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import com.devmasters.restaurant_erp.model.searchcriteria.ExpenseApprovalSearchCriteria;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.http.*;
@@ -27,7 +28,7 @@ public class ExpenseApprovalController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<ExpenseApprovalModel>> create(
-            @RequestBody ExpenseApprovalModel model) {
+            @Valid @RequestBody ExpenseApprovalModel model) {
 
         ExpenseApprovalModel response = handler.create(model);
         sendEvent("expense-approval-created", response);
@@ -67,7 +68,7 @@ public class ExpenseApprovalController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<ExpenseApprovalModel>> update(
-            @PathVariable UUID id,
+            @Valid @PathVariable UUID id,
             @RequestBody ExpenseApprovalModel model) {
 
 

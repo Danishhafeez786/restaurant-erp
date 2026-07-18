@@ -2,6 +2,7 @@ package com.devmasters.restaurant_erp.domain.Expense;
 
 import com.devmasters.restaurant_erp.domain.BaseEntity;
 import com.devmasters.restaurant_erp.domain.Employee;
+import com.devmasters.restaurant_erp.enums.ApprovalStatus;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -25,7 +26,7 @@ public class ExpenseApproval extends BaseEntity {
 
     private Integer approvalLevel;
 
-    private String approvalStatus;
+    private ApprovalStatus approvalStatus;
     // PENDING, APPROVED, REJECTED
 
     private Boolean approved;

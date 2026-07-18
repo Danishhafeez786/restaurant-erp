@@ -3,7 +3,7 @@ package com.devmasters.restaurant_erp.service.impl;
 import com.devmasters.restaurant_erp.domain.Permission;
 import com.devmasters.restaurant_erp.domain.Role;
 import com.devmasters.restaurant_erp.domain.RolePermission;
-import com.devmasters.restaurant_erp.model.RolePermissionSearchCriteria;
+import com.devmasters.restaurant_erp.model.searchcriteria.RolePermissionSearchCriteria;
 import com.devmasters.restaurant_erp.model.settings.*;
 import com.devmasters.restaurant_erp.repository.PermissionRepository;
 import com.devmasters.restaurant_erp.repository.RolePermissionRepository;

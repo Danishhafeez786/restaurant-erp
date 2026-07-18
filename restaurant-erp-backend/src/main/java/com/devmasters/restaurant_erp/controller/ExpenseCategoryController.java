@@ -6,6 +6,7 @@ import com.devmasters.restaurant_erp.model.ApiResponse;
 import com.devmasters.restaurant_erp.model.Expense.ExpenseCategoryModel;
 import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import com.devmasters.restaurant_erp.model.searchcriteria.ExpenseCategorySearchCriteria;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +33,7 @@ public class ExpenseCategoryController {
             new CopyOnWriteArrayList<>();
 
     @PostMapping
-    public ResponseEntity<ApiResponse<ExpenseCategoryModel>> create(@RequestBody ExpenseCategoryModel model) {
+    public ResponseEntity<ApiResponse<ExpenseCategoryModel>> create(@Valid @RequestBody ExpenseCategoryModel model) {
 
         ExpenseCategoryModel response = handler.create(model);
         sendEvent("expense-category-created", response);
@@ -75,7 +76,7 @@ public class ExpenseCategoryController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<ExpenseCategoryModel>> update(
-            @PathVariable UUID id,
+            @Valid @PathVariable UUID id,
             @RequestBody ExpenseCategoryModel model) {
 
         ExpenseCategoryModel response = handler.update(id, model);

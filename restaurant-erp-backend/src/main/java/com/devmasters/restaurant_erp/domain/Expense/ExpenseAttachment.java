@@ -1,6 +1,7 @@
 package com.devmasters.restaurant_erp.domain.Expense;
 
 import com.devmasters.restaurant_erp.domain.BaseEntity;
+import com.devmasters.restaurant_erp.enums.AttachmentType;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -17,7 +18,7 @@ public class ExpenseAttachment extends BaseEntity {
     @DBRef
     private Expense expense;
 
-    private String attachmentType;
+    private AttachmentType attachmentType;
 
     private String fileName;
 

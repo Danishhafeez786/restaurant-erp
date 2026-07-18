@@ -6,6 +6,7 @@ import com.devmasters.restaurant_erp.model.ApiResponse;
 import com.devmasters.restaurant_erp.model.Menu.CategoryModel;
 import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import com.devmasters.restaurant_erp.model.searchcriteria.CategorySearchCriteria;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +33,7 @@ public class CategoryController {
             new CopyOnWriteArrayList<>();
 
     @PostMapping
-    public ResponseEntity<ApiResponse<CategoryModel>> create(@RequestBody CategoryModel model) {
+    public ResponseEntity<ApiResponse<CategoryModel>> create(@Valid @RequestBody CategoryModel model) {
 
         CategoryModel response = categoryHandler.create(model);
         sendEvent("category-created", response);
@@ -71,7 +72,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<CategoryModel>> update(@PathVariable UUID id, @RequestBody CategoryModel model) {
+    public ResponseEntity<ApiResponse<CategoryModel>> update(@Valid @PathVariable UUID id, @RequestBody CategoryModel model) {
         CategoryModel response = categoryHandler.update(id, model);
 
         sendEvent("category-updated", response);

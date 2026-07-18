@@ -5,6 +5,7 @@ import com.devmasters.restaurant_erp.model.ApiResponse;
 import com.devmasters.restaurant_erp.model.Menu.MenuItemModel;
 import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import com.devmasters.restaurant_erp.model.searchcriteria.MenuItemSearchCriteria;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +30,7 @@ public class MenuItemController {
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
     @PostMapping
-    public ResponseEntity<ApiResponse<MenuItemModel>> create(@RequestBody MenuItemModel model) {
+    public ResponseEntity<ApiResponse<MenuItemModel>> create(@Valid @RequestBody MenuItemModel model) {
 
         MenuItemModel response = menuItemHandler.create(model);
         sendEvent("menu-item-created", response);
@@ -69,7 +70,7 @@ public class MenuItemController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<MenuItemModel>> update(
-            @PathVariable UUID id,
+            @Valid @PathVariable UUID id,
             @RequestBody MenuItemModel model) {
 
         MenuItemModel response = menuItemHandler.update(id, model);

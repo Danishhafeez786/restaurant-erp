@@ -5,6 +5,7 @@ import com.devmasters.restaurant_erp.model.ApiResponse;
 import com.devmasters.restaurant_erp.model.VendorModel;
 import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import com.devmasters.restaurant_erp.model.searchcriteria.VendorSearchCriteria;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.http.*;
@@ -27,7 +28,7 @@ public class VendorController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<VendorModel>> create(
-            @RequestBody VendorModel model) {
+            @Valid @RequestBody VendorModel model) {
         VendorModel response = handler.create(model);
         sendEvent("expense-vendor-created", response);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -67,7 +68,7 @@ public class VendorController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<VendorModel>> update(
-            @PathVariable UUID id,
+            @Valid @PathVariable UUID id,
             @RequestBody VendorModel model) {
 
         VendorModel response = handler.update(id, model);

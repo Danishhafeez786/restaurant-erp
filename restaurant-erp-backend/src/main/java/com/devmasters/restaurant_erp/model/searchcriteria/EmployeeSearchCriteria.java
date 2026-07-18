@@ -1,4 +1,4 @@
-package com.devmasters.restaurant_erp.model.employee;
+package com.devmasters.restaurant_erp.model.searchcriteria;
 
 import com.devmasters.restaurant_erp.enums.EmploymentStatus;
 import lombok.*;

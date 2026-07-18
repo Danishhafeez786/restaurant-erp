@@ -1,5 +1,6 @@
 package com.devmasters.restaurant_erp.domain;
 
+import com.devmasters.restaurant_erp.enums.Gender;
 import com.devmasters.restaurant_erp.enums.MemberShipLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,8 +28,9 @@ public class Customer extends BaseEntity {
     private Double creditBalance = 0.0;
     @DBRef
     private Branch branch;
+
     private LocalDate dateOfBirth;
-    private String gender;
+    private Gender gender;
     private Integer totalOrders;
     private Double totalSpent;
     private LocalDate lastOrderDate;
