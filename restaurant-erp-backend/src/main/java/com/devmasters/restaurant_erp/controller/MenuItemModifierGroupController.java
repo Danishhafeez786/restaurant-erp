@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -29,6 +30,7 @@ public class MenuItemModifierGroupController {
     private final MenuItemModifierGroupHandler handler;
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
+    @PreAuthorize("hasAuthority('MENU_ITEM_MODIFIER_GROUP_CREATE')")
     @PostMapping
     public ResponseEntity<ApiResponse<MenuItemModifierGroupModel>> create(
             @Valid @RequestBody MenuItemModifierGroupModel model) {
@@ -48,7 +50,7 @@ public class MenuItemModifierGroupController {
                 );
     }
 
-
+    @PreAuthorize("hasAuthority('MENU_ITEM_MODIFIER_GROUP_VIEW')")
     @PostMapping("/search")
     public ResponseEntity<ApiResponse<PageResponse<MenuItemModifierGroupModel>>> search(
             @RequestBody MenuItemModifierGroupSearchCriteria criteria,
@@ -80,9 +82,9 @@ public class MenuItemModifierGroupController {
         );
     }
 
-
+    @PreAuthorize("hasAuthority('MENU_ITEM_MODIFIER_GROUP_UPDATE')")
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<MenuItemModifierGroupModel>> update(@Valid @PathVariable UUID id, @RequestBody MenuItemModifierGroupModel model) {
+    public ResponseEntity<ApiResponse<MenuItemModifierGroupModel>> update(@PathVariable UUID id,@Valid @RequestBody MenuItemModifierGroupModel model) {
 
         MenuItemModifierGroupModel response = handler.update(id, model);
         sendEvent("menu-item-modifier-group-updated", response);
@@ -97,7 +99,7 @@ public class MenuItemModifierGroupController {
         );
     }
 
-
+    @PreAuthorize("hasAuthority('MENU_ITEM_MODIFIER_GROUP_DELETE')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID id) {
 
@@ -113,7 +115,7 @@ public class MenuItemModifierGroupController {
         );
     }
 
-
+    @PreAuthorize("hasAuthority('MENU_ITEM_MODIFIER_GROUP_RESTORE')")
     @PatchMapping("/{id}/restore")
     public ResponseEntity<ApiResponse<Void>> restore(@PathVariable UUID id) {
 
@@ -130,7 +132,7 @@ public class MenuItemModifierGroupController {
         );
     }
 
-
+    @PreAuthorize("hasAuthority('MENU_ITEM_MODIFIER_GROUP_VIEW')")
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter stream() {
 

@@ -25,7 +25,6 @@ public class ModifierGroupModel {
     private String name;
 
     @NotBlank(message = "Modifier group code is required")
-    @Size(min = 2, max = 20, message = "Modifier group code must be between 2 and 20 characters")
     private String code;
 
     @Size(max = 500, message = "Description cannot exceed 500 characters")

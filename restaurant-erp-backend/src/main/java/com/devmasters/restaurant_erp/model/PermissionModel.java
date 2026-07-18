@@ -22,12 +22,8 @@ public class PermissionModel {
     @Size(min = 2, max = 100, message = "Module must be between 2 and 100 characters")
     private String module;
 
-    @NotBlank(message = "Permission code is required")
-    @Size(min = 2, max = 100, message = "Permission code must be between 2 and 100 characters")
     private String code;
 
-    @NotBlank(message = "Permission name is required")
-    @Size(min = 2, max = 100, message = "Permission name must be between 2 and 100 characters")
     private String name;
 
     private Boolean isActive;

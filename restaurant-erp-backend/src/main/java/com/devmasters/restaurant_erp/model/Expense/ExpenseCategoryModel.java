@@ -25,7 +25,6 @@ public class ExpenseCategoryModel {
     private String categoryName;
 
     @NotBlank(message = "Category code is required")
-    @Size(min = 2, max = 20, message = "Category code must be between 2 and 20 characters")
     private String categoryCode;
 
     @Size(max = 500, message = "Description cannot exceed 500 characters")

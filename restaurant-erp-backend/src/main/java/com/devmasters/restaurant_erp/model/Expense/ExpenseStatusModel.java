@@ -27,7 +27,6 @@ public class ExpenseStatusModel {
     private String statusName;
 
     @NotBlank(message = "Status code is required")
-    @Size(min = 2, max = 30, message = "Status code must be between 2 and 30 characters")
     private String code;
 
     @Size(max = 500, message = "Description cannot exceed 500 characters")

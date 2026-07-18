@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -30,6 +31,7 @@ public class ModifierController {
 
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
+    @PreAuthorize("hasAuthority('MODIFIER_CREATE')")
     @PostMapping
     public ResponseEntity<ApiResponse<ModifierModel>> create(@Valid @RequestBody ModifierModel model) {
 
@@ -47,7 +49,7 @@ public class ModifierController {
                 );
     }
 
-
+    @PreAuthorize("hasAuthority('MODIFIER_VIEW')")
     @PostMapping("/search")
     public ResponseEntity<ApiResponse<PageResponse<ModifierModel>>> search(
             @RequestBody ModifierSearchCriteria criteria,
@@ -79,10 +81,11 @@ public class ModifierController {
         );
     }
 
-
+    @PreAuthorize("hasAuthority('MODIFIER_UPDATE')")
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<ModifierModel>> update(@Valid @PathVariable UUID id,
-            @RequestBody ModifierModel model) {
+    public ResponseEntity<ApiResponse<ModifierModel>> update(
+            @PathVariable UUID id,
+            @Valid @RequestBody ModifierModel model) {
         ModifierModel response = modifierHandler.update(id, model);
         sendEvent(
                 "modifier-updated",
@@ -97,7 +100,7 @@ public class ModifierController {
         );
     }
 
-
+    @PreAuthorize("hasAuthority('MODIFIER_DELETE')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID id) {
 
@@ -114,7 +117,7 @@ public class ModifierController {
         );
     }
 
-
+    @PreAuthorize("hasAuthority('MODIFIER_RESTORE')")
     @PatchMapping("/{id}/restore")
     public ResponseEntity<ApiResponse<Void>> restore(@PathVariable UUID id) {
 
@@ -131,7 +134,7 @@ public class ModifierController {
         );
     }
 
-
+    @PreAuthorize("hasAuthority('MODIFIER_VIEW')")
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter stream() {
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);

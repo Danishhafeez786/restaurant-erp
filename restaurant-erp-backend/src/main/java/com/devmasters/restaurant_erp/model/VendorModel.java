@@ -23,7 +23,6 @@ public class VendorModel {
     private String vendorName;
 
     @NotBlank(message = "Vendor code is required")
-    @Size(min = 2, max = 20, message = "Vendor code must be between 2 and 20 characters")
     private String vendorCode;
 
     @NotBlank(message = "Contact person is required")

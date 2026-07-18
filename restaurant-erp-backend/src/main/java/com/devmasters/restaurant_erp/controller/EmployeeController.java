@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -32,9 +33,11 @@ public class EmployeeController {
     private final List<SseEmitter> emitters =
             new CopyOnWriteArrayList<>();
 
+
     /**
      * Create Employee + User
      */
+    @PreAuthorize("hasAuthority('EMPLOYEE_CREATE')")
     @PostMapping
     public ResponseEntity<ApiResponse<EmployeeModel>> create(
             @Valid @RequestBody EmployeeRequestModel model) {
@@ -45,16 +48,18 @@ public class EmployeeController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.<EmployeeModel>builder()
-                                .success(true)
-                                .message("Employee Created Successfully")
-                                .data(response)
-                                .build()
+                        .success(true)
+                        .message("Employee Created Successfully")
+                        .data(response)
+                        .build()
                 );
     }
+
 
     /**
      * Search Employees
      */
+    @PreAuthorize("hasAuthority('EMPLOYEE_VIEW')")
     @PostMapping("/search")
     public ResponseEntity<ApiResponse<PageResponse<EmployeeModel>>> search(
             @RequestBody EmployeeSearchCriteria criteria,
@@ -63,8 +68,13 @@ public class EmployeeController {
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "DESC") String direction) {
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by(
-                Sort.Direction.valueOf(direction.toUpperCase()), sortBy));
+
+        Pageable pageable = PageRequest.of(page, size,
+                Sort.by(
+                        Sort.Direction.valueOf(direction.toUpperCase()),
+                        sortBy
+                ));
+
 
         return ResponseEntity.ok(
                 ApiResponse.<PageResponse<EmployeeModel>>builder()
@@ -75,11 +85,15 @@ public class EmployeeController {
         );
     }
 
+
     /**
      * Get Employee By Id
      */
+    @PreAuthorize("hasAuthority('EMPLOYEE_VIEW')")
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<EmployeeModel>> getById(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<EmployeeModel>> getById(
+            @PathVariable UUID id) {
+
 
         return ResponseEntity.ok(
                 ApiResponse.<EmployeeModel>builder()
@@ -87,19 +101,25 @@ public class EmployeeController {
                         .message("Employee fetched successfully")
                         .data(employeeHandler.findById(id))
                         .build()
-
         );
     }
+
 
     /**
      * Update Employee
      */
+    @PreAuthorize("hasAuthority('EMPLOYEE_UPDATE')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<EmployeeModel>> update(
-            @Valid @PathVariable UUID id, @RequestBody EmployeeModel model) {
+            @PathVariable UUID id,
+            @Valid @RequestBody EmployeeModel model) {
+
 
         EmployeeModel response = employeeHandler.update(id, model);
+
         sendEvent("employee-updated", response);
+
+
         return ResponseEntity.ok(
                 ApiResponse.<EmployeeModel>builder()
                         .success(true)
@@ -109,13 +129,21 @@ public class EmployeeController {
         );
     }
 
+
     /**
      * Soft Delete
      */
+    @PreAuthorize("hasAuthority('EMPLOYEE_DELETE')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<Void>> delete(
+            @PathVariable UUID id) {
+
+
         EmployeeModel deleted = employeeHandler.delete(id);
+
         sendEvent("employee-deleted", deleted);
+
+
         return ResponseEntity.ok(
                 ApiResponse.<Void>builder()
                         .success(true)
@@ -124,13 +152,21 @@ public class EmployeeController {
         );
     }
 
+
     /**
      * Restore Employee
      */
+    @PreAuthorize("hasAuthority('EMPLOYEE_RESTORE')")
     @PatchMapping("/{id}/restore")
-    public ResponseEntity<ApiResponse<Void>> restore(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<Void>> restore(
+            @PathVariable UUID id) {
+
+
         EmployeeModel restored = employeeHandler.restore(id);
+
         sendEvent("employee-restored", restored);
+
+
         return ResponseEntity.ok(
                 ApiResponse.<Void>builder()
                         .success(true)
@@ -139,29 +175,42 @@ public class EmployeeController {
         );
     }
 
+
     /**
      * SSE Stream
      */
+    @PreAuthorize("hasAuthority('EMPLOYEE_VIEW')")
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter stream() {
+
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
+
         emitters.add(emitter);
+
         emitter.onCompletion(() -> emitters.remove(emitter));
         emitter.onTimeout(() -> emitters.remove(emitter));
         emitter.onError(e -> emitters.remove(emitter));
+
         return emitter;
     }
 
+
     private void sendEvent(String eventName, Object data) {
+
         emitters.forEach(emitter -> {
+
             try {
+
                 emitter.send(SseEmitter.event()
                         .name(eventName)
                         .data(data));
+
             } catch (IOException e) {
+
                 emitter.completeWithError(e);
                 emitters.remove(emitter);
             }
+
         });
     }
 }

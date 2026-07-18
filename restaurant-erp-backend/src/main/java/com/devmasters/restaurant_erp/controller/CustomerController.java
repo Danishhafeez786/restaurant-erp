@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -30,8 +31,10 @@ public class CustomerController {
 
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
+    @PreAuthorize("hasAuthority('CUSTOMER_CREATE')")
     @PostMapping
-    public ResponseEntity<ApiResponse<CustomerModel>> create(@Valid @RequestBody CustomerModel model) {
+    public ResponseEntity<ApiResponse<CustomerModel>> create(
+            @Valid @RequestBody CustomerModel model) {
 
         CustomerModel response = customerHandler.create(model);
 
@@ -39,13 +42,15 @@ public class CustomerController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.<CustomerModel>builder()
-                                .success(true)
-                                .message("Customer Created Successfully")
-                                .data(response)
-                                .build()
+                        .success(true)
+                        .message("Customer Created Successfully")
+                        .data(response)
+                        .build()
                 );
     }
 
+
+    @PreAuthorize("hasAuthority('CUSTOMER_VIEW')")
     @PostMapping("/search")
     public ResponseEntity<ApiResponse<PageResponse<CustomerModel>>> search(
             @RequestBody CustomerSearchCriteria criteria,
@@ -56,60 +61,73 @@ public class CustomerController {
 
         Pageable pageable = PageRequest.of(page, size,
                 Sort.by(Sort.Direction.valueOf(direction.toUpperCase()), sortBy));
-        PageResponse<CustomerModel> customerModels = customerHandler.getAll(criteria, pageable);
+
+        PageResponse<CustomerModel> customerModels =
+                customerHandler.getAll(criteria, pageable);
 
         return ResponseEntity.ok(ApiResponse.<PageResponse<CustomerModel>>builder()
-                        .success(true)
-                        .message("Customers fetched successfully")
-                        .data(customerModels)
-                        .build()
+                .success(true)
+                .message("Customers fetched successfully")
+                .data(customerModels)
+                .build()
         );
     }
 
+
+    @PreAuthorize("hasAuthority('CUSTOMER_UPDATE')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<CustomerModel>> update(
-            @Valid @PathVariable UUID id, @RequestBody CustomerModel model) {
+            @PathVariable UUID id,
+            @Valid @RequestBody CustomerModel model) {
 
         CustomerModel response = customerHandler.update(id, model);
 
         sendEvent("customer-updated", response);
 
         return ResponseEntity.ok(ApiResponse.<CustomerModel>builder()
-                        .success(true)
-                        .message("Customer Updated Successfully")
-                        .data(response)
-                        .build()
+                .success(true)
+                .message("Customer Updated Successfully")
+                .data(response)
+                .build()
         );
     }
 
+
+    @PreAuthorize("hasAuthority('CUSTOMER_DELETE')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<Void>> delete(
+            @PathVariable UUID id) {
 
         CustomerModel deleted = customerHandler.delete(id);
 
         sendEvent("customer-deleted", deleted);
 
         return ResponseEntity.ok(ApiResponse.<Void>builder()
-                        .success(true)
-                        .message("Customer Deleted Successfully")
-                        .build()
+                .success(true)
+                .message("Customer Deleted Successfully")
+                .build()
         );
     }
 
+
+    @PreAuthorize("hasAuthority('CUSTOMER_RESTORE')")
     @PatchMapping("/{id}/restore")
-    public ResponseEntity<ApiResponse<Void>> restore(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<Void>> restore(
+            @PathVariable UUID id) {
 
         CustomerModel restored = customerHandler.restore(id);
 
         sendEvent("customer-restored", restored);
 
         return ResponseEntity.ok(ApiResponse.<Void>builder()
-                        .success(true)
-                        .message("Customer Restored Successfully")
-                        .build()
+                .success(true)
+                .message("Customer Restored Successfully")
+                .build()
         );
     }
 
+
+    @PreAuthorize("hasAuthority('CUSTOMER_VIEW')")
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter stream() {
 

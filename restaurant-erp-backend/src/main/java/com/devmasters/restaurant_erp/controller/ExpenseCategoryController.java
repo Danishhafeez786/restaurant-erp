@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -32,11 +33,15 @@ public class ExpenseCategoryController {
     private final List<SseEmitter> emitters =
             new CopyOnWriteArrayList<>();
 
+
+    @PreAuthorize("hasAuthority('EXPENSE_CATEGORY_CREATE')")
     @PostMapping
-    public ResponseEntity<ApiResponse<ExpenseCategoryModel>> create(@Valid @RequestBody ExpenseCategoryModel model) {
+    public ResponseEntity<ApiResponse<ExpenseCategoryModel>> create(
+            @Valid @RequestBody ExpenseCategoryModel model) {
 
         ExpenseCategoryModel response = handler.create(model);
         sendEvent("expense-category-created", response);
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(
@@ -48,6 +53,8 @@ public class ExpenseCategoryController {
                 );
     }
 
+
+    @PreAuthorize("hasAuthority('EXPENSE_CATEGORY_VIEW')")
     @PostMapping("/search")
     public ResponseEntity<ApiResponse<PageResponse<ExpenseCategoryModel>>> search(
             @RequestBody ExpenseCategorySearchCriteria criteria,
@@ -62,25 +69,26 @@ public class ExpenseCategoryController {
                 Sort.by(
                         Sort.Direction.valueOf(direction.toUpperCase()),
                         sortBy));
+
         return ResponseEntity.ok(
                 ApiResponse.<PageResponse<ExpenseCategoryModel>>builder()
                         .success(true)
                         .message("Expense Categories fetched successfully")
-                        .data(
-                                handler.getAll(
-                                        criteria,
-                                        pageable))
+                        .data(handler.getAll(criteria, pageable))
                         .build()
         );
     }
 
+
+    @PreAuthorize("hasAuthority('EXPENSE_CATEGORY_UPDATE')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<ExpenseCategoryModel>> update(
-            @Valid @PathVariable UUID id,
-            @RequestBody ExpenseCategoryModel model) {
+            @PathVariable UUID id,
+            @Valid @RequestBody ExpenseCategoryModel model) {
 
         ExpenseCategoryModel response = handler.update(id, model);
         sendEvent("expense-category-updated", response);
+
         return ResponseEntity.ok(
                 ApiResponse.<ExpenseCategoryModel>builder()
                         .success(true)
@@ -90,11 +98,15 @@ public class ExpenseCategoryController {
         );
     }
 
+
+    @PreAuthorize("hasAuthority('EXPENSE_CATEGORY_DELETE')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<Void>> delete(
+            @PathVariable UUID id) {
 
         ExpenseCategoryModel response = handler.delete(id);
         sendEvent("expense-category-deleted", response);
+
         return ResponseEntity.ok(
                 ApiResponse.<Void>builder()
                         .success(true)
@@ -103,8 +115,11 @@ public class ExpenseCategoryController {
         );
     }
 
+
+    @PreAuthorize("hasAuthority('EXPENSE_CATEGORY_RESTORE')")
     @PatchMapping("/{id}/restore")
-    public ResponseEntity<ApiResponse<Void>> restore(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<Void>> restore(
+            @PathVariable UUID id) {
 
         ExpenseCategoryModel response = handler.restore(id);
         sendEvent("expense-category-restored", response);
@@ -117,16 +132,21 @@ public class ExpenseCategoryController {
         );
     }
 
+
+    @PreAuthorize("hasAuthority('EXPENSE_CATEGORY_VIEW')")
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter stream() {
+
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
 
         emitters.add(emitter);
         emitter.onCompletion(() -> emitters.remove(emitter));
         emitter.onTimeout(() -> emitters.remove(emitter));
         emitter.onError(e -> emitters.remove(emitter));
+
         return emitter;
     }
+
 
     private void sendEvent(String eventName, Object data) {
 
@@ -137,6 +157,7 @@ public class ExpenseCategoryController {
                                 .name(eventName)
                                 .data(data)
                 );
+
             } catch (IOException e) {
                 emitter.completeWithError(e);
                 emitters.remove(emitter);

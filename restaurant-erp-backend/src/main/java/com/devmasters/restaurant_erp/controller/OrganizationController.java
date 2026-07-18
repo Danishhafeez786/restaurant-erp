@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -31,8 +32,11 @@ public class OrganizationController {
 
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
+
+    @PreAuthorize("hasAuthority('ORGANIZATION_CREATE')")
     @PostMapping
-    public ResponseEntity<ApiResponse<OrganizationModel>> create(@Valid @RequestBody OrganizationModel model) {
+    public ResponseEntity<ApiResponse<OrganizationModel>> create(
+            @Valid @RequestBody OrganizationModel model) {
 
         OrganizationModel response = organizationHandler.create(model);
 
@@ -46,6 +50,8 @@ public class OrganizationController {
                         .build());
     }
 
+
+    @PreAuthorize("hasAuthority('ORGANIZATION_VIEW')")
     @PostMapping("/search")
     public ResponseEntity<ApiResponse<PageResponse<OrganizationModel>>> search(
             @RequestBody OrganizationSearchCriteria criteria,
@@ -69,10 +75,12 @@ public class OrganizationController {
                         .build());
     }
 
+
+    @PreAuthorize("hasAuthority('ORGANIZATION_UPDATE')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<OrganizationModel>> update(
-            @Valid @PathVariable UUID id,
-            @RequestBody OrganizationModel model) {
+            @PathVariable UUID id,
+            @Valid @RequestBody OrganizationModel model) {
 
         OrganizationModel response =
                 organizationHandler.update(id, model);
@@ -87,6 +95,8 @@ public class OrganizationController {
                         .build());
     }
 
+
+    @PreAuthorize("hasAuthority('ORGANIZATION_DELETE')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> delete(
             @PathVariable UUID id) {
@@ -103,6 +113,8 @@ public class OrganizationController {
                         .build());
     }
 
+
+    @PreAuthorize("hasAuthority('ORGANIZATION_RESTORE')")
     @PatchMapping("/{id}/restore")
     public ResponseEntity<ApiResponse<Void>> restore(
             @PathVariable UUID id) {
@@ -119,6 +131,8 @@ public class OrganizationController {
                         .build());
     }
 
+
+    @PreAuthorize("hasAuthority('ORGANIZATION_VIEW')")
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter stream() {
 
@@ -133,9 +147,11 @@ public class OrganizationController {
         return emitter;
     }
 
+
     private void sendEvent(String eventName, Object data) {
 
         List<SseEmitter> deadEmitters = new ArrayList<>();
+
         for (SseEmitter emitter : emitters) {
             try {
                 emitter.send(
@@ -148,6 +164,7 @@ public class OrganizationController {
                 deadEmitters.add(emitter);
             }
         }
+
         emitters.removeAll(deadEmitters);
     }
 }

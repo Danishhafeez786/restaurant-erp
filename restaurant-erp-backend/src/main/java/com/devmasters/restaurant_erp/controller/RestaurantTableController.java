@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -29,6 +30,7 @@ public class RestaurantTableController {
     private final RestaurantTableHandler restaurantTableHandler;
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
+    @PreAuthorize("hasAuthority('TABLE_CREATE')")
     @PostMapping
     public ResponseEntity<ApiResponse<RestaurantTableModel>> create(@Valid @RequestBody RestaurantTableModel model) {
 
@@ -44,6 +46,7 @@ public class RestaurantTableController {
                 );
     }
 
+    @PreAuthorize("hasAuthority('TABLE_VIEW')")
     @PostMapping("/search")
     public ResponseEntity<ApiResponse<PageResponse<RestaurantTableModel>>> search(
             @RequestBody RestaurantTableSearchCriteria criteria,
@@ -69,8 +72,9 @@ public class RestaurantTableController {
         );
     }
 
+    @PreAuthorize("hasAuthority('TABLE_UPDATE')")
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<RestaurantTableModel>> update(@Valid @PathVariable UUID id, @RequestBody RestaurantTableModel model) {
+    public ResponseEntity<ApiResponse<RestaurantTableModel>> update(@PathVariable UUID id,@Valid @RequestBody RestaurantTableModel model) {
 
         RestaurantTableModel response = restaurantTableHandler.update(id, model);
         sendEvent("table-updated", response);
@@ -83,6 +87,7 @@ public class RestaurantTableController {
         );
     }
 
+    @PreAuthorize("hasAuthority('TABLE_DELETE')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID id) {
 
@@ -96,6 +101,7 @@ public class RestaurantTableController {
         );
     }
 
+    @PreAuthorize("hasAuthority('TABLE_RESTORE')")
     @PatchMapping("/{id}/restore")
     public ResponseEntity<ApiResponse<Void>> restore(@PathVariable UUID id) {
 
@@ -109,6 +115,7 @@ public class RestaurantTableController {
         );
     }
 
+    @PreAuthorize("hasAuthority('TABLE_VIEW')")
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter stream() {
 

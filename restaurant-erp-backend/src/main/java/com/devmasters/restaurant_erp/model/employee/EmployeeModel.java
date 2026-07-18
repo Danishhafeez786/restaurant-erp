@@ -26,7 +26,6 @@ public class EmployeeModel {
     private UUID id;
 
     @NotBlank(message = "Employee code is required")
-    @Size(min = 2, max = 20, message = "Employee code must be between 2 and 20 characters")
     private String employeeCode;
 
     @NotBlank(message = "Full name is required")

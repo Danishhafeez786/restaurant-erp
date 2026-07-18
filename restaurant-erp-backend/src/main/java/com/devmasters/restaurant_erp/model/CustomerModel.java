@@ -22,7 +22,6 @@ public class CustomerModel {
     private UUID id;
 
     @NotBlank(message = "Customer code is required")
-    @Size(max = 20, message = "Customer code cannot exceed 20 characters")
     private String customerCode;
 
     @NotBlank(message = "Customer name is required")

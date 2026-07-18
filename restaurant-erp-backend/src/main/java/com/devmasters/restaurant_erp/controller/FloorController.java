@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -30,11 +31,14 @@ public class FloorController {
 
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
+    @PreAuthorize("hasAuthority('FLOOR_CREATE')")
     @PostMapping
-    public ResponseEntity<ApiResponse<FloorModel>> create(@Valid @RequestBody FloorModel model) {
+    public ResponseEntity<ApiResponse<FloorModel>> create(
+            @Valid @RequestBody FloorModel model) {
 
         FloorModel response = floorHandler.create(model);
         sendEvent("floor-created", response);
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(
                         ApiResponse.<FloorModel>builder()
@@ -45,6 +49,8 @@ public class FloorController {
                 );
     }
 
+
+    @PreAuthorize("hasAuthority('FLOOR_VIEW')")
     @PostMapping("/search")
     public ResponseEntity<ApiResponse<PageResponse<FloorModel>>> search(
             @RequestBody FloorSearchCriteria criteria,
@@ -56,7 +62,11 @@ public class FloorController {
         Pageable pageable = PageRequest.of(
                 page,
                 size,
-                Sort.by(Sort.Direction.valueOf(direction.toUpperCase()), sortBy));
+                Sort.by(
+                        Sort.Direction.valueOf(direction.toUpperCase()),
+                        sortBy
+                ));
+
         return ResponseEntity.ok(
                 ApiResponse.<PageResponse<FloorModel>>builder()
                         .success(true)
@@ -66,11 +76,16 @@ public class FloorController {
         );
     }
 
+
+    @PreAuthorize("hasAuthority('FLOOR_UPDATE')")
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<FloorModel>> update(@Valid @PathVariable UUID id, @RequestBody FloorModel model) {
+    public ResponseEntity<ApiResponse<FloorModel>> update(
+            @PathVariable UUID id,
+            @Valid @RequestBody FloorModel model) {
 
         FloorModel response = floorHandler.update(id, model);
         sendEvent("floor-updated", response);
+
         return ResponseEntity.ok(
                 ApiResponse.<FloorModel>builder()
                         .success(true)
@@ -80,11 +95,15 @@ public class FloorController {
         );
     }
 
+
+    @PreAuthorize("hasAuthority('FLOOR_DELETE')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<Void>> delete(
+            @PathVariable UUID id) {
 
         FloorModel deleted = floorHandler.delete(id);
         sendEvent("floor-deleted", deleted);
+
         return ResponseEntity.ok(
                 ApiResponse.<Void>builder()
                         .success(true)
@@ -93,10 +112,15 @@ public class FloorController {
         );
     }
 
+
+    @PreAuthorize("hasAuthority('FLOOR_RESTORE')")
     @PatchMapping("/{id}/restore")
-    public ResponseEntity<ApiResponse<Void>> restore(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<Void>> restore(
+            @PathVariable UUID id) {
+
         FloorModel restored = floorHandler.restore(id);
         sendEvent("floor-restored", restored);
+
         return ResponseEntity.ok(
                 ApiResponse.<Void>builder()
                         .success(true)
@@ -105,22 +129,33 @@ public class FloorController {
         );
     }
 
+
+    @PreAuthorize("hasAuthority('FLOOR_VIEW')")
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter stream() {
+
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
+
         emitters.add(emitter);
+
         emitter.onCompletion(() -> emitters.remove(emitter));
         emitter.onTimeout(() -> emitters.remove(emitter));
         emitter.onError(e -> emitters.remove(emitter));
+
         return emitter;
     }
 
+
     private void sendEvent(String eventName, Object data) {
+
         emitters.forEach(emitter -> {
             try {
-                emitter.send(SseEmitter.event()
+                emitter.send(
+                        SseEmitter.event()
                                 .name(eventName)
-                                .data(data));
+                                .data(data)
+                );
+
             } catch (IOException e) {
                 emitter.completeWithError(e);
                 emitters.remove(emitter);

@@ -2,7 +2,6 @@ package com.devmasters.restaurant_erp.controller;
 
 import com.devmasters.restaurant_erp.handler.CategoryHandler;
 import com.devmasters.restaurant_erp.model.ApiResponse;
-
 import com.devmasters.restaurant_erp.model.Menu.CategoryModel;
 import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import com.devmasters.restaurant_erp.model.searchcriteria.CategorySearchCriteria;
@@ -14,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -32,11 +32,15 @@ public class CategoryController {
     private final List<SseEmitter> emitters =
             new CopyOnWriteArrayList<>();
 
+
+    @PreAuthorize("hasAuthority('CATEGORY_CREATE')")
     @PostMapping
-    public ResponseEntity<ApiResponse<CategoryModel>> create(@Valid @RequestBody CategoryModel model) {
+    public ResponseEntity<ApiResponse<CategoryModel>> create(
+            @Valid @RequestBody CategoryModel model) {
 
         CategoryModel response = categoryHandler.create(model);
         sendEvent("category-created", response);
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(
                         ApiResponse.<CategoryModel>builder()
@@ -47,6 +51,8 @@ public class CategoryController {
                 );
     }
 
+
+    @PreAuthorize("hasAuthority('CATEGORY_VIEW')")
     @PostMapping("/search")
     public ResponseEntity<ApiResponse<PageResponse<CategoryModel>>> search(
             @RequestBody CategorySearchCriteria criteria,
@@ -55,10 +61,15 @@ public class CategoryController {
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "DESC") String direction) {
 
-        Pageable pageable = PageRequest.of(page, size,
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
                 Sort.by(
                         Sort.Direction.valueOf(direction.toUpperCase()),
-                        sortBy));
+                        sortBy
+                )
+        );
+
         return ResponseEntity.ok(
                 ApiResponse.<PageResponse<CategoryModel>>builder()
                         .success(true)
@@ -71,11 +82,17 @@ public class CategoryController {
         );
     }
 
+
+    @PreAuthorize("hasAuthority('CATEGORY_UPDATE')")
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<CategoryModel>> update(@Valid @PathVariable UUID id, @RequestBody CategoryModel model) {
+    public ResponseEntity<ApiResponse<CategoryModel>> update(
+            @PathVariable UUID id,
+            @Valid @RequestBody CategoryModel model) {
+
         CategoryModel response = categoryHandler.update(id, model);
 
         sendEvent("category-updated", response);
+
         return ResponseEntity.ok(
                 ApiResponse.<CategoryModel>builder()
                         .success(true)
@@ -85,11 +102,16 @@ public class CategoryController {
         );
     }
 
+
+    @PreAuthorize("hasAuthority('CATEGORY_DELETE')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<Void>> delete(
+            @PathVariable UUID id) {
 
         CategoryModel deleted = categoryHandler.delete(id);
+
         sendEvent("category-deleted", deleted);
+
         return ResponseEntity.ok(
                 ApiResponse.<Void>builder()
                         .success(true)
@@ -98,11 +120,16 @@ public class CategoryController {
         );
     }
 
+
+    @PreAuthorize("hasAuthority('CATEGORY_RESTORE')")
     @PatchMapping("/{id}/restore")
-    public ResponseEntity<ApiResponse<Void>> restore(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<Void>> restore(
+            @PathVariable UUID id) {
 
         CategoryModel restored = categoryHandler.restore(id);
+
         sendEvent("category-restored", restored);
+
         return ResponseEntity.ok(
                 ApiResponse.<Void>builder()
                         .success(true)
@@ -111,8 +138,11 @@ public class CategoryController {
         );
     }
 
+
+    @PreAuthorize("hasAuthority('CATEGORY_VIEW')")
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter stream() {
+
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
 
         emitters.add(emitter);
@@ -122,6 +152,7 @@ public class CategoryController {
 
         return emitter;
     }
+
 
     private void sendEvent(String eventName, Object data) {
 
@@ -135,7 +166,6 @@ public class CategoryController {
             } catch (IOException e) {
                 emitter.completeWithError(e);
                 emitters.remove(emitter);
-
             }
         });
     }

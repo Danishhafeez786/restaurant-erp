@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -27,13 +28,19 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class MenuItemController {
 
     private final MenuItemHandler menuItemHandler;
+
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
+
+    @PreAuthorize("hasAuthority('MENU_ITEM_CREATE')")
     @PostMapping
-    public ResponseEntity<ApiResponse<MenuItemModel>> create(@Valid @RequestBody MenuItemModel model) {
+    public ResponseEntity<ApiResponse<MenuItemModel>> create(
+            @Valid @RequestBody MenuItemModel model) {
 
         MenuItemModel response = menuItemHandler.create(model);
+
         sendEvent("menu-item-created", response);
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(
                         ApiResponse.<MenuItemModel>builder()
@@ -44,6 +51,8 @@ public class MenuItemController {
                 );
     }
 
+
+    @PreAuthorize("hasAuthority('MENU_ITEM_VIEW')")
     @PostMapping("/search")
     public ResponseEntity<ApiResponse<PageResponse<MenuItemModel>>> search(
             @RequestBody MenuItemSearchCriteria criteria,
@@ -52,12 +61,14 @@ public class MenuItemController {
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "DESC") String direction) {
 
+
         Pageable pageable = PageRequest.of(
                 page,
                 size,
                 Sort.by(
                         Sort.Direction.valueOf(direction.toUpperCase()),
                         sortBy));
+
 
         return ResponseEntity.ok(
                 ApiResponse.<PageResponse<MenuItemModel>>builder()
@@ -68,13 +79,19 @@ public class MenuItemController {
         );
     }
 
+
+    @PreAuthorize("hasAuthority('MENU_ITEM_UPDATE')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<MenuItemModel>> update(
-            @Valid @PathVariable UUID id,
-            @RequestBody MenuItemModel model) {
+            @PathVariable UUID id,
+            @Valid @RequestBody MenuItemModel model) {
+
 
         MenuItemModel response = menuItemHandler.update(id, model);
+
         sendEvent("menu-item-updated", response);
+
+
         return ResponseEntity.ok(
                 ApiResponse.<MenuItemModel>builder()
                         .success(true)
@@ -84,11 +101,18 @@ public class MenuItemController {
         );
     }
 
+
+    @PreAuthorize("hasAuthority('MENU_ITEM_DELETE')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<Void>> delete(
+            @PathVariable UUID id) {
+
 
         MenuItemModel deleted = menuItemHandler.delete(id);
+
         sendEvent("menu-item-deleted", deleted);
+
+
         return ResponseEntity.ok(
                 ApiResponse.<Void>builder()
                         .success(true)
@@ -97,11 +121,18 @@ public class MenuItemController {
         );
     }
 
+
+    @PreAuthorize("hasAuthority('MENU_ITEM_RESTORE')")
     @PatchMapping("/{id}/restore")
-    public ResponseEntity<ApiResponse<Void>> restore(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<Void>> restore(
+            @PathVariable UUID id) {
+
 
         MenuItemModel restored = menuItemHandler.restore(id);
+
         sendEvent("menu-item-restored", restored);
+
+
         return ResponseEntity.ok(
                 ApiResponse.<Void>builder()
                         .success(true)
@@ -110,8 +141,11 @@ public class MenuItemController {
         );
     }
 
+
+    @PreAuthorize("hasAuthority('MENU_ITEM_VIEW')")
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter stream() {
+
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
 
         emitters.add(emitter);
@@ -119,19 +153,28 @@ public class MenuItemController {
         emitter.onCompletion(() -> emitters.remove(emitter));
         emitter.onTimeout(() -> emitters.remove(emitter));
         emitter.onError(e -> emitters.remove(emitter));
+
         return emitter;
     }
+
 
     private void sendEvent(String eventName, Object data) {
 
         emitters.forEach(emitter -> {
+
             try {
-                emitter.send(SseEmitter.event()
+
+                emitter.send(
+                        SseEmitter.event()
                                 .name(eventName)
-                                .data(data));
+                                .data(data)
+                );
+
             } catch (IOException e) {
+
                 emitter.completeWithError(e);
                 emitters.remove(emitter);
+
             }
         });
     }

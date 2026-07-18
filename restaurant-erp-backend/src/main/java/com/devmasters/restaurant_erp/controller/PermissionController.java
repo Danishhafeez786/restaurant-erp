@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -30,6 +31,7 @@ public class PermissionController {
 
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
+    @PreAuthorize("hasAuthority('PERMISSION_CREATE')")
     @PostMapping
     public ResponseEntity<ApiResponse<List<PermissionModel>>> create(
             @Valid @RequestBody PermissionModel model) {
@@ -47,6 +49,7 @@ public class PermissionController {
                         .build());
     }
 
+    @PreAuthorize("hasAuthority('PERMISSION_VIEW')")
     @PostMapping("/search")
     public ResponseEntity<ApiResponse<PageResponse<PermissionModel>>> search(
             @RequestBody PermissionSearchCriteria criteria,
@@ -67,10 +70,11 @@ public class PermissionController {
         );
     }
 
+    @PreAuthorize("hasAuthority('PERMISSION_UPDATE')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<PermissionModel>> update(
-            @Valid  @PathVariable UUID id,
-            @RequestBody PermissionModel model) {
+            @PathVariable UUID id,
+            @Valid @RequestBody PermissionModel model) {
 
         PermissionModel response =
                 permissionHandler.update(id, model);
@@ -86,6 +90,7 @@ public class PermissionController {
         );
     }
 
+    @PreAuthorize("hasAuthority('PERMISSION_DELETE')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> delete(
             @PathVariable UUID id) {
@@ -102,7 +107,7 @@ public class PermissionController {
                         .build()
         );
     }
-
+    @PreAuthorize("hasAuthority('PERMISSION_RESTORE')")
     @PatchMapping("/{id}/restore")
     public ResponseEntity<ApiResponse<Void>> restore(
             @PathVariable UUID id) {
@@ -119,7 +124,7 @@ public class PermissionController {
                         .build()
         );
     }
-
+    @PreAuthorize("hasAuthority('PERMISSION_VIEW')")
     @GetMapping(
             value = "/stream",
             produces = MediaType.TEXT_EVENT_STREAM_VALUE)

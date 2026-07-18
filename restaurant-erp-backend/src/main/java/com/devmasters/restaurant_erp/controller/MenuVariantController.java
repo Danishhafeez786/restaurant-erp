@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -30,11 +31,15 @@ public class MenuVariantController {
 
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
+
+    @PreAuthorize("hasAuthority('MENU_VARIANT_CREATE')")
     @PostMapping
-    public ResponseEntity<ApiResponse<MenuVariantModel>> create(@Valid @RequestBody MenuVariantModel model) {
+    public ResponseEntity<ApiResponse<MenuVariantModel>> create(
+            @Valid @RequestBody MenuVariantModel model) {
 
         MenuVariantModel response = menuVariantHandler.create(model);
         sendEvent("menu-variant-created", response);
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(
                         ApiResponse.<MenuVariantModel>builder()
@@ -45,6 +50,8 @@ public class MenuVariantController {
                 );
     }
 
+
+    @PreAuthorize("hasAuthority('MENU_VARIANT_VIEW')")
     @PostMapping("/search")
     public ResponseEntity<ApiResponse<PageResponse<MenuVariantModel>>> search(
             @RequestBody MenuVariantSearchCriteria criteria,
@@ -69,11 +76,16 @@ public class MenuVariantController {
         );
     }
 
+
+    @PreAuthorize("hasAuthority('MENU_VARIANT_UPDATE')")
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<MenuVariantModel>> update(@Valid @PathVariable UUID id, @RequestBody MenuVariantModel model) {
+    public ResponseEntity<ApiResponse<MenuVariantModel>> update(
+            @Valid @PathVariable UUID id,
+            @RequestBody MenuVariantModel model) {
 
         MenuVariantModel response = menuVariantHandler.update(id, model);
         sendEvent("menu-variant-updated", response);
+
         return ResponseEntity.ok(
                 ApiResponse.<MenuVariantModel>builder()
                         .success(true)
@@ -83,11 +95,15 @@ public class MenuVariantController {
         );
     }
 
+
+    @PreAuthorize("hasAuthority('MENU_VARIANT_DELETE')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<Void>> delete(
+            @PathVariable UUID id) {
 
         MenuVariantModel deleted = menuVariantHandler.delete(id);
         sendEvent("menu-variant-deleted", deleted);
+
         return ResponseEntity.ok(
                 ApiResponse.<Void>builder()
                         .success(true)
@@ -96,11 +112,15 @@ public class MenuVariantController {
         );
     }
 
+
+    @PreAuthorize("hasAuthority('MENU_VARIANT_RESTORE')")
     @PatchMapping("/{id}/restore")
-    public ResponseEntity<ApiResponse<Void>> restore(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<Void>> restore(
+            @PathVariable UUID id) {
 
         MenuVariantModel restored = menuVariantHandler.restore(id);
         sendEvent("menu-variant-restored", restored);
+
         return ResponseEntity.ok(
                 ApiResponse.<Void>builder()
                         .success(true)
@@ -109,16 +129,21 @@ public class MenuVariantController {
         );
     }
 
+
+    @PreAuthorize("hasAuthority('MENU_VARIANT_VIEW')")
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter stream() {
+
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
 
         emitters.add(emitter);
         emitter.onCompletion(() -> emitters.remove(emitter));
         emitter.onTimeout(() -> emitters.remove(emitter));
         emitter.onError(e -> emitters.remove(emitter));
+
         return emitter;
     }
+
 
     private void sendEvent(String eventName, Object data) {
         emitters.forEach(emitter -> {
@@ -131,7 +156,6 @@ public class MenuVariantController {
             } catch (IOException e) {
                 emitter.completeWithError(e);
                 emitters.remove(emitter);
-
             }
         });
     }

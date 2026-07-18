@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.http.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -26,11 +27,15 @@ public class PaymentMethodController {
 
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
+
+    @PreAuthorize("hasAuthority('PAYMENT_METHOD_CREATE')")
     @PostMapping
-    public ResponseEntity<ApiResponse<PaymentMethodModel>> create(@Valid @RequestBody PaymentMethodModel model) {
+    public ResponseEntity<ApiResponse<PaymentMethodModel>> create(
+            @Valid @RequestBody PaymentMethodModel model) {
 
         PaymentMethodModel response = handler.create(model);
         sendEvent("payment-method-created", response);
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(
                         ApiResponse.<PaymentMethodModel>builder()
@@ -41,6 +46,8 @@ public class PaymentMethodController {
                 );
     }
 
+
+    @PreAuthorize("hasAuthority('PAYMENT_METHOD_VIEW')")
     @PostMapping("/search")
     public ResponseEntity<ApiResponse<PageResponse<PaymentMethodModel>>> search(
             @RequestBody PaymentMethodSearchCriteria criteria,
@@ -48,31 +55,35 @@ public class PaymentMethodController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "DESC") String direction) {
+
         Pageable pageable = PageRequest.of(
                 page,
                 size,
                 Sort.by(
                         Sort.Direction.valueOf(direction.toUpperCase()),
-                        sortBy));
+                        sortBy
+                )
+        );
+
         return ResponseEntity.ok(
                 ApiResponse.<PageResponse<PaymentMethodModel>>builder()
                         .success(true)
                         .message("Payment Methods fetched successfully")
-                        .data(
-                                handler.getAll(
-                                        criteria,
-                                        pageable))
+                        .data(handler.getAll(criteria, pageable))
                         .build()
         );
     }
 
+
+    @PreAuthorize("hasAuthority('PAYMENT_METHOD_UPDATE')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<PaymentMethodModel>> update(
-            @Valid @PathVariable UUID id,
-            @RequestBody PaymentMethodModel model) {
+            @PathVariable UUID id,
+            @Valid @RequestBody PaymentMethodModel model) {
 
         PaymentMethodModel response = handler.update(id, model);
         sendEvent("payment-method-updated", response);
+
         return ResponseEntity.ok(
                 ApiResponse.<PaymentMethodModel>builder()
                         .success(true)
@@ -82,11 +93,15 @@ public class PaymentMethodController {
         );
     }
 
+
+    @PreAuthorize("hasAuthority('PAYMENT_METHOD_DELETE')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<Void>> delete(
+            @PathVariable UUID id) {
 
         PaymentMethodModel response = handler.delete(id);
         sendEvent("payment-method-deleted", response);
+
         return ResponseEntity.ok(
                 ApiResponse.<Void>builder()
                         .success(true)
@@ -95,12 +110,15 @@ public class PaymentMethodController {
         );
     }
 
+
+    @PreAuthorize("hasAuthority('PAYMENT_METHOD_RESTORE')")
     @PatchMapping("/{id}/restore")
     public ResponseEntity<ApiResponse<Void>> restore(
             @PathVariable UUID id) {
 
         PaymentMethodModel response = handler.restore(id);
         sendEvent("payment-method-restored", response);
+
         return ResponseEntity.ok(
                 ApiResponse.<Void>builder()
                         .success(true)
@@ -109,10 +127,13 @@ public class PaymentMethodController {
         );
     }
 
+
+    @PreAuthorize("hasAuthority('PAYMENT_METHOD_VIEW')")
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter stream() {
 
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
+
         emitters.add(emitter);
         emitter.onCompletion(() -> emitters.remove(emitter));
         emitter.onTimeout(() -> emitters.remove(emitter));
@@ -121,15 +142,16 @@ public class PaymentMethodController {
         return emitter;
     }
 
+
     private void sendEvent(String eventName, Object data) {
 
         emitters.forEach(emitter -> {
-
             try {
                 emitter.send(
                         SseEmitter.event()
                                 .name(eventName)
-                                .data(data));
+                                .data(data)
+                );
 
             } catch (IOException e) {
                 emitter.completeWithError(e);

@@ -26,7 +26,6 @@ public class ModifierModel {
     private String name;
 
     @NotBlank(message = "Modifier code is required")
-    @Size(min = 2, max = 30, message = "Modifier code must be between 2 and 30 characters")
     private String code;
 
     @Size(max = 50, message = "SKU cannot exceed 50 characters")
