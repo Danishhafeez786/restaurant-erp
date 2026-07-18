@@ -26,7 +26,6 @@ public class BranchModel {
     @Size(min = 2, max = 100, message = "Branch name must be between 2 and 100 characters")
     private String branchName;
 
-    @NotBlank(message = "Branch code is required")
     private String branchCode;
 
     @NotBlank(message = "Address is required")

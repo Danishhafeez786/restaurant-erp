@@ -21,7 +21,6 @@ public class CustomerModel {
 
     private UUID id;
 
-    @NotBlank(message = "Customer code is required")
     private String customerCode;
 
     @NotBlank(message = "Customer name is required")

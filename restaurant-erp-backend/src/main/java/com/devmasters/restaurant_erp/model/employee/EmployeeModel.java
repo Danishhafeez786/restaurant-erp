@@ -25,7 +25,6 @@ public class EmployeeModel {
 
     private UUID id;
 
-    @NotBlank(message = "Employee code is required")
     private String employeeCode;
 
     @NotBlank(message = "Full name is required")

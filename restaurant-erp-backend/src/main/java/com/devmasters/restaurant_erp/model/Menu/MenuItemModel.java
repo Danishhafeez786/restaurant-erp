@@ -29,7 +29,6 @@ public class MenuItemModel {
     @Size(min = 2, max = 100, message = "Menu item name must be between 2 and 100 characters")
     private String name;
 
-    @NotBlank(message = "Menu item code is required")
     private String code;
 
     @NotNull(message = "Menu item type is required")

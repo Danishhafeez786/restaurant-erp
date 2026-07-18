@@ -23,7 +23,6 @@ public class CategoryModel {
 
     private UUID id;
 
-    @NotBlank(message = "Category code is required")
     private String categoryCode;
 
     @NotBlank(message = "Category name is required")

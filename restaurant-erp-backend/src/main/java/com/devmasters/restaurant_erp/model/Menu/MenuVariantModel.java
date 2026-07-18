@@ -28,7 +28,6 @@ public class MenuVariantModel {
     @Size(min = 2, max = 100, message = "Variant name must be between 2 and 100 characters")
     private String name;
 
-    @NotBlank(message = "Variant code is required")
     private String code;
 
     @Size(max = 50, message = "SKU cannot exceed 50 characters")
