@@ -11,13 +11,7 @@ import java.util.UUID;
 @Builder
 public class EmployeeSearchCriteria {
 
-    private String employeeCode;
-
-    private String fullName;
-
-    private String phone;
-
-    private String cnic;
+    private String search;
 
     private UUID roleId;
 

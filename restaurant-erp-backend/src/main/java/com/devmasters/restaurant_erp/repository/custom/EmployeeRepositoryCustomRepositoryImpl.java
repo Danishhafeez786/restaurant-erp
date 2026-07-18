@@ -26,17 +26,19 @@ public class EmployeeRepositoryCustomRepositoryImpl implements EmployeeRepositor
 
         List<Criteria> filters = new ArrayList<>();
 
-        if (criteria.getEmployeeCode() != null && !criteria.getEmployeeCode().isBlank())
-            filters.add(Criteria.where("employeeCode").regex(criteria.getEmployeeCode(), "i"));
+        // GLOBAL SEARCH
+        if (criteria.getSearch() != null && !criteria.getSearch().isBlank()) {
 
-        if (criteria.getFullName() != null && !criteria.getFullName().isBlank())
-            filters.add(Criteria.where("fullName").regex(criteria.getFullName(), "i"));
+            String search = criteria.getSearch();
 
-        if (criteria.getPhone() != null && !criteria.getPhone().isBlank())
-            filters.add(Criteria.where("phone").regex(criteria.getPhone(), "i"));
-
-        if (criteria.getCnic() != null && !criteria.getCnic().isBlank())
-            filters.add(Criteria.where("cnic").regex(criteria.getCnic(), "i"));
+            Criteria searchCriteria = new Criteria().orOperator(
+                            Criteria.where("employeeCode").regex(search, "i"),
+                            Criteria.where("fullName").regex(search, "i"),
+                            Criteria.where("phone").regex(search, "i"),
+                            Criteria.where("cnic").regex(search, "i")
+                    );
+            filters.add(searchCriteria);
+        }
 
         if (criteria.getRoleId() != null)
             filters.add(Criteria.where("role.$id").is(criteria.getRoleId()));
