@@ -51,6 +51,15 @@ export default function SubscriptionPlanTable() {
   }, [currentPage, pageSize, sortBy, direction]);
 
   useEffect(() => {
+  const timer = setTimeout(() => {
+    setCurrentPage(0);
+    loadPlans();
+  }, 300);
+
+  return () => clearTimeout(timer);
+}, [searchCriteria, sortBy, direction, pageSize]);
+
+  useEffect(() => {
     console.log("Connecting to Subscription Plan SSE...");
 
     const eventSource = new EventSource(
@@ -160,175 +169,144 @@ export default function SubscriptionPlanTable() {
       {/* SEARCH FILTERS */}
 
       {/* Search Toolbar */}
-      <div className="bg-white border rounded-xl shadow-sm p-4 mb-6">
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Plan Name */}
-          <input
-            type="text"
-            placeholder="Plan Name"
-            value={searchCriteria.name}
-            onChange={(e) =>
-              setSearchCriteria({
-                ...searchCriteria,
-                name: e.target.value,
-              })
-            }
-            className="h-10 w-52 rounded-lg border px-3 text-sm focus:border-[#0d4039] focus:ring-2 focus:ring-[#0d4039]/20 outline-none"
-          />
+      <div className="mb-6 rounded-xl border bg-white p-4 shadow-sm">
+  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
 
-          {/* Status */}
-          <select
-            value={searchCriteria.isActive}
-            onChange={(e) =>
-              setSearchCriteria({
-                ...searchCriteria,
-                isActive: e.target.value,
-              })
-            }
-            className="h-10 rounded-lg border px-3 text-sm"
-          >
-            <option value="">Status</option>
-            <option value="true">Active</option>
-            <option value="false">Inactive</option>
-          </select>
+    {/* Plan Name */}
+    <input
+      type="text"
+      placeholder="Plan Name"
+      value={searchCriteria.name}
+      onChange={(e) =>
+        setSearchCriteria((prev) => ({
+          ...prev,
+          name: e.target.value,
+        }))
+      }
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    />
 
-          {/* Min Monthly Price */}
-          <input
-            type="number"
-            placeholder="Min Price"
-            value={searchCriteria.minMonthlyPrice}
-            onChange={(e) =>
-              setSearchCriteria({
-                ...searchCriteria,
-                minMonthlyPrice: e.target.value,
-              })
-            }
-            className="h-10 w-36 rounded-lg border px-3 text-sm focus:border-[#0d4039] focus:ring-2 focus:ring-[#0d4039]/20 outline-none"
-          />
+    
 
-          {/* Max Monthly Price */}
-          <input
-            type="number"
-            placeholder="Max Price"
-            value={searchCriteria.maxMonthlyPrice}
-            onChange={(e) =>
-              setSearchCriteria({
-                ...searchCriteria,
-                maxMonthlyPrice: e.target.value,
-              })
-            }
-            className="h-10 w-36 rounded-lg border px-3 text-sm focus:border-[#0d4039] focus:ring-2 focus:ring-[#0d4039]/20 outline-none"
-          />
+    {/* Min Monthly Price */}
+    <input
+      type="number"
+      placeholder="Min Price"
+      value={searchCriteria.minMonthlyPrice}
+      onChange={(e) =>
+        setSearchCriteria((prev) => ({
+          ...prev,
+          minMonthlyPrice: e.target.value,
+        }))
+      }
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    />
 
-          {/* Min Users */}
-          <input
-            type="number"
-            placeholder="Min Users"
-            value={searchCriteria.minUsersLimit}
-            onChange={(e) =>
-              setSearchCriteria({
-                ...searchCriteria,
-                minUsersLimit: e.target.value,
-              })
-            }
-            className="h-10 w-32 rounded-lg border px-3 text-sm focus:border-[#0d4039] focus:ring-2 focus:ring-[#0d4039]/20 outline-none"
-          />
+    {/* Max Monthly Price */}
+    <input
+      type="number"
+      placeholder="Max Price"
+      value={searchCriteria.maxMonthlyPrice}
+      onChange={(e) =>
+        setSearchCriteria((prev) => ({
+          ...prev,
+          maxMonthlyPrice: e.target.value,
+        }))
+      }
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    />
 
-          {/* Max Users */}
-          <input
-            type="number"
-            placeholder="Max Users"
-            value={searchCriteria.maxUsersLimit}
-            onChange={(e) =>
-              setSearchCriteria({
-                ...searchCriteria,
-                maxUsersLimit: e.target.value,
-              })
-            }
-            className="h-10 w-32 rounded-lg border px-3 text-sm focus:border-[#0d4039] focus:ring-2 focus:ring-[#0d4039]/20 outline-none"
-          />
+    {/* Min Users */}
+    <input
+      type="number"
+      placeholder="Min Users"
+      value={searchCriteria.minUsersLimit}
+      onChange={(e) =>
+        setSearchCriteria((prev) => ({
+          ...prev,
+          minUsersLimit: e.target.value,
+        }))
+      }
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    />
 
-          {/* Sort By */}
-          <select
-            value={sortBy}
-            onChange={(e) => {
-              setSortBy(e.target.value);
-              setCurrentPage(0);
-            }}
-            className="h-10 rounded-lg border px-3 text-sm"
-          >
-            <option value="createdAt">Created</option>
-            <option value="name">Plan Name</option>
-            <option value="monthlyPrice">Monthly Price</option>
-            <option value="yearlyPrice">Yearly Price</option>
-            <option value="usersLimit">Users Limit</option>
-            <option value="branchesLimit">Branches Limit</option>
-          </select>
+    {/* Max Users */}
+    <input
+      type="number"
+      placeholder="Max Users"
+      value={searchCriteria.maxUsersLimit}
+      onChange={(e) =>
+        setSearchCriteria((prev) => ({
+          ...prev,
+          maxUsersLimit: e.target.value,
+        }))
+      }
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    />
 
-          {/* Sort Direction */}
-          <select
-            value={direction}
-            onChange={(e) => {
-              setDirection(e.target.value);
-              setCurrentPage(0);
-            }}
-            className="h-10 rounded-lg border px-3 text-sm"
-          >
-            <option value="DESC">Newest</option>
-            <option value="ASC">Oldest</option>
-          </select>
+    {/* Status */}
+    <select
+      value={searchCriteria.isActive}
+      onChange={(e) =>
+        setSearchCriteria((prev) => ({
+          ...prev,
+          isActive: e.target.value,
+        }))
+      }
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    >
+      <option value="">Status</option>
+      <option value="true">Active</option>
+      <option value="false">Inactive</option>
+    </select>
 
-          {/* Page Size */}
-          <select
-            value={pageSize}
-            onChange={(e) => {
-              setPageSize(Number(e.target.value));
-              setCurrentPage(0);
-            }}
-            className="h-10 rounded-lg border px-3 text-sm"
-          >
-            <option value={10}>10</option>
-            <option value={20}>20</option>
-            <option value={50}>50</option>
-            <option value={100}>100</option>
-          </select>
+    {/* Sort By */}
+    <select
+      value={sortBy}
+      onChange={(e) => {
+        setCurrentPage(0);
+        setSortBy(e.target.value);
+      }}
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    >
+      <option value="createdAt">Created</option>
+      <option value="name">Plan Name</option>
+      <option value="monthlyPrice">Monthly Price</option>
+      <option value="yearlyPrice">Yearly Price</option>
+      <option value="usersLimit">Users Limit</option>
+      <option value="branchesLimit">Branches Limit</option>
+    </select>
 
-          {/* Search */}
-          <button
-            onClick={() => {
-              setCurrentPage(0);
-              loadPlans();
-            }}
-            className="h-10 px-5 rounded-lg bg-[#0d4039] text-white hover:bg-[#145148] transition"
-          >
-            Search
-          </button>
+    {/* Sort Direction */}
+    <select
+      value={direction}
+      onChange={(e) => {
+        setCurrentPage(0);
+        setDirection(e.target.value);
+      }}
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    >
+      <option value="DESC">Newest</option>
+      <option value="ASC">Oldest</option>
+    </select>
 
-          {/* Reset */}
-          <button
-            onClick={() => {
-              setSearchCriteria({
-                name: "",
-                isActive: "",
-                minMonthlyPrice: "",
-                maxMonthlyPrice: "",
-                minUsersLimit: "",
-                maxUsersLimit: "",
-              });
+    {/* Page Size */}
+    <select
+      value={pageSize}
+      onChange={(e) => {
+        setCurrentPage(0);
+        setPageSize(Number(e.target.value));
+      }}
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    >
+      <option value={10}>10</option>
+      <option value={20}>20</option>
+      <option value={50}>50</option>
+      <option value={100}>100</option>
+    </select>
 
-              setCurrentPage(0);
-              setPageSize(10);
-              setSortBy("createdAt");
-              setDirection("DESC");
-
-              loadPlans();
-            }}
-            className="h-10 px-5 rounded-lg border hover:bg-gray-100 transition"
-          >
-            Reset
-          </button>
-        </div>
-      </div>
+  </div>
+</div>
 
       {/* Desktop Table */}
 

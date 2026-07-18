@@ -12,7 +12,7 @@ export default function SubscriptionPlanModalBox({
   const isEdit = mode === "edit";
   const isCreate = mode === "create";
 
-  const [formData, setFormData] = useState({
+  const initialFormData = {
     name: "",
     branchesLimit: "",
     usersLimit: "",
@@ -21,9 +21,22 @@ export default function SubscriptionPlanModalBox({
     monthlyPrice: "",
     yearlyPrice: "",
     isActive: true,
-  });
+  };
+
+  const [formData, setFormData] = useState(initialFormData);
+
+  const isFormValid =
+    formData.name.trim() !== "" &&
+    formData.branchesLimit !== "" &&
+    formData.usersLimit !== "" &&
+    formData.menuItemsLimit !== "" &&
+    formData.ordersPerMonth !== "" &&
+    formData.monthlyPrice !== "" &&
+    formData.yearlyPrice !== "";
 
   useEffect(() => {
+    if (!isOpen) return;
+
     if (plan) {
       setFormData({
         name: plan.name || "",
@@ -33,21 +46,17 @@ export default function SubscriptionPlanModalBox({
         ordersPerMonth: plan.ordersPerMonth || "",
         monthlyPrice: plan.monthlyPrice || "",
         yearlyPrice: plan.yearlyPrice || "",
-        isActive: plan.isActive,
+        isActive:
+          plan.isActive !== undefined ? plan.isActive : true,
       });
     } else {
-      setFormData({
-        name: "",
-        branchesLimit: "",
-        usersLimit: "",
-        menuItemsLimit: "",
-        ordersPerMonth: "",
-        monthlyPrice: "",
-        yearlyPrice: "",
-        isActive: true,
-      });
+      resetForm();
     }
-  }, [plan]);
+  }, [plan, isOpen]);
+
+  const resetForm = () => {
+    setFormData(initialFormData);
+  };
 
   if (!isOpen) return null;
 
@@ -61,9 +70,39 @@ export default function SubscriptionPlanModalBox({
   };
 
   const handleSave = async () => {
+    if (!isFormValid) return;
+
     try {
       await axiosClient.post("/subscription_plans", {
         ...formData,
+        branchesLimit: Number(formData.branchesLimit),
+        usersLimit: Number(formData.usersLimit),
+        menuItemsLimit: Number(formData.menuItemsLimit),
+        ordersPerMonth: Number(formData.ordersPerMonth),
+        monthlyPrice: Number(formData.monthlyPrice),
+        yearlyPrice: Number(formData.yearlyPrice),
+      });
+
+      resetForm();
+      onSuccess();
+      onClose();
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        error?.response?.data?.message ||
+          "Unable to save subscription plan."
+      );
+    }
+  };
+
+  const handleUpdate = async () => {
+    if (!isFormValid) return;
+
+    try {
+      await axiosClient.put(`/subscription_plans/${plan.id}`, {
+        ...formData,
+        id: plan.id,
         branchesLimit: Number(formData.branchesLimit),
         usersLimit: Number(formData.usersLimit),
         menuItemsLimit: Number(formData.menuItemsLimit),
@@ -76,176 +115,243 @@ export default function SubscriptionPlanModalBox({
       onClose();
     } catch (error) {
       console.error(error);
+
+      alert(
+        error?.response?.data?.message ||
+          "Unable to update subscription plan."
+      );
     }
   };
 
-  const handleUpdate = async () => {
-    try {
-      await axiosClient.put(`/subscription_plans/${plan.id}`, {
-        ...formData,
-        id: plan.id,
-      });
 
-      onSuccess();
-      onClose();
-    } catch (error) {
-      console.error(error);
-    }
-  };
+return (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+    <div className="w-full max-w-6xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-xl">
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-      <div className="w-full max-w-6xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-xl">
-        <div className="flex justify-between items-center border-b p-5">
-          <h2 className="text-xl font-bold">
-            {isCreate && "Create Subscription Plan"}
-            {isEdit && "Edit Subscription Plan"}
-            {isView && "Subscription Plan Details"}
-          </h2>
+      {/* Header */}
 
-          <button onClick={onClose} className="text-xl">
-            ✕
-          </button>
-        </div>
+      <div className="flex items-center justify-between border-b p-5">
+        <h2 className="text-xl font-bold">
+          {isCreate && "Create Subscription Plan"}
+          {isEdit && "Edit Subscription Plan"}
+          {isView && "Subscription Plan Details"}
+        </h2>
 
-        <div className="p-6 grid md:grid-cols-2 gap-4">
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-700">
-              Plan Name
-            </label>
-            <input
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              disabled={isView}
-              placeholder="Enter Plan Name"
-              className="w-full border rounded-lg px-4 py-3"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-700">
-              Branches Limit
-            </label>
-            <input
-              name="branchesLimit"
-              value={formData.branchesLimit}
-              onChange={handleChange}
-              disabled={isView}
-              placeholder="Enter Branches Limit"
-              className="w-full border rounded-lg px-4 py-3"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-700">
-              Users Limit
-            </label>
-            <input
-              name="usersLimit"
-              value={formData.usersLimit}
-              onChange={handleChange}
-              disabled={isView}
-              placeholder="Enter Users Limit"
-              className="w-full border rounded-lg px-4 py-3"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-700">
-              Menu Items Limit
-            </label>
-            <input
-              name="menuItemsLimit"
-              value={formData.menuItemsLimit}
-              onChange={handleChange}
-              disabled={isView}
-              placeholder="Enter Menu Items Limit"
-              className="w-full border rounded-lg px-4 py-3"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-700">
-              Orders Per Month
-            </label>
-            <input
-              name="ordersPerMonth"
-              value={formData.ordersPerMonth}
-              onChange={handleChange}
-              disabled={isView}
-              placeholder="Enter Orders Per Month"
-              className="w-full border rounded-lg px-4 py-3"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-700">
-              Monthly Price
-            </label>
-            <input
-              name="monthlyPrice"
-              value={formData.monthlyPrice}
-              onChange={handleChange}
-              disabled={isView}
-              placeholder="Enter Monthly Price"
-              className="w-full border rounded-lg px-4 py-3"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-700">
-              Yearly Price
-            </label>
-            <input
-              name="yearlyPrice"
-              value={formData.yearlyPrice}
-              onChange={handleChange}
-              disabled={isView}
-              placeholder="Enter Yearly Price"
-              className="w-full border rounded-lg px-4 py-3"
-            />
-          </div>
-
-          <div className="flex items-center mt-8">
-            <label className="flex items-center gap-3 text-sm font-medium text-gray-700">
-              <input
-                type="checkbox"
-                name="isActive"
-                checked={formData.isActive}
-                onChange={handleChange}
-                disabled={isView}
-                className="h-4 w-4"
-              />
-              Active Plan
-            </label>
-          </div>
-        </div>
-
-        <div className="flex justify-end gap-3 border-t p-5">
-          <button onClick={onClose} className="px-5 py-2 border rounded-lg">
-            Close
-          </button>
-
-          {isCreate && (
-            <button
-              onClick={handleSave}
-              className="px-5 py-2 bg-green-600 text-white rounded-lg"
-            >
-              Save
-            </button>
-          )}
-
-          {isEdit && (
-            <button
-              onClick={handleUpdate}
-              className="px-5 py-2 bg-blue-600 text-white rounded-lg"
-            >
-              Update
-            </button>
-          )}
-        </div>
+        <button
+          onClick={onClose}
+          className="text-2xl text-gray-500 hover:text-black"
+        >
+          ×
+        </button>
       </div>
+
+      {/* Body */}
+
+      <div className="grid gap-5 p-6 md:grid-cols-2">
+
+        {/* Plan Name */}
+
+        <div>
+          <label className="mb-2 block text-sm font-medium">
+            Plan Name <span className="text-red-500">*</span>
+          </label>
+
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            disabled={isView}
+            placeholder="Enter Plan Name"
+            className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2  ${
+              !formData.name && !isView
+                ? "border-gray-300 focus:ring-red-400"
+                : "border-gray-300 focus:ring-blue-500"
+            }`}
+          />
+        </div>
+
+        {/* Branches Limit */}
+
+        <div>
+          <label className="mb-2 block text-sm font-medium">
+            Branches Limit <span className="text-red-500">*</span>
+          </label>
+
+          <input
+            type="number"
+            name="branchesLimit"
+            value={formData.branchesLimit}
+            onChange={handleChange}
+            disabled={isView}
+            placeholder="Enter Branches Limit"
+            className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2  ${
+              !formData.branchesLimit && !isView
+                ? "border-gray-300 focus:ring-red-400"
+                : "border-gray-300 focus:ring-blue-500"
+            }`}
+          />
+        </div>
+
+        {/* Users Limit */}
+
+        <div>
+          <label className="mb-2 block text-sm font-medium">
+            Users Limit <span className="text-red-500">*</span>
+          </label>
+
+          <input
+            type="number"
+            name="usersLimit"
+            value={formData.usersLimit}
+            onChange={handleChange}
+            disabled={isView}
+            placeholder="Enter Users Limit"
+            className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2  ${
+              !formData.usersLimit && !isView
+                ? "border-gray-300 focus:ring-red-400"
+                : "border-gray-300 focus:ring-blue-500"
+            }`}
+          />
+        </div>
+
+        {/* Menu Items Limit */}
+
+        <div>
+          <label className="mb-2 block text-sm font-medium">
+            Menu Items Limit <span className="text-red-500">*</span>
+          </label>
+
+          <input
+            type="number"
+            name="menuItemsLimit"
+            value={formData.menuItemsLimit}
+            onChange={handleChange}
+            disabled={isView}
+            placeholder="Enter Menu Items Limit"
+            className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2  ${
+              !formData.menuItemsLimit && !isView
+                ? "border-gray-300 focus:ring-red-400"
+                : "border-gray-300 focus:ring-blue-500"
+            }`}
+          />
+        </div>
+
+        {/* Orders Per Month */}
+
+        <div>
+          <label className="mb-2 block text-sm font-medium">
+            Orders Per Month <span className="text-red-500">*</span>
+          </label>
+
+          <input
+            type="number"
+            name="ordersPerMonth"
+            value={formData.ordersPerMonth}
+            onChange={handleChange}
+            disabled={isView}
+            placeholder="Enter Orders Per Month"
+            className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2  ${
+              !formData.ordersPerMonth && !isView
+                ? "border-gray-300 focus:ring-red-400"
+                : "border-gray-300 focus:ring-blue-500"
+            }`}
+          />
+        </div>
+
+
+        {/* Monthly Price */}
+
+        <div>
+          <label className="mb-2 block text-sm font-medium">
+            Monthly Price <span className="text-red-500">*</span>
+          </label>
+
+          <input
+            type="number"
+            name="monthlyPrice"
+            value={formData.monthlyPrice}
+            onChange={handleChange}
+            disabled={isView}
+            placeholder="Enter Monthly Price"
+            className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2  ${
+              !formData.monthlyPrice && !isView
+                ? "border-gray-300 focus:ring-red-400"
+                : "border-gray-300 focus:ring-blue-500"
+            }`}
+          />
+        </div>
+
+        {/* Yearly Price */}
+
+        <div>
+          <label className="mb-2 block text-sm font-medium">
+            Yearly Price <span className="text-red-500">*</span>
+          </label>
+
+          <input
+            type="number"
+            name="yearlyPrice"
+            value={formData.yearlyPrice}
+            onChange={handleChange}
+            disabled={isView}
+            placeholder="Enter Yearly Price"
+            className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2  ${
+              !formData.yearlyPrice && !isView
+                ? "border-gray-300 focus:ring-red-400"
+                : "border-gray-300 focus:ring-blue-500"
+            }`}
+          />
+        </div>
+
+        {/* Active */}
+
+        <div className="flex items-center md:col-span-2">
+          <label className="mb-2 block text-sm font-medium">
+            <input
+              type="checkbox"
+              name="isActive"
+              checked={formData.isActive}
+              onChange={handleChange}
+              disabled={isView}
+              className="h-4 w-4"
+            />
+            Active Plan
+          </label>
+        </div>
+
+      </div>
+
+      {/* Footer */}
+
+      <div className="flex justify-end gap-3 border-t p-5">
+
+        <button
+          onClick={onClose}
+          className="rounded-lg border px-5 py-2"
+        >
+          Close
+        </button>
+
+        {!isView && (
+          <button
+            onClick={isCreate ? handleSave : handleUpdate}
+            disabled={!isFormValid}
+            className={`rounded-lg px-5 py-2 text-white transition ${
+              !isFormValid
+                ? "cursor-not-allowed bg-gray-400"
+                : isCreate
+                ? "bg-green-600 hover:bg-green-700"
+                : "bg-blue-600 hover:bg-blue-700"
+            }`}
+          >
+            {isCreate ? "Save" : "Update"}
+          </button>
+        )}
+
+      </div>
+
     </div>
-  );
+  </div>
+);
 }

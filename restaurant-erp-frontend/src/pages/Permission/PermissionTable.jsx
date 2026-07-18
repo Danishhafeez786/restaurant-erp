@@ -60,6 +60,15 @@ export default function PermissionTable() {
     loadPermissions();
   }, [currentPage, pageSize, sortBy, direction]);
 
+  useEffect(() => {
+  const timer = setTimeout(() => {
+    setCurrentPage(0);
+    loadPermissions();
+  }, 300);
+
+  return () => clearTimeout(timer);
+}, [searchCriteria, sortBy, direction, pageSize]);
+
   // ===== SSE =====
   useEffect(() => {
     const eventSource = new EventSource(
@@ -125,94 +134,112 @@ export default function PermissionTable() {
       </div>
 
       {/* FILTERS */}
-      <div className="border rounded-xl p-4 mb-6">
-        <div className="flex flex-wrap gap-3">
-          <input
-            placeholder="Code"
-            value={searchCriteria.code}
-            onChange={(e) =>
-              setSearchCriteria({ ...searchCriteria, code: e.target.value })
-            }
-            className="h-10 w-44 border rounded-lg px-3 text-sm"
-          />
+      <div className="mb-6 rounded-xl border bg-white p-4 shadow-sm">
+  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
 
-          <input
-            placeholder="Name"
-            value={searchCriteria.name}
-            onChange={(e) =>
-              setSearchCriteria({ ...searchCriteria, name: e.target.value })
-            }
-            className="h-10 w-52 border rounded-lg px-3 text-sm"
-          />
+    {/* Code */}
+    <input
+      type="text"
+      placeholder="Code"
+      value={searchCriteria.code}
+      onChange={(e) =>
+        setSearchCriteria((prev) => ({
+          ...prev,
+          code: e.target.value,
+        }))
+      }
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    />
 
-          <input
-            placeholder="Module"
-            value={searchCriteria.module}
-            onChange={(e) =>
-              setSearchCriteria({ ...searchCriteria, module: e.target.value })
-            }
-            className="h-10 w-44 border rounded-lg px-3 text-sm"
-          />
+    {/* Name */}
+    <input
+      type="text"
+      placeholder="Name"
+      value={searchCriteria.name}
+      onChange={(e) =>
+        setSearchCriteria((prev) => ({
+          ...prev,
+          name: e.target.value,
+        }))
+      }
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    />
 
-          <select
-            value={searchCriteria.isActive}
-            onChange={(e) =>
-              setSearchCriteria({ ...searchCriteria, isActive: e.target.value })
-            }
-            className="h-10 border rounded-lg px-3 text-sm"
-          >
-            <option value="">Status</option>
-            <option value="true">Active</option>
-            <option value="false">Inactive</option>
-          </select>
+    {/* Module */}
+    <input
+      type="text"
+      placeholder="Module"
+      value={searchCriteria.module}
+      onChange={(e) =>
+        setSearchCriteria((prev) => ({
+          ...prev,
+          module: e.target.value,
+        }))
+      }
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    />
 
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="h-10 border rounded-lg px-3 text-sm"
-          >
-            <option value="createdAt">Created</option>
-            <option value="code">Code</option>
-            <option value="name">Name</option>
-            <option value="module">Module</option>
-          </select>
+    {/* Status */}
+    <select
+      value={searchCriteria.isActive}
+      onChange={(e) =>
+        setSearchCriteria((prev) => ({
+          ...prev,
+          isActive: e.target.value,
+        }))
+      }
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    >
+      <option value="">Status</option>
+      <option value="true">Active</option>
+      <option value="false">Inactive</option>
+    </select>
 
-          <select
-            value={direction}
-            onChange={(e) => setDirection(e.target.value)}
-            className="h-10 border rounded-lg px-3 text-sm"
-          >
-            <option value="DESC">Newest</option>
-            <option value="ASC">Oldest</option>
-          </select>
+    {/* Sort By */}
+    <select
+      value={sortBy}
+      onChange={(e) => {
+        setCurrentPage(0);
+        setSortBy(e.target.value);
+      }}
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    >
+      <option value="createdAt">Created</option>
+      <option value="code">Code</option>
+      <option value="name">Name</option>
+      <option value="module">Module</option>
+    </select>
 
-          <button
-            onClick={() => {
-              setCurrentPage(0);
-              loadPermissions();
-            }}
-            className="h-10 px-5 bg-[#0d4039] text-white rounded-lg"
-          >
-            Search
-          </button>
+    {/* Direction */}
+    <select
+      value={direction}
+      onChange={(e) => {
+        setCurrentPage(0);
+        setDirection(e.target.value);
+      }}
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    >
+      <option value="DESC">Newest</option>
+      <option value="ASC">Oldest</option>
+    </select>
 
-          <button
-            onClick={() => {
-              setSearchCriteria({
-                code: "",
-                name: "",
-                module: "",
-                isActive: "",
-              });
-              setCurrentPage(0);
-              loadPermissions();
-            }}
-            className="h-10 px-5 border rounded-lg"
-          >
-            Reset
-          </button>
-        </div>
-      </div>
+    {/* Page Size */}
+    <select
+      value={pageSize}
+      onChange={(e) => {
+        setCurrentPage(0);
+        setPageSize(Number(e.target.value));
+      }}
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    >
+      <option value={10}>10</option>
+      <option value={20}>20</option>
+      <option value={50}>50</option>
+      <option value={100}>100</option>
+    </select>
+
+  </div>
+</div>
 
       {/* TABLE */}
       <div className="hidden md:block overflow-x-auto">
@@ -380,7 +407,7 @@ export default function PermissionTable() {
           <button
             key={i}
             onClick={() => setCurrentPage(i)}
-            className={`px-3 py-1 rounded ${currentPage === i ? "bg-green-600 text-white" : "bg-gray-200"
+            className={`px-3 py-1 rounded ${currentPage === i ? "bg-[#0d4039] text-white" : "bg-gray-200"
               }`}
           >
             {i + 1}

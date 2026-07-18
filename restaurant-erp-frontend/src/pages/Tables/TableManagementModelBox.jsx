@@ -26,6 +26,14 @@ export default function TableManagementModelBox({
         isActive: true,
     });
 
+    const isFormValid =
+        formData.tableNumber.trim() !== "" &&
+        formData.tableName.trim() !== "" &&
+        formData.capacity !== "" &&
+        formData.qrToken.trim() !== "" &&
+        formData.organizationModel !== null &&
+        formData.branchModel !== null;
+
     useEffect(() => {
 
         if (isOpen) {
@@ -230,21 +238,12 @@ export default function TableManagementModelBox({
 
             };
 
-            if (isCreate) {
+            await axiosClient.post(
+                "/table-management",
+                payload
+            );
 
-                await axiosClient.post(
-                    "/table-management",
-                    payload
-                );
-
-            } else {
-
-                await axiosClient.put(
-                    `/table-management/${tableData.id}`,
-                    payload
-                );
-
-            }
+            resetForm();
 
             onSuccess();
 
@@ -263,8 +262,63 @@ export default function TableManagementModelBox({
 
     };
 
+    const handleUpdate = async () => {
+
+        try {
+
+            const payload = {
+
+                tableNumber:
+                    formData.tableNumber,
+
+                tableName:
+                    formData.tableName,
+
+                capacity:
+                    Number(formData.capacity),
+
+                qrToken:
+                    formData.qrToken,
+
+                organizationModel:
+                    formData.organizationModel,
+
+                branchModel:
+                    formData.branchModel,
+
+                isActive:
+                    formData.isActive,
+
+            };
+
+            await axiosClient.put(
+                `/table-management/${tableData.id}`,
+                payload
+            );
+
+            resetForm();
+
+            onSuccess();
+
+            onClose();
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                error?.response?.data?.message ||
+                "Unable to update table."
+            );
+
+        }
+
+    };
+
     if (!isOpen) return null;
-        return (
+
+
+    return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
 
             <div className="w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-xl">
@@ -301,7 +355,7 @@ export default function TableManagementModelBox({
                     <div>
 
                         <label className="block mb-2 text-sm font-medium">
-                            Table Number
+                            Table Number <span className="text-red-500">*</span>
                         </label>
 
                         <input
@@ -311,7 +365,11 @@ export default function TableManagementModelBox({
                             onChange={handleChange}
                             disabled={isView}
                             placeholder="Enter Table Number"
-                            className="w-full rounded-lg border px-4 py-3"
+                            className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2 ${
+                            !formData.tableNumber && !isView
+                                ? "border-gray-300 focus:ring-red-400"
+                                : "border-gray-300 focus:ring-blue-500"
+                            }`}
                         />
 
                     </div>
@@ -321,7 +379,7 @@ export default function TableManagementModelBox({
                     <div>
 
                         <label className="block mb-2 text-sm font-medium">
-                            Table Name
+                            Table Name <span className="text-red-500">*</span>
                         </label>
 
                         <input
@@ -331,7 +389,11 @@ export default function TableManagementModelBox({
                             onChange={handleChange}
                             disabled={isView}
                             placeholder="Enter Table Name"
-                            className="w-full rounded-lg border px-4 py-3"
+                            className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2 ${
+                            !formData.tableName && !isView
+                                ? "border-gray-300 focus:ring-red-400"
+                                : "border-gray-300 focus:ring-blue-500"
+                            }`}
                         />
 
                     </div>
@@ -341,7 +403,7 @@ export default function TableManagementModelBox({
                     <div>
 
                         <label className="block mb-2 text-sm font-medium">
-                            Capacity
+                            Capacity <span className="text-red-500">*</span>
                         </label>
 
                         <input
@@ -351,7 +413,11 @@ export default function TableManagementModelBox({
                             onChange={handleChange}
                             disabled={isView}
                             placeholder="Enter Capacity"
-                            className="w-full rounded-lg border px-4 py-3"
+                            className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2 ${
+                            !formData.capacity === "" && !isView
+                                ? "border-gray-300 focus:ring-red-400"
+                                : "border-gray-300 focus:ring-blue-500"
+                            }`}
                         />
 
                     </div>
@@ -361,7 +427,7 @@ export default function TableManagementModelBox({
                     <div>
 
                         <label className="block mb-2 text-sm font-medium">
-                            QR Token
+                            QR Token <span className="text-red-500">*</span>
                         </label>
 
                         <input
@@ -371,7 +437,11 @@ export default function TableManagementModelBox({
                             onChange={handleChange}
                             disabled={isView}
                             placeholder="Enter QR Token"
-                            className="w-full rounded-lg border px-4 py-3"
+                            className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2 ${
+                            !formData.qrToken && !isView
+                                ? "border-gray-300 focus:ring-red-400"
+                                : "border-gray-300 focus:ring-blue-500"
+                            }`}
                         />
 
                     </div>
@@ -381,14 +451,18 @@ export default function TableManagementModelBox({
                     <div>
 
                         <label className="block mb-2 text-sm font-medium">
-                            Organization
+                            Organization <span className="text-red-500">*</span>
                         </label>
 
                         <select
                             value={formData.organizationModel?.id || ""}
                             onChange={handleOrganizationChange}
                             disabled={isView}
-                            className="w-full rounded-lg border px-4 py-3"
+                            className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2 ${
+                            !formData.organizationModel && !isView
+                                ? "border-gray-300 focus:ring-red-400"
+                                : "border-gray-300 focus:ring-blue-500"
+                            }`}
                         >
 
                             <option value="">
@@ -415,14 +489,18 @@ export default function TableManagementModelBox({
                     <div>
 
                         <label className="block mb-2 text-sm font-medium">
-                            Branch
+                            Branch <span className="text-red-500">*</span>
                         </label>
 
                         <select
                             value={formData.branchModel?.id || ""}
                             onChange={handleBranchChange}
                             disabled={isView}
-                            className="w-full rounded-lg border px-4 py-3"
+                            className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2 ${
+                            !formData.branchModel && !isView
+                                ? "border-gray-300 focus:ring-red-400"
+                                : "border-gray-300 focus:ring-blue-500"
+                            }`}
                         >
 
                             <option value="">
@@ -451,6 +529,7 @@ export default function TableManagementModelBox({
 
                     </div>
 
+
                     {/* Active */}
 
                     <div className="md:col-span-2 flex items-center mt-2">
@@ -473,8 +552,7 @@ export default function TableManagementModelBox({
 
                 </div>
 
-
-                                {/* ====================== FOOTER ====================== */}
+                {/* ====================== FOOTER ====================== */}
 
                 <div className="flex flex-col sm:flex-row justify-end gap-3 border-t p-5">
 
@@ -485,17 +563,34 @@ export default function TableManagementModelBox({
                         Close
                     </button>
 
-                    {!isView && (
+                    {isCreate && (
 
                         <button
                             onClick={handleSave}
-                            className={`w-full sm:w-auto rounded-lg px-5 py-2 text-white ${
-                                isCreate
+                            disabled={!isFormValid}
+                            className={`w-full sm:w-auto rounded-lg px-5 py-2 text-white font-medium transition ${
+                                isFormValid
                                     ? "bg-green-600 hover:bg-green-700"
-                                    : "bg-blue-600 hover:bg-blue-700"
+                                    : "bg-gray-400 cursor-not-allowed opacity-70"
                             }`}
                         >
-                            {isCreate ? "Save" : "Update"}
+                            Save
+                        </button>
+
+                    )}
+
+                    {isEdit && (
+
+                        <button
+                            onClick={handleUpdate}
+                            disabled={!isFormValid}
+                            className={`w-full sm:w-auto rounded-lg px-5 py-2 text-white font-medium transition ${
+                                isFormValid
+                                    ? "bg-blue-600 hover:bg-blue-700"
+                                    : "bg-gray-400 cursor-not-allowed opacity-70"
+                            }`}
+                        >
+                            Update
                         </button>
 
                     )}

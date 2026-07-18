@@ -91,6 +91,15 @@ export default function EmployeeTable() {
     ]);
 
     useEffect(() => {
+    const timer = setTimeout(() => {
+        setCurrentPage(0);
+        loadEmployees();
+    }, 300);
+
+    return () => clearTimeout(timer);
+}, [searchCriteria, sortBy, direction, pageSize]);
+
+    useEffect(() => {
         const eventSource = employeeService.stream();
         eventSource.onmessage = () => {
             loadEmployees();
@@ -161,231 +170,199 @@ export default function EmployeeTable() {
 
             {/* =========================== SEARCH PANEL =========================== */}
 
-            <div className="bg-white border rounded-xl shadow-sm p-4 mb-6">
-                <div className="flex flex-wrap items-center gap-3">
+            <div className="mb-6 rounded-xl border bg-white p-4 shadow-sm">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
 
-                    <input
-                        type="text"
-                        placeholder="Employee Code"
-                        value={searchCriteria.employeeCode}
-                        onChange={(e) =>
-                            setSearchCriteria({
-                                ...searchCriteria,
-                                employeeCode: e.target.value,
-                            })
-                        }
-                        className="h-10 w-44 rounded-lg border px-3 text-sm"
-                    />
+        <input
+            type="text"
+            placeholder="Employee Code"
+            value={searchCriteria.employeeCode}
+            onChange={(e) =>
+                setSearchCriteria((prev) => ({
+                    ...prev,
+                    employeeCode: e.target.value,
+                }))
+            }
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+        />
 
-                    <input
-                        type="text"
-                        placeholder="Full Name"
-                        value={searchCriteria.fullName}
-                        onChange={(e) =>
-                            setSearchCriteria({
-                                ...searchCriteria,
-                                fullName: e.target.value,
-                            })
-                        }
-                        className="h-10 w-52 rounded-lg border px-3 text-sm"
-                    />
+        <input
+            type="text"
+            placeholder="Full Name"
+            value={searchCriteria.fullName}
+            onChange={(e) =>
+                setSearchCriteria((prev) => ({
+                    ...prev,
+                    fullName: e.target.value,
+                }))
+            }
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+        />
 
-                    <input
-                        type="text"
-                        placeholder="Email"
-                        value={searchCriteria.email}
-                        onChange={(e) =>
-                            setSearchCriteria({
-                                ...searchCriteria,
-                                email: e.target.value,
-                            })
-                        }
-                        className="h-10 w-56 rounded-lg border px-3 text-sm"
-                    />
+        <input
+            type="text"
+            placeholder="Email"
+            value={searchCriteria.email}
+            onChange={(e) =>
+                setSearchCriteria((prev) => ({
+                    ...prev,
+                    email: e.target.value,
+                }))
+            }
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+        />
 
-                    <input
-                        type="text"
-                        placeholder="Phone"
-                        value={searchCriteria.phone}
-                        onChange={(e) =>
-                            setSearchCriteria({
-                                ...searchCriteria,
-                                phone: e.target.value,
-                            })
-                        }
-                        className="h-10 w-40 rounded-lg border px-3 text-sm"
-                    />
+        <input
+            type="text"
+            placeholder="Phone"
+            value={searchCriteria.phone}
+            onChange={(e) =>
+                setSearchCriteria((prev) => ({
+                    ...prev,
+                    phone: e.target.value,
+                }))
+            }
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+        />
 
-                    <input
-                        type="text"
-                        placeholder="CNIC"
-                        value={searchCriteria.cnic}
-                        onChange={(e) =>
-                            setSearchCriteria({
-                                ...searchCriteria,
-                                cnic: e.target.value,
-                            })
-                        }
-                        className="h-10 w-48 rounded-lg border px-3 text-sm"
-                    />
+        <input
+            type="text"
+            placeholder="CNIC"
+            value={searchCriteria.cnic}
+            onChange={(e) =>
+                setSearchCriteria((prev) => ({
+                    ...prev,
+                    cnic: e.target.value,
+                }))
+            }
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+        />
 
-                    <input
-                        type="text"
-                        placeholder="Designation"
-                        value={searchCriteria.designation}
-                        onChange={(e) =>
-                            setSearchCriteria({
-                                ...searchCriteria,
-                                designation: e.target.value,
-                            })
-                        }
-                        className="h-10 w-48 rounded-lg border px-3 text-sm"
-                    />
+        <input
+            type="text"
+            placeholder="Designation"
+            value={searchCriteria.designation}
+            onChange={(e) =>
+                setSearchCriteria((prev) => ({
+                    ...prev,
+                    designation: e.target.value,
+                }))
+            }
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+        />
 
-                    <input
-                        type="text"
-                        placeholder="Organization"
-                        value={searchCriteria.organization}
-                        onChange={(e) =>
-                            setSearchCriteria({
-                                ...searchCriteria,
-                                organization: e.target.value,
-                            })
-                        }
-                        className="h-10 w-52 rounded-lg border px-3 text-sm"
-                    />
+        <input
+            type="text"
+            placeholder="Organization"
+            value={searchCriteria.organization}
+            onChange={(e) =>
+                setSearchCriteria((prev) => ({
+                    ...prev,
+                    organization: e.target.value,
+                }))
+            }
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+        />
 
-                    <input
-                        type="text"
-                        placeholder="Branch"
-                        value={searchCriteria.branch}
-                        onChange={(e) =>
-                            setSearchCriteria({
-                                ...searchCriteria,
-                                branch: e.target.value,
-                            })
-                        }
-                        className="h-10 w-44 rounded-lg border px-3 text-sm"
-                    />
+        <input
+            type="text"
+            placeholder="Branch"
+            value={searchCriteria.branch}
+            onChange={(e) =>
+                setSearchCriteria((prev) => ({
+                    ...prev,
+                    branch: e.target.value,
+                }))
+            }
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+        />
 
-                    <input
-                        type="text"
-                        placeholder="Role"
-                        value={searchCriteria.role}
-                        onChange={(e) =>
-                            setSearchCriteria({
-                                ...searchCriteria,
-                                role: e.target.value,
-                            })
-                        }
-                        className="h-10 w-40 rounded-lg border px-3 text-sm"
-                    />
+        <input
+            type="text"
+            placeholder="Role"
+            value={searchCriteria.role}
+            onChange={(e) =>
+                setSearchCriteria((prev) => ({
+                    ...prev,
+                    role: e.target.value,
+                }))
+            }
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+        />
 
-                    <select
-                        value={searchCriteria.employmentStatus}
-                        onChange={(e) =>
-                            setSearchCriteria({
-                                ...searchCriteria,
-                                employmentStatus: e.target.value,
-                            })
-                        }
-                        className="h-10 rounded-lg border px-3 text-sm"
-                    >
-                        <option value="">Employment Status</option>
-                        <option value="ACTIVE">ACTIVE</option>
-                        <option value="ON_LEAVE">ON LEAVE</option>
-                        <option value="RESIGNED">RESIGNED</option>
-                        <option value="TERMINATED">TERMINATED</option>
-                    </select>
+        <select
+            value={searchCriteria.employmentStatus}
+            onChange={(e) =>
+                setSearchCriteria((prev) => ({
+                    ...prev,
+                    employmentStatus: e.target.value,
+                }))
+            }
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+        >
+            <option value="">Employment Status</option>
+            <option value="ACTIVE">ACTIVE</option>
+            <option value="ON_LEAVE">ON LEAVE</option>
+            <option value="RESIGNED">RESIGNED</option>
+            <option value="TERMINATED">TERMINATED</option>
+        </select>
 
-                    <select
-                        value={searchCriteria.isActive}
-                        onChange={(e) =>
-                            setSearchCriteria({
-                                ...searchCriteria,
-                                isActive: e.target.value,
-                            })
-                        }
-                        className="h-10 rounded-lg border px-3 text-sm"
-                    >
-                        <option value="">Status</option>
-                        <option value="true">Active</option>
-                        <option value="false">Inactive</option>
-                    </select>
+        <select
+            value={searchCriteria.isActive}
+            onChange={(e) =>
+                setSearchCriteria((prev) => ({
+                    ...prev,
+                    isActive: e.target.value,
+                }))
+            }
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+        >
+            <option value="">Status</option>
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
+        </select>
 
-                    <select
-                        value={sortBy}
-                        onChange={(e) => setSortBy(e.target.value)}
-                        className="h-10 rounded-lg border px-3 text-sm"
-                    >
-                        <option value="createdAt">Created</option>
-                        <option value="employeeCode">Employee Code</option>
-                        <option value="fullName">Full Name</option>
-                    </select>
+        <select
+            value={sortBy}
+            onChange={(e) => {
+                setCurrentPage(0);
+                setSortBy(e.target.value);
+            }}
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+        >
+            <option value="createdAt">Created</option>
+            <option value="employeeCode">Employee Code</option>
+            <option value="fullName">Full Name</option>
+        </select>
 
-                    <select
-                        value={direction}
-                        onChange={(e) => setDirection(e.target.value)}
-                        className="h-10 rounded-lg border px-3 text-sm"
-                    >
-                        <option value="DESC">Newest</option>
-                        <option value="ASC">Oldest</option>
-                    </select>
+        <select
+            value={direction}
+            onChange={(e) => {
+                setCurrentPage(0);
+                setDirection(e.target.value);
+            }}
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+        >
+            <option value="DESC">Newest</option>
+            <option value="ASC">Oldest</option>
+        </select>
 
-                    <select
-                        value={pageSize}
-                        onChange={(e) => {
-                            setPageSize(Number(e.target.value));
-                            setCurrentPage(0);
-                        }}
-                        className="h-10 rounded-lg border px-3 text-sm"
-                    >
-                        <option value={10}>10</option>
-                        <option value={20}>20</option>
-                        <option value={50}>50</option>
-                        <option value={100}>100</option>
-                    </select>
+        <select
+            value={pageSize}
+            onChange={(e) => {
+                setCurrentPage(0);
+                setPageSize(Number(e.target.value));
+            }}
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+        >
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
+        </select>
 
-                    <button
-                        onClick={() => {
-                            setCurrentPage(0);
-                            loadEmployees();
-                        }}
-                        className="h-10 px-5 rounded-lg bg-[#0d4039] text-white"
-                    >
-                        Search
-                    </button>
-
-                    <button
-                        onClick={() => {
-                            setSearchCriteria({
-                                employeeCode: "",
-                                fullName: "",
-                                email: "",
-                                phone: "",
-                                cnic: "",
-                                designation: "",
-                                organization: "",
-                                branch: "",
-                                role: "",
-                                employmentStatus: "",
-                                isActive: "",
-                            });
-
-                            setSortBy("createdAt");
-                            setDirection("DESC");
-                            setPageSize(10);
-                            setCurrentPage(0);
-
-                            loadEmployees();
-                        }}
-                        className="h-10 px-5 rounded-lg border hover:bg-gray-100"
-                    >
-                        Reset
-                    </button>
-
-                </div>
-            </div>
+    </div>
+</div>
 
             {/* =========================== DESKTOP TABLE =========================== */}
 
@@ -638,7 +615,7 @@ export default function EmployeeTable() {
                     <button
                         key={i}
                         onClick={() => setCurrentPage(i)}
-                        className={`px-3 py-1 rounded ${currentPage === i ? "bg-green-600 text-white" : "bg-gray-200"}`}
+                        className={`px-3 py-1 rounded ${currentPage === i ? "bg-[#0d4039] text-white" : "bg-gray-200"}`}
                     >
                         {i + 1}
                     </button>

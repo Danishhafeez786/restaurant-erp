@@ -80,6 +80,15 @@ export default function RoleTable() {
   }, [currentPage, pageSize, sortBy, direction]);
 
   useEffect(() => {
+  const timer = setTimeout(() => {
+    setCurrentPage(0);
+    loadRoles();
+  }, 300);
+
+  return () => clearTimeout(timer);
+}, [searchCriteria, sortBy, direction, pageSize]);
+
+  useEffect(() => {
     const eventSource = new EventSource(
       "http://localhost:8080/api/role/stream",
     );
@@ -139,134 +148,110 @@ export default function RoleTable() {
 
       {/* FILTERS */}
 
-      <div className="bg-white border rounded-xl shadow-sm p-4 mb-6">
-        <div className="flex flex-wrap items-center gap-3">
-          <input
-            type="text"
-            placeholder="Role Name"
-            value={searchCriteria.roleName}
-            onChange={(e) =>
-              setSearchCriteria({
-                ...searchCriteria,
-                roleName: e.target.value
-              })
-            }
+      <div className="mb-6 rounded-xl border bg-white p-4 shadow-sm">
+  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
 
-            className="h-10 w-52 rounded-lg border px-3 text-sm"
-          />
+    {/* Role Name */}
+    <input
+      type="text"
+      placeholder="Role Name"
+      value={searchCriteria.roleName}
+      onChange={(e) =>
+        setSearchCriteria((prev) => ({
+          ...prev,
+          roleName: e.target.value,
+        }))
+      }
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    />
 
-          <input
-            type="text"
-            placeholder="Description"
-            value={searchCriteria.description}
-            onChange={(e) =>
-              setSearchCriteria({
-                ...searchCriteria,
-                description: e.target.value
-              })
-            }
+    {/* Description */}
+    <input
+      type="text"
+      placeholder="Description"
+      value={searchCriteria.description}
+      onChange={(e) =>
+        setSearchCriteria((prev) => ({
+          ...prev,
+          description: e.target.value,
+        }))
+      }
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    />
 
-            className="h-10 w-52 rounded-lg border px-3 text-sm"
-          />
+    {/* Organization */}
+    <input
+      type="text"
+      placeholder="Organization"
+      value={searchCriteria.organization}
+      onChange={(e) =>
+        setSearchCriteria((prev) => ({
+          ...prev,
+          organization: e.target.value,
+        }))
+      }
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    />
 
-          <input
-            type="text"
-            placeholder="Organization"
-            value={searchCriteria.organization}
-            onChange={(e) =>
-              setSearchCriteria({
-                ...searchCriteria,
-                organization: e.target.value
-              })
-            }
-            className="h-10 w-44 rounded-lg border px-3 text-sm"
-          />
+    {/* Status */}
+    <select
+      value={searchCriteria.isActive}
+      onChange={(e) =>
+        setSearchCriteria((prev) => ({
+          ...prev,
+          isActive: e.target.value,
+        }))
+      }
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    >
+      <option value="">Status</option>
+      <option value="true">Active</option>
+      <option value="false">Inactive</option>
+    </select>
 
-          <select
-            value={searchCriteria.isActive}
-            onChange={(e) =>
-              setSearchCriteria({
-                ...searchCriteria,
-                isActive: e.target.value
-              })
-            }
-            className="h-10 rounded-lg border px-3 text-sm"
-          >
-            <option value="">Status</option>
-            <option value="true">Active</option>
-            <option value="false">Inactive</option>
-          </select>
+    {/* Sort By */}
+    <select
+      value={sortBy}
+      onChange={(e) => {
+        setCurrentPage(0);
+        setSortBy(e.target.value);
+      }}
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    >
+      <option value="createdAt">Created</option>
+      <option value="roleName">Role Name</option>
+    </select>
 
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="h-10 rounded-lg border px-3 text-sm"
-          >
-            <option value="createdAt">
-              Created
-            </option>
-            <option value="roleName">
-              Role Name
-            </option>
-          </select>
-          <select
-            value={direction}
-            onChange={(e) => setDirection(e.target.value)}
-            className="h-10 rounded-lg border px-3 text-sm"
-          >
-            <option value="DESC">
-              Newest
-            </option>
-            <option value="ASC">
-              Oldest
-            </option>
-          </select>
-          <select
-            value={pageSize}
-            onChange={(e) => {
-              setPageSize(Number(e.target.value));
-              setCurrentPage(0);
-            }}
-            className="h-10 rounded-lg border px-3 text-sm"
-          >
-            <option value={10}>10</option>
-            <option value={20}>20</option>
-            <option value={50}>50</option>
-            <option value={100}>100</option>
-          </select>
-          <button
-            onClick={() => {
-              setCurrentPage(0);
-              loadRoles();
-            }}
-            className="h-10 px-5 rounded-lg bg-[#0d4039] text-white"
-          >
-            Search
-          </button>
+    {/* Direction */}
+    <select
+      value={direction}
+      onChange={(e) => {
+        setCurrentPage(0);
+        setDirection(e.target.value);
+      }}
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    >
+      <option value="DESC">Newest</option>
+      <option value="ASC">Oldest</option>
+    </select>
 
-          {/* Reset */}
-          <button
-            onClick={() => {
-              setSearchCriteria({
-                roleName: "",
-                description: "",
-                organization: "",
-                isActive: "",
-              });
+    {/* Page Size */}
+    <select
+      value={pageSize}
+      onChange={(e) => {
+        setCurrentPage(0);
+        setPageSize(Number(e.target.value));
+      }}
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    >
+      <option value={10}>10</option>
+      <option value={20}>20</option>
+      <option value={50}>50</option>
+      <option value={100}>100</option>
+    </select>
 
-              setSortBy("createdAt");
-              setDirection("DESC");
-              setPageSize(10);
-              setCurrentPage(0);
-
-              loadOrganizations();
-            }}
-            className="h-10 px-5 rounded-lg border hover:bg-gray-100 transition"
-          >
-            Reset
-          </button>
-        </div>
-      </div>
+  </div>
+</div>
 
       {/* TABLE */}
       <div className="hidden md:block overflow-x-auto">
@@ -461,7 +446,7 @@ export default function RoleTable() {
 
 
             className={`px-3 py-1 rounded ${currentPage === i
-              ? "bg-green-600 text-white"
+              ? "bg-[#0d4039] text-white"
               : "bg-gray-200"
               }`}
 

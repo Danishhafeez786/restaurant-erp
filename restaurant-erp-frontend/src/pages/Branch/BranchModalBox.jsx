@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axiosClient from "../../api/axiosClient";
 
 export default function BranchModalBox({
@@ -16,7 +16,6 @@ export default function BranchModalBox({
 
   const [formData, setFormData] = useState({
     branchName: "",
-    branchCode: "",
     address: "",
     city: "",
     phone: "",
@@ -35,12 +34,12 @@ export default function BranchModalBox({
       setFormData({
         id: branch.id,
         branchName: branch.branchName || "",
-        branchCode: branch.branchCode || "",
         address: branch.address || "",
         city: branch.city || "",
         phone: branch.phone || "",
         organizationModel: branch.organizationModel || null,
-        isActive: branch.isActive,
+        isActive:
+          branch.isActive !== undefined ? branch.isActive : true,
       });
     } else {
       resetForm();
@@ -50,7 +49,6 @@ export default function BranchModalBox({
   const resetForm = () => {
     setFormData({
       branchName: "",
-      branchCode: "",
       address: "",
       city: "",
       phone: "",
@@ -63,7 +61,7 @@ export default function BranchModalBox({
     try {
       const response = await axiosClient.post(
         "/organization/search?page=0&size=100",
-        {},
+        {}
       );
 
       setOrganizations(response.data.data.content || []);
@@ -82,7 +80,9 @@ export default function BranchModalBox({
   };
 
   const handleOrganizationChange = (e) => {
-    const selected = organizations.find((org) => org.id === e.target.value);
+    const selected = organizations.find(
+      (org) => String(org.id) === String(e.target.value)
+    );
 
     setFormData((prev) => ({
       ...prev,
@@ -90,24 +90,43 @@ export default function BranchModalBox({
     }));
   };
 
+  const isFormValid = useMemo(() => {
+    return (
+      formData.branchName.trim() !== "" &&
+      formData.address.trim() !== "" &&
+      formData.city.trim() !== "" &&
+      formData.phone.trim() !== "" &&
+      formData.organizationModel !== null
+    );
+  }, [formData]);
+
   const handleSave = async () => {
-    try {
-      if (isCreate) {
-        await axiosClient.post("/branch", formData);
-      } else {
-        await axiosClient.put(`/branch/${branch.id}`, formData);
-      }
+  if (!isFormValid) {
+    return;
+  }
 
-      onSuccess();
+  try {
+    if (isCreate) {
+      await axiosClient.post("/branch", formData);
+
+      await onSuccess();
+
+      resetForm();
+    } else {
+      await axiosClient.put(`/branch/${branch.id}`, formData);
+
+      await onSuccess();
+
       onClose();
-    } catch (error) {
-      console.error(error);
-
-      alert(error?.response?.data?.message || "Unable to save branch.");
     }
-  };
+  } catch (error) {
+    console.error(error);
 
-  if (!isOpen) return null;
+    alert(error?.response?.data?.message || "Unable to save branch.");
+  }
+};
+
+    if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
@@ -130,9 +149,11 @@ export default function BranchModalBox({
 
         {/* Body */}
         <div className="grid gap-5 p-6 md:grid-cols-2">
+
+          {/* Branch Name */}
           <div>
             <label className="mb-2 block text-sm font-medium">
-              Branch Name
+              Branch Name <span className="text-red-500">*</span>
             </label>
 
             <input
@@ -141,29 +162,20 @@ export default function BranchModalBox({
               value={formData.branchName}
               onChange={handleChange}
               disabled={isView}
-              className="w-full rounded-lg border px-4 py-3"
               placeholder="Enter Branch Name"
+              className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2 ${
+                !isView && formData.branchName.trim() === ""
+                  ? "border-gray-300 focus:ring-red-400"
+                  : "border-gray-300 focus:ring-blue-500"
+              }`}
             />
           </div>
 
+          {/* Address */}
           <div>
             <label className="mb-2 block text-sm font-medium">
-              Branch Code
+              Address <span className="text-red-500">*</span>
             </label>
-
-            <input
-              type="text"
-              name="branchCode"
-              value={formData.branchCode}
-              onChange={handleChange}
-              disabled={true}
-              className="w-full rounded-lg border px-4 py-3"
-              placeholder="Enter Branch Code"
-            />
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-medium">Address</label>
 
             <input
               type="text"
@@ -171,13 +183,20 @@ export default function BranchModalBox({
               value={formData.address}
               onChange={handleChange}
               disabled={isView}
-              className="w-full rounded-lg border px-4 py-3"
               placeholder="Enter Address"
+              className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2 ${
+                !isView && formData.address.trim() === ""
+                  ? "border-gray-300 focus:ring-red-400"
+                  : "border-gray-300 focus:ring-blue-500"
+              }`}
             />
           </div>
 
+          {/* City */}
           <div>
-            <label className="mb-2 block text-sm font-medium">City</label>
+            <label className="mb-2 block text-sm font-medium">
+              City <span className="text-red-500">*</span>
+            </label>
 
             <input
               type="text"
@@ -185,13 +204,21 @@ export default function BranchModalBox({
               value={formData.city}
               onChange={handleChange}
               disabled={isView}
-              className="w-full rounded-lg border px-4 py-3"
               placeholder="Enter City"
+              className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2 ${
+                !isView && formData.city.trim() === ""
+                  ? "border-gray-300 focus:ring-red-400"
+                  : "border-gray-300 focus:ring-blue-500"
+              }`}
             />
           </div>
 
+
+          {/* Phone */}
           <div>
-            <label className="mb-2 block text-sm font-medium">Phone</label>
+            <label className="mb-2 block text-sm font-medium">
+              Phone <span className="text-red-500">*</span>
+            </label>
 
             <input
               type="text"
@@ -199,21 +226,30 @@ export default function BranchModalBox({
               value={formData.phone}
               onChange={handleChange}
               disabled={isView}
-              className="w-full rounded-lg border px-4 py-3"
               placeholder="Enter Phone"
+              className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2 ${
+                !isView && formData.phone.trim() === ""
+                  ? "border-gray-300 focus:ring-red-400"
+                  : "border-gray-300 focus:ring-blue-500"
+              }`}
             />
           </div>
 
+          {/* Organization */}
           <div>
             <label className="mb-2 block text-sm font-medium">
-              Organization
+              Organization <span className="text-red-500">*</span>
             </label>
 
             <select
               value={formData.organizationModel?.id || ""}
               onChange={handleOrganizationChange}
               disabled={isView}
-              className="w-full rounded-lg border px-4 py-3"
+              className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2 ${
+                !isView && !formData.organizationModel
+                  ? "border-gray-300 focus:ring-red-400"
+                  : "border-gray-300 focus:ring-blue-500"
+              }`}
             >
               <option value="">Select Organization</option>
 
@@ -225,7 +261,8 @@ export default function BranchModalBox({
             </select>
           </div>
 
-          <div className="flex items-center">
+          {/* Active */}
+          <div className="flex items-center md:col-span-2">
             <label className="flex items-center gap-3">
               <input
                 type="checkbox"
@@ -241,15 +278,21 @@ export default function BranchModalBox({
 
         {/* Footer */}
         <div className="flex justify-end gap-3 border-t p-5">
-          <button onClick={onClose} className="rounded-lg border px-5 py-2">
+          <button
+            onClick={onClose}
+            className="rounded-lg border px-5 py-2 hover:bg-gray-100"
+          >
             Close
           </button>
 
           {!isView && (
             <button
               onClick={handleSave}
-              className={`rounded-lg px-5 py-2 text-white ${
-                isCreate
+              disabled={!isFormValid}
+              className={`rounded-lg px-5 py-2 text-white transition ${
+                !isFormValid
+                  ? "cursor-not-allowed bg-gray-400"
+                  : isCreate
                   ? "bg-green-600 hover:bg-green-700"
                   : "bg-blue-600 hover:bg-blue-700"
               }`}

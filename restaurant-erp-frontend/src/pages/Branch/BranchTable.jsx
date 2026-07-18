@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axiosClient from "../../api/axiosClient";
 import BranchModalBox from "./BranchModalBox";
 
+
 export default function BranchTable() {
 
   const [branches, setBranches] = useState([]);
@@ -76,6 +77,15 @@ export default function BranchTable() {
   }, [currentPage, pageSize, sortBy, direction]);
 
   useEffect(() => {
+  const timer = setTimeout(() => {
+    setCurrentPage(0);
+    loadBranches();
+  }, 300);
+
+  return () => clearTimeout(timer);
+}, [searchCriteria, sortBy, direction, pageSize]);
+
+  useEffect(() => {
 
     const eventSource = new EventSource(
       "http://localhost:8080/api/branch/stream"
@@ -137,10 +147,9 @@ export default function BranchTable() {
       isActive: "",
     });
 
-    setCurrentPage(0);
-    setPageSize(10);
     setSortBy("createdAt");
     setDirection("DESC");
+    setCurrentPage(0);
 
   };
 
@@ -177,131 +186,112 @@ export default function BranchTable() {
       </div>
       {/* Filters */}
 
-      <div className="border rounded-xl p-4 mb-6">
+      <div className="mb-6 rounded-xl border bg-white p-4 shadow-sm">
+  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
 
-        <div className="flex flex-wrap gap-3">
+    <input
+      type="text"
+      placeholder="Branch Name"
+      value={searchCriteria.branchName}
+      onChange={(e) =>
+        setSearchCriteria((prev) => ({
+          ...prev,
+          branchName: e.target.value,
+        }))
+      }
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    />
 
-          <input
-            type="text"
-            placeholder="Branch Name"
-            value={searchCriteria.branchName}
-            onChange={(e) =>
-              setSearchCriteria({
-                ...searchCriteria,
-                branchName: e.target.value,
-              })
-            }
-            className="border rounded-lg px-3 h-10 w-52"
-          />
+    <input
+      type="text"
+      placeholder="Branch Code"
+      value={searchCriteria.branchCode}
+      onChange={(e) =>
+        setSearchCriteria((prev) => ({
+          ...prev,
+          branchCode: e.target.value,
+        }))
+      }
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    />
 
-          <input
-            type="text"
-            placeholder="Branch Code"
-            value={searchCriteria.branchCode}
-            onChange={(e) =>
-              setSearchCriteria({
-                ...searchCriteria,
-                branchCode: e.target.value,
-              })
-            }
-            className="border rounded-lg px-3 h-10 w-44"
-          />
+    <input
+      type="text"
+      placeholder="City"
+      value={searchCriteria.city}
+      onChange={(e) =>
+        setSearchCriteria((prev) => ({
+          ...prev,
+          city: e.target.value,
+        }))
+      }
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    />
 
-          <input
-            type="text"
-            placeholder="City"
-            value={searchCriteria.city}
-            onChange={(e) =>
-              setSearchCriteria({
-                ...searchCriteria,
-                city: e.target.value,
-              })
-            }
-            className="border rounded-lg px-3 h-10 w-40"
-          />
+    <input
+      type="text"
+      placeholder="Phone"
+      value={searchCriteria.phone}
+      onChange={(e) =>
+        setSearchCriteria((prev) => ({
+          ...prev,
+          phone: e.target.value,
+        }))
+      }
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    />
 
-          <input
-            type="text"
-            placeholder="Phone"
-            value={searchCriteria.phone}
-            onChange={(e) =>
-              setSearchCriteria({
-                ...searchCriteria,
-                phone: e.target.value,
-              })
-            }
-            className="border rounded-lg px-3 h-10 w-40"
-          />
+    <select
+      value={searchCriteria.isActive}
+      onChange={(e) =>
+        setSearchCriteria((prev) => ({
+          ...prev,
+          isActive: e.target.value,
+        }))
+      }
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    >
+      <option value="">Status</option>
+      <option value="true">Active</option>
+      <option value="false">Inactive</option>
+    </select>
 
-          <select
-            value={searchCriteria.isActive}
-            onChange={(e) =>
-              setSearchCriteria({
-                ...searchCriteria,
-                isActive: e.target.value,
-              })
-            }
-            className="border rounded-lg px-3 h-10"
-          >
-            <option value="">Status</option>
-            <option value="true">Active</option>
-            <option value="false">Inactive</option>
-          </select>
+    <select
+      value={sortBy}
+      onChange={(e) => setSortBy(e.target.value)}
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    >
+      <option value="createdAt">Created</option>
+      <option value="branchName">Branch Name</option>
+      <option value="branchCode">Branch Code</option>
+      <option value="city">City</option>
+    </select>
 
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="border rounded-lg px-3 h-10"
-          >
-            <option value="createdAt">Created</option>
-            <option value="branchName">Branch Name</option>
-            <option value="branchCode">Branch Code</option>
-            <option value="city">City</option>
-          </select>
+    <select
+      value={direction}
+      onChange={(e) => setDirection(e.target.value)}
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    >
+      <option value="DESC">Newest</option>
+      <option value="ASC">Oldest</option>
+    </select>
 
-          <select
-            value={direction}
-            onChange={(e) => setDirection(e.target.value)}
-            className="border rounded-lg px-3 h-10"
-          >
-            <option value="DESC">Newest</option>
-            <option value="ASC">Oldest</option>
-          </select>
+    <select
+      value={pageSize}
+      onChange={(e) => {
+        setCurrentPage(0);
+        setPageSize(Number(e.target.value));
+      }}
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    >
+      <option value={10}>10</option>
+      <option value={20}>20</option>
+      <option value={50}>50</option>
+      <option value={100}>100</option>
+    </select>
 
-          <select
-            value={pageSize}
-            onChange={(e) => {
-              setCurrentPage(0);
-              setPageSize(Number(e.target.value));
-            }}
-            className="border rounded-lg px-3 h-10"
-          >
-            <option value={10}>10</option>
-            <option value={20}>20</option>
-            <option value={50}>50</option>
-            <option value={100}>100</option>
-          </select>
-
-          <button
-            onClick={() => {
-              setCurrentPage(0);
-              loadBranches();
-            }}
-            className="bg-[#0d4039] text-white rounded-lg px-5 h-10"
-          >
-            Search
-          </button>
-
-          <button
-            onClick={resetFilters}
-            className="border rounded-lg px-5 h-10 hover:bg-gray-100"
-          >
-            Reset
-          </button>
-
-        </div>
-
-      </div>
+  </div>
+</div>
 
       {/* Table */}
 
@@ -533,40 +523,19 @@ export default function BranchTable() {
 
       {/* Pagination */}
 
-      {totalPages > 1 && (
-        <div className="flex justify-center items-center gap-2 mt-6">
-
+      <div className="flex justify-center gap-2 mt-5">
+        {[...Array(totalPages)].map((_, index) => (
           <button
-            disabled={currentPage === 0}
-            onClick={() => setCurrentPage((prev) => prev - 1)}
-            className="px-4 py-2 border rounded-lg disabled:opacity-50"
+            key={index}
+            onClick={() => setCurrentPage(index)}
+            className={`px-4 py-2 rounded ${
+              currentPage === index ? "bg-[#0d4039] text-white" : "bg-gray-200"
+            }`}
           >
-            Previous
+            {index + 1}
           </button>
-
-          {[...Array(totalPages)].map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentPage(index)}
-              className={`px-4 py-2 rounded-lg ${currentPage === index
-                ? "bg-[#0d4039] text-white"
-                : "border hover:bg-gray-100"
-                }`}
-            >
-              {index + 1}
-            </button>
-          ))}
-
-          <button
-            disabled={currentPage === totalPages - 1}
-            onClick={() => setCurrentPage((prev) => prev + 1)}
-            className="px-4 py-2 border rounded-lg disabled:opacity-50"
-          >
-            Next
-          </button>
-
-        </div>
-      )}
+        ))}
+      </div>
 
       {/* Modal */}
 

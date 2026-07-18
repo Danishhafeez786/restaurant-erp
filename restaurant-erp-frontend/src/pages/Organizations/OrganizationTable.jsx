@@ -73,6 +73,15 @@ export default function OrganizationTable() {
   }, [currentPage, pageSize, sortBy, direction]);
 
   useEffect(() => {
+  const timer = setTimeout(() => {
+    setCurrentPage(0);
+    loadOrganizations();
+  }, 300);
+
+  return () => clearTimeout(timer);
+}, [searchCriteria, sortBy, direction, pageSize]);
+
+  useEffect(() => {
     console.log("Connecting to SSE...");
 
     const eventSource = new EventSource(
@@ -138,176 +147,144 @@ export default function OrganizationTable() {
       {/* SEARCH FILTERS */}
 
       {/* Search Toolbar */}
-      <div className="bg-white border rounded-xl shadow-sm p-4 mb-6">
+      <div className="mb-6 rounded-xl border bg-white p-4 shadow-sm">
+  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
 
-        <div className="flex flex-wrap items-center gap-3">
+    {/* Organization */}
+    <input
+      type="text"
+      placeholder="Organization"
+      value={searchCriteria.organizationName}
+      onChange={(e) =>
+        setSearchCriteria((prev) => ({
+          ...prev,
+          organizationName: e.target.value,
+        }))
+      }
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    />
 
-          {/* Organization */}
-          <input
-            type="text"
-            placeholder="Organization"
-            value={searchCriteria.organizationName}
-            onChange={(e) =>
-              setSearchCriteria({
-                ...searchCriteria,
-                organizationName: e.target.value,
-              })
-            }
-            className="h-10 w-52 rounded-lg border px-3 text-sm focus:border-[#0d4039] focus:ring-2 focus:ring-[#0d4039]/20 outline-none"
-          />
+    {/* Owner */}
+    <input
+      type="text"
+      placeholder="Owner"
+      value={searchCriteria.ownerName}
+      onChange={(e) =>
+        setSearchCriteria((prev) => ({
+          ...prev,
+          ownerName: e.target.value,
+        }))
+      }
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    />
 
-          {/* Owner */}
-          <input
-            type="text"
-            placeholder="Owner"
-            value={searchCriteria.ownerName}
-            onChange={(e) =>
-              setSearchCriteria({
-                ...searchCriteria,
-                ownerName: e.target.value,
-              })
-            }
-            className="h-10 w-44 rounded-lg border px-3 text-sm focus:border-[#0d4039] focus:ring-2 focus:ring-[#0d4039]/20 outline-none"
-          />
+    {/* City */}
+    <input
+      type="text"
+      placeholder="City"
+      value={searchCriteria.city}
+      onChange={(e) =>
+        setSearchCriteria((prev) => ({
+          ...prev,
+          city: e.target.value,
+        }))
+      }
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    />
 
-          {/* City */}
-          <input
-            type="text"
-            placeholder="City"
-            value={searchCriteria.city}
-            onChange={(e) =>
-              setSearchCriteria({
-                ...searchCriteria,
-                city: e.target.value,
-              })
-            }
-            className="h-10 w-36 rounded-lg border px-3 text-sm focus:border-[#0d4039] focus:ring-2 focus:ring-[#0d4039]/20 outline-none"
-          />
+    {/* Country */}
+    <input
+      type="text"
+      placeholder="Country"
+      value={searchCriteria.country}
+      onChange={(e) =>
+        setSearchCriteria((prev) => ({
+          ...prev,
+          country: e.target.value,
+        }))
+      }
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    />
 
-          {/* Country */}
-          <input
-            type="text"
-            placeholder="Country"
-            value={searchCriteria.country}
-            onChange={(e) =>
-              setSearchCriteria({
-                ...searchCriteria,
-                country: e.target.value,
-              })
-            }
-            className="h-10 w-36 rounded-lg border px-3 text-sm focus:border-[#0d4039] focus:ring-2 focus:ring-[#0d4039]/20 outline-none"
-          />
+    {/* Status */}
+    <select
+      value={searchCriteria.isActive}
+      onChange={(e) =>
+        setSearchCriteria((prev) => ({
+          ...prev,
+          isActive: e.target.value,
+        }))
+      }
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    >
+      <option value="">Status</option>
+      <option value="true">Active</option>
+      <option value="false">Inactive</option>
+    </select>
 
-          {/* Status */}
-          <select
-            value={searchCriteria.isActive}
-            onChange={(e) =>
-              setSearchCriteria({
-                ...searchCriteria,
-                isActive: e.target.value,
-              })
-            }
-            className="h-10 rounded-lg border px-3 text-sm"
-          >
-            <option value="">Status</option>
-            <option value="true">Active</option>
-            <option value="false">Inactive</option>
-          </select>
+    {/* Billing */}
+    <select
+      value={searchCriteria.billingCycle}
+      onChange={(e) =>
+        setSearchCriteria((prev) => ({
+          ...prev,
+          billingCycle: e.target.value,
+        }))
+      }
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    >
+      <option value="">Billing</option>
+      <option value="MONTHLY">Monthly</option>
+      <option value="QUARTERLY">Quarterly</option>
+      <option value="YEARLY">Yearly</option>
+    </select>
 
-          {/* Billing */}
-          <select
-            value={searchCriteria.billingCycle}
-            onChange={(e) =>
-              setSearchCriteria({
-                ...searchCriteria,
-                billingCycle: e.target.value,
-              })
-            }
-            className="h-10 rounded-lg border px-3 text-sm"
-          >
-            <option value="">Billing</option>
-            <option value="MONTHLY">Monthly</option>
-            <option value="QUARTERLY">Quarterly</option>
-            <option value="YEARLY">Yearly</option>
-          </select>
+    {/* Sort By */}
+    <select
+      value={sortBy}
+      onChange={(e) => {
+        setCurrentPage(0);
+        setSortBy(e.target.value);
+      }}
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    >
+      <option value="createdAt">Created</option>
+      <option value="organizationName">Organization</option>
+      <option value="ownerName">Owner</option>
+      <option value="city">City</option>
+      <option value="country">Country</option>
+    </select>
 
-          {/* Sort */}
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="h-10 rounded-lg border px-3 text-sm"
-          >
-            <option value="createdAt">Created</option>
-            <option value="organizationName">Organization</option>
-            <option value="ownerName">Owner</option>
-            <option value="city">City</option>
-            <option value="country">Country</option>
-          </select>
+    {/* Direction */}
+    <select
+      value={direction}
+      onChange={(e) => {
+        setCurrentPage(0);
+        setDirection(e.target.value);
+      }}
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    >
+      <option value="DESC">Newest</option>
+      <option value="ASC">Oldest</option>
+    </select>
 
-          {/* Direction */}
-          <select
-            value={direction}
-            onChange={(e) => setDirection(e.target.value)}
-            className="h-10 rounded-lg border px-3 text-sm"
-          >
-            <option value="DESC">Newest</option>
-            <option value="ASC">Oldest</option>
-          </select>
+    {/* Page Size */}
+    <select
+      value={pageSize}
+      onChange={(e) => {
+        setCurrentPage(0);
+        setPageSize(Number(e.target.value));
+      }}
+      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+    >
+      <option value={10}>10</option>
+      <option value={20}>20</option>
+      <option value={50}>50</option>
+      <option value={100}>100</option>
+    </select>
 
-          {/* Page Size */}
-          <select
-            value={pageSize}
-            onChange={(e) => {
-              setPageSize(Number(e.target.value));
-              setCurrentPage(0);
-            }}
-            className="h-10 rounded-lg border px-3 text-sm"
-          >
-            <option value={10}>10</option>
-            <option value={20}>20</option>
-            <option value={50}>50</option>
-            <option value={100}>100</option>
-          </select>
-
-          {/* Search */}
-          <button
-            onClick={() => {
-              setCurrentPage(0);
-              loadOrganizations();
-            }}
-            className="h-10 px-5 rounded-lg bg-[#0d4039] text-white hover:bg-[#145148] transition"
-          >
-            Search
-          </button>
-
-          {/* Reset */}
-          <button
-            onClick={() => {
-              setSearchCriteria({
-                organizationName: "",
-                ownerName: "",
-                city: "",
-                country: "",
-                isActive: "",
-                billingCycle: "",
-                subscriptionPlanId: "",
-              });
-
-              setSortBy("createdAt");
-              setDirection("DESC");
-              setPageSize(10);
-              setCurrentPage(0);
-
-              loadOrganizations();
-            }}
-            className="h-10 px-5 rounded-lg border hover:bg-gray-100 transition"
-          >
-            Reset
-          </button>
-
-        </div>
-
-      </div>
+  </div>
+</div>
 
       {/* TABLE */}
       <div className="hidden md:block overflow-x-auto">
@@ -482,7 +459,7 @@ export default function OrganizationTable() {
           <button
             key={i}
             onClick={() => setCurrentPage(i)}
-            className={`px-3 py-1 rounded ${currentPage === i ? "bg-green-600 text-white" : "bg-gray-200"}`}
+            className={`px-3 py-1 rounded ${currentPage === i ? "bg-[#0d4039] text-white" : "bg-gray-200"}`}
           >
             {i + 1}
           </button>

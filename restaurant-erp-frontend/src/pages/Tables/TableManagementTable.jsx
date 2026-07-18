@@ -115,6 +115,15 @@ export default function TableManagementTable() {
     ]);
 
     useEffect(() => {
+    const timer = setTimeout(() => {
+        setCurrentPage(0);
+        loadTables();
+    }, 300);
+
+    return () => clearTimeout(timer);
+}, [searchCriteria, sortBy, direction, pageSize]);
+
+    useEffect(() => {
 
         const eventSource = tableManagementService.stream();
 
@@ -203,10 +212,9 @@ export default function TableManagementTable() {
 
             {/* =========================== HEADER =========================== */}
 
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
-
+            <div className="flex justify-between items-center mb-5">
                 <h2 className="text-2xl font-bold">
-                    Table Management
+                    Tables
                 </h2>
 
                 {canCreate && (
@@ -216,210 +224,175 @@ export default function TableManagementTable() {
                             setSelectedTable(null);
                             setShowModal(true);
                         }}
-                        className="w-full sm:w-auto px-6 py-2 bg-[#0d4039] text-white rounded-lg"
+                        className="px-6 py-2 bg-[#0d4039] text-white rounded-lg"
                     >
                         + Add Table
                     </button>
                 )}
-
             </div>
 
             {/* =========================== SEARCH PANEL =========================== */}
 
-            <div className="bg-white border rounded-xl shadow-sm p-4 mb-6">
+            <div className="mb-6 rounded-xl border bg-white p-4 shadow-sm">
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
 
-                    {/* Table Number */}
+        {/* Table Number */}
 
-                    <input
-                        type="text"
-                        placeholder="Table Number"
-                        value={searchCriteria.tableNumber}
-                        onChange={(e) =>
-                            setSearchCriteria({
-                                ...searchCriteria,
-                                tableNumber: e.target.value,
-                            })
-                        }
-                        className="h-10 rounded-lg border px-3 text-sm"
-                    />
+        <input
+            type="text"
+            placeholder="Table Number"
+            value={searchCriteria.tableNumber}
+            onChange={(e) =>
+                setSearchCriteria((prev) => ({
+                    ...prev,
+                    tableNumber: e.target.value,
+                }))
+            }
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+        />
 
-                    {/* Table Name */}
+        {/* Table Name */}
 
-                    <input
-                        type="text"
-                        placeholder="Table Name"
-                        value={searchCriteria.tableName}
-                        onChange={(e) =>
-                            setSearchCriteria({
-                                ...searchCriteria,
-                                tableName: e.target.value,
-                            })
-                        }
-                        className="h-10 rounded-lg border px-3 text-sm"
-                    />
+        <input
+            type="text"
+            placeholder="Table Name"
+            value={searchCriteria.tableName}
+            onChange={(e) =>
+                setSearchCriteria((prev) => ({
+                    ...prev,
+                    tableName: e.target.value,
+                }))
+            }
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+        />
 
-                    {/* Capacity */}
+        {/* Capacity */}
 
-                    <input
-                        type="number"
-                        placeholder="Capacity"
-                        value={searchCriteria.capacity}
-                        onChange={(e) =>
-                            setSearchCriteria({
-                                ...searchCriteria,
-                                capacity: e.target.value,
-                            })
-                        }
-                        className="h-10 rounded-lg border px-3 text-sm"
-                    />
+        <input
+            type="number"
+            placeholder="Capacity"
+            value={searchCriteria.capacity}
+            onChange={(e) =>
+                setSearchCriteria((prev) => ({
+                    ...prev,
+                    capacity: e.target.value,
+                }))
+            }
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+        />
 
-                    {/* QR Token */}
+        {/* QR Token */}
 
-                    <input
-                        type="text"
-                        placeholder="QR Token"
-                        value={searchCriteria.qrToken}
-                        onChange={(e) =>
-                            setSearchCriteria({
-                                ...searchCriteria,
-                                qrToken: e.target.value,
-                            })
-                        }
-                        className="h-10 rounded-lg border px-3 text-sm"
-                    />
+        <input
+            type="text"
+            placeholder="QR Token"
+            value={searchCriteria.qrToken}
+            onChange={(e) =>
+                setSearchCriteria((prev) => ({
+                    ...prev,
+                    qrToken: e.target.value,
+                }))
+            }
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+        />
 
-                    {/* Organization */}
+        {/* Organization */}
 
-                    <input
-                        type="text"
-                        placeholder="Organization"
-                        value={searchCriteria.organization}
-                        onChange={(e) =>
-                            setSearchCriteria({
-                                ...searchCriteria,
-                                organization: e.target.value,
-                            })
-                        }
-                        className="h-10 rounded-lg border px-3 text-sm"
-                    />
+        <input
+            type="text"
+            placeholder="Organization"
+            value={searchCriteria.organization}
+            onChange={(e) =>
+                setSearchCriteria((prev) => ({
+                    ...prev,
+                    organization: e.target.value,
+                }))
+            }
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+        />
 
-                    {/* Branch */}
+        {/* Branch */}
 
-                    <input
-                        type="text"
-                        placeholder="Branch"
-                        value={searchCriteria.branch}
-                        onChange={(e) =>
-                            setSearchCriteria({
-                                ...searchCriteria,
-                                branch: e.target.value,
-                            })
-                        }
-                        className="h-10 rounded-lg border px-3 text-sm"
-                    />
+        <input
+            type="text"
+            placeholder="Branch"
+            value={searchCriteria.branch}
+            onChange={(e) =>
+                setSearchCriteria((prev) => ({
+                    ...prev,
+                    branch: e.target.value,
+                }))
+            }
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+        />
 
-                    {/* Status */}
+        {/* Status */}
 
-                    <select
-                        value={searchCriteria.isActive}
-                        onChange={(e) =>
-                            setSearchCriteria({
-                                ...searchCriteria,
-                                isActive: e.target.value,
-                            })
-                        }
-                        className="h-10 rounded-lg border px-3 text-sm"
-                    >
-                        <option value="">Status</option>
-                        <option value="true">Active</option>
-                        <option value="false">Inactive</option>
-                    </select>
+        <select
+            value={searchCriteria.isActive}
+            onChange={(e) =>
+                setSearchCriteria((prev) => ({
+                    ...prev,
+                    isActive: e.target.value,
+                }))
+            }
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+        >
+            <option value="">Status</option>
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
+        </select>
 
-                    {/* Sort By */}
+        {/* Sort By */}
 
-                    <select
-                        value={sortBy}
-                        onChange={(e) => setSortBy(e.target.value)}
-                        className="h-10 rounded-lg border px-3 text-sm"
-                    >
-                        <option value="createdAt">Created Date</option>
-                        <option value="tableNumber">Table Number</option>
-                        <option value="tableName">Table Name</option>
-                        <option value="capacity">Capacity</option>
-                    </select>
+        <select
+            value={sortBy}
+            onChange={(e) => {
+                setCurrentPage(0);
+                setSortBy(e.target.value);
+            }}
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+        >
+            <option value="createdAt">Created Date</option>
+            <option value="tableNumber">Table Number</option>
+            <option value="tableName">Table Name</option>
+            <option value="capacity">Capacity</option>
+        </select>
 
-                    {/* Direction */}
+        {/* Direction */}
 
-                    <select
-                        value={direction}
-                        onChange={(e) => setDirection(e.target.value)}
-                        className="h-10 rounded-lg border px-3 text-sm"
-                    >
-                        <option value="DESC">Newest</option>
-                        <option value="ASC">Oldest</option>
-                    </select>
+        <select
+            value={direction}
+            onChange={(e) => {
+                setCurrentPage(0);
+                setDirection(e.target.value);
+            }}
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+        >
+            <option value="DESC">Newest</option>
+            <option value="ASC">Oldest</option>
+        </select>
 
-                    {/* Page Size */}
+        {/* Page Size */}
 
-                    <select
-                        value={pageSize}
-                        onChange={(e) => {
-                            setPageSize(Number(e.target.value));
-                            setCurrentPage(0);
-                        }}
-                        className="h-10 rounded-lg border px-3 text-sm"
-                    >
-                        <option value={10}>10</option>
-                        <option value={20}>20</option>
-                        <option value={50}>50</option>
-                        <option value={100}>100</option>
-                    </select>
+        <select
+            value={pageSize}
+            onChange={(e) => {
+                setCurrentPage(0);
+                setPageSize(Number(e.target.value));
+            }}
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+        >
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
+        </select>
 
-                    {/* Search */}
+    </div>
 
-                    <button
-                        onClick={() => {
-                            setCurrentPage(0);
-                            loadTables();
-                        }}
-                        className="h-10 rounded-lg bg-[#0d4039] text-white px-5"
-                    >
-                        Search
-                    </button>
-
-                    {/* Reset */}
-
-                    <button
-                        onClick={() => {
-
-                            setSearchCriteria({
-                                tableNumber: "",
-                                tableName: "",
-                                capacity: "",
-                                qrToken: "",
-                                organization: "",
-                                branch: "",
-                                isActive: "",
-                            });
-
-                            setSortBy("createdAt");
-                            setDirection("DESC");
-                            setPageSize(10);
-                            setCurrentPage(0);
-
-                            loadTables();
-
-                        }}
-                        className="h-10 rounded-lg border hover:bg-gray-100 px-5"
-                    >
-                        Reset
-                    </button>
-
-                </div>
-
-            </div>
+</div>
 
 
             {/* =========================== DESKTOP TABLE =========================== */}
@@ -724,71 +697,16 @@ export default function TableManagementTable() {
 
             {/* =========================== PAGINATION =========================== */}
 
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
-
-                <div className="text-sm text-gray-600">
-                    Total Pages:{" "}
-                    <span className="font-semibold">
-                        {totalPages}
-                    </span>
-                </div>
-
-                <div className="flex flex-wrap justify-center gap-2">
-
+            <div className="flex justify-center gap-2 mt-5">
+                {[...Array(totalPages)].map((_, i) => (
                     <button
-                        onClick={() =>
-                            setCurrentPage((prev) =>
-                                Math.max(prev - 1, 0)
-                            )
-                        }
-                        disabled={currentPage === 0}
-                        className={`px-4 py-2 rounded-lg border ${
-                            currentPage === 0
-                                ? "cursor-not-allowed bg-gray-100 text-gray-400"
-                                : "hover:bg-gray-100"
-                        }`}
+                        key={i}
+                        onClick={() => setCurrentPage(i)}
+                        className={`px-3 py-1 rounded ${currentPage === i ? "bg-[#0d4039] text-white" : "bg-gray-200"}`}
                     >
-                        Previous
+                        {i + 1}
                     </button>
-
-                    {[...Array(totalPages)].map((_, index) => (
-
-                        <button
-                            key={index}
-                            onClick={() => setCurrentPage(index)}
-                            className={`px-4 py-2 rounded-lg ${
-                                currentPage === index
-                                    ? "bg-[#0d4039] text-white"
-                                    : "border hover:bg-gray-100"
-                            }`}
-                        >
-                            {index + 1}
-                        </button>
-
-                    ))}
-
-                    <button
-                        onClick={() =>
-                            setCurrentPage((prev) =>
-                                Math.min(prev + 1, totalPages - 1)
-                            )
-                        }
-                        disabled={
-                            currentPage === totalPages - 1 ||
-                            totalPages === 0
-                        }
-                        className={`px-4 py-2 rounded-lg border ${
-                            currentPage === totalPages - 1 ||
-                            totalPages === 0
-                                ? "cursor-not-allowed bg-gray-100 text-gray-400"
-                                : "hover:bg-gray-100"
-                        }`}
-                    >
-                        Next
-                    </button>
-
-                </div>
-
+                ))}
             </div>
 
             {/* =========================== TABLE MANAGEMENT MODAL =========================== */}
