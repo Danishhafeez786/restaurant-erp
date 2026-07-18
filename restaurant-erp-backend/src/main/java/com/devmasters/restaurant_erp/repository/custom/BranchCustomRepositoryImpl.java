@@ -30,42 +30,25 @@ public class BranchCustomRepositoryImpl
 
         List<Criteria> filters = new ArrayList<>();
 
-        if (criteria.getBranchName() != null
-                && !criteria.getBranchName().isBlank()) {
+        if(criteria.getSearch() != null
+                && !criteria.getSearch().isBlank()) {
+
+
+            String keyword = criteria.getSearch();
+
 
             filters.add(
-                    Criteria.where("branchName")
-                            .regex(criteria.getBranchName(), "i")
+                    new Criteria().orOperator(
+
+                            Criteria.where("branchName").regex(keyword, "i"),
+                            Criteria.where("branchCode").regex(keyword, "i"),
+                            Criteria.where("city").regex(keyword, "i"),
+                            Criteria.where("phone").regex(keyword, "i")
+
+                    )
             );
+
         }
-
-        if (criteria.getBranchCode() != null
-                && !criteria.getBranchCode().isBlank()) {
-
-            filters.add(
-                    Criteria.where("branchCode")
-                            .regex(criteria.getBranchCode(), "i")
-            );
-        }
-
-        if (criteria.getCity() != null
-                && !criteria.getCity().isBlank()) {
-
-            filters.add(
-                    Criteria.where("city")
-                            .regex(criteria.getCity(), "i")
-            );
-        }
-
-        if (criteria.getPhone() != null
-                && !criteria.getPhone().isBlank()) {
-
-            filters.add(
-                    Criteria.where("phone")
-                            .regex(criteria.getPhone(), "i")
-            );
-        }
-
         if (criteria.getOrganizationId() != null) {
 
             filters.add(
