@@ -149,16 +149,17 @@ public class BranchController {
     private void sendEvent(String eventName, Object data) {
 
         emitters.forEach(emitter -> {
-
             try {
+
                 emitter.send(
                         SseEmitter.event()
                                 .name(eventName)
                                 .data(data)
                 );
 
-            } catch (IOException e) {
-                emitter.completeWithError(e);
+            } catch (Exception e) {
+
+                emitter.complete();
                 emitters.remove(emitter);
             }
         });
