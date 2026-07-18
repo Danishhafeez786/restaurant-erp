@@ -2,6 +2,7 @@ package com.devmasters.restaurant_erp.config;
 
 import com.devmasters.restaurant_erp.domain.*;
 import com.devmasters.restaurant_erp.enums.BillingCycle;
+import com.devmasters.restaurant_erp.enums.PermissionAction;
 import com.devmasters.restaurant_erp.repository.*;
 
 import org.springframework.boot.CommandLineRunner;
@@ -10,8 +11,10 @@ import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -113,38 +116,30 @@ public class ApplicationInitializer implements CommandLineRunner {
                                 .isActive(true)
                                 .build()
                 );
-
-        List<Permission> permissions = permissionRepository.saveAll(
-                List.of(
-
-                        permission("DASHBOARD_VIEW","Dashboard View","DASHBOARD"),
-
-                        permission("ORGANIZATION_CREATE","Organization Create","ORGANIZATION"),
-                        permission("ORGANIZATION_UPDATE","Organization Update","ORGANIZATION"),
-
-                        permission("BRANCH_CREATE","Branch Create","BRANCH"),
-                        permission("BRANCH_UPDATE","Branch Update","BRANCH"),
-
-                        permission("USER_CREATE","User Create","USER"),
-                        permission("USER_UPDATE","User Update","USER"),
-                        permission("USER_DELETE","User Delete","USER"),
-
-                        permission("ROLE_CREATE","Role Create","ROLE"),
-                        permission("ROLE_UPDATE","Role Update","ROLE"),
-
-                        permission("MENU_CREATE","Menu Create","MENU"),
-                        permission("MENU_UPDATE","Menu Update","MENU"),
-
-                        permission("ORDER_CREATE","Order Create","ORDER"),
-                        permission("ORDER_UPDATE","Order Update","ORDER"),
-
-                        permission("PAYMENT_RECEIVE","Payment Receive","PAYMENT"),
-
-                        permission("REPORT_VIEW","Report View","REPORT"),
-
-                        permission("SUBSCRIPTION_MANAGE","Subscription Manage","SUBSCRIPTION")
-                )
+        List<String> permissionModules = List.of(
+                "Plan",
+                "Organization",
+                "Branch",
+                "Employee",
+                "Role",
+                "Permission",
+                "Customer",
+                "Supplier",
+                "Category",
+                "Floor",
+                "Modifier Group",
+                "Modifier",
+                "Expense",
+                "Table",
+                "Menu",
+                "Settings"
         );
+
+        List<Permission> permissions = new ArrayList<>();
+        for(String permissionModule : permissionModules){
+            create(permissionModule,permissions);
+        }
+        permissionRepository.saveAll(permissions);
 
         List<RolePermission> rolePermissions = new ArrayList<>();
         for(Permission permission : permissions){
@@ -193,5 +188,30 @@ public class ApplicationInitializer implements CommandLineRunner {
                 .name(name)
                 .module(module)
                 .build();
+    }
+
+
+    public void create(String module, List<Permission> permissions) {
+
+        String moduleCode = module.trim().toUpperCase();
+        String moduleName = toSentenceCase(module);
+
+        for (PermissionAction permissionValue : PermissionAction.values()){
+            permissions.add(Permission.builder()
+                    .id(UUID.randomUUID())
+                    .module(moduleCode)
+                    .code(moduleCode + "_" + permissionValue.name())
+                    .name(moduleName + " " + permissionValue.getDisplayName())
+                    .isActive(true)
+                    .build());
+        }
+    }
+
+    private String toSentenceCase(String text) {
+
+        if (text == null || text.isBlank())
+            return text;
+        text = text.trim();
+        return Character.toUpperCase(text.charAt(0)) + text.substring(1).toLowerCase();
     }
 }
