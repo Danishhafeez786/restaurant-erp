@@ -264,7 +264,7 @@ return (
 
         <div>
           <label className="mb-2 block text-sm font-medium">
-            Monthly Price <span className="text-red-500">*</span>
+            Monthly Rent <span className="text-red-500">*</span>
           </label>
 
           <input
@@ -286,7 +286,7 @@ return (
 
         <div>
           <label className="mb-2 block text-sm font-medium">
-            Yearly Price <span className="text-red-500">*</span>
+            Yearly Rent (If One installment) <span className="text-red-500">*</span>
           </label>
 
           <input

@@ -25,8 +25,6 @@ export default function PermissionModalBox({
 
   // Required fields validation
   const isFormValid =
-    formData.code.trim() !== "" &&
-    formData.name.trim() !== "" &&
     formData.module.trim() !== "";
 
   useEffect(() => {
@@ -125,18 +123,16 @@ return (
 
         <div>
           <label className="mb-2 block text-sm font-medium">
-            Code <span className="text-red-500">*</span>
+            Code
           </label>
 
           <input
             name="code"
             value={formData.code}
             onChange={handleChange}
-            disabled={!isCreate}
+            disabled={true}
             placeholder="Enter Code"
-            className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2 ${
-              !isCreate ? "bg-gray-100" : ""
-            } border ${
+            className={`w-full rounded-lg bg-gray-100 px-4 py-3 focus:outline-none focus:ring-2 border ${
               !isView && formData.code.trim() === ""
                 ? "border-gray-300 focus:ring-red-400"
                 : "border-gray-300 focus:ring-blue-500"
@@ -148,18 +144,16 @@ return (
 
         <div>
           <label className="mb-2 block text-sm font-medium">
-            Name <span className="text-red-500">*</span>
+            Name
           </label>
 
           <input
             name="name"
             value={formData.name}
             onChange={handleChange}
-            disabled={!isCreate}
+            disabled={true}
             placeholder="Enter Name"
-            className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2 ${
-              !isCreate ? "bg-gray-100" : ""
-            } border ${
+            className={`w-full rounded-lg bg-gray-100 px-4 py-3 focus:outline-none focus:ring-2 border ${
               !isView && formData.name.trim() === ""
                 ? "border-gray-300 focus:ring-red-400"
                 : "border-gray-300 focus:ring-blue-500"

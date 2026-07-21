@@ -28,28 +28,19 @@ public class SubscriptionPlanHandler {
             );
         }
 
-        SubscriptionPlan entity =
-                subscriptionPlanTransformer.toEntity(model);
+        SubscriptionPlan entity = subscriptionPlanTransformer.toEntity(model);
 
-        SubscriptionPlan saved =
-                subscriptionPlanService.create(entity);
+        SubscriptionPlan saved = subscriptionPlanService.create(entity);
 
         return subscriptionPlanTransformer.toModel(saved);
     }
 
-    public PageResponse<SubscriptionModel> getAll(
-            SubscriptionPlanSearchCriteria criteria,
-            Pageable pageable) {
+    public PageResponse<SubscriptionModel> getAll(SubscriptionPlanSearchCriteria criteria, Pageable pageable) {
 
-        Page<SubscriptionPlan> page =
-                subscriptionPlanService.search(criteria, pageable);
+        Page<SubscriptionPlan> page = subscriptionPlanService.search(criteria, pageable);
 
         return PageResponse.<SubscriptionModel>builder()
-                .content(
-                        subscriptionPlanTransformer.toModels(
-                                page.getContent()
-                        )
-                )
+                .content(subscriptionPlanTransformer.toModels(page.getContent()))
                 .totalElements(page.getTotalElements())
                 .totalPages(page.getTotalPages())
                 .page(page.getNumber())

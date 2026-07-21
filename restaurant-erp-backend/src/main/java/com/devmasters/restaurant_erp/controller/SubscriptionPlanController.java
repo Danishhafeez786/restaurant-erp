@@ -61,18 +61,11 @@ public class SubscriptionPlanController {
             @RequestParam(defaultValue = "DESC") String direction) {
 
 
-        Pageable pageable = PageRequest.of(
-                page,
-                size,
-                Sort.by(
-                        Sort.Direction.valueOf(direction.toUpperCase()),
-                        sortBy
-                )
-        );
+        Pageable pageable = PageRequest.of(page, size,
+                Sort.by(Sort.Direction.valueOf(direction.toUpperCase()), sortBy));
 
 
-        PageResponse<SubscriptionModel> response =
-                subscriptionPlanHandler.getAll(criteria, pageable);
+        PageResponse<SubscriptionModel> response = subscriptionPlanHandler.getAll(criteria, pageable);
 
 
         return ResponseEntity.ok(

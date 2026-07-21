@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -24,6 +25,7 @@ public class SubscriptionPlanServiceImpl implements SubscriptionPlanService {
 
     @Override
     public SubscriptionPlan create(SubscriptionPlan entity) {
+        entity.setCreatedAt(LocalDateTime.now());
         subscriptionPlanRepository.save(entity);
         return entity;
     }
@@ -37,7 +39,6 @@ public class SubscriptionPlanServiceImpl implements SubscriptionPlanService {
     @Override
     public SubscriptionPlan update(UUID id, SubscriptionPlan entity) {
         SubscriptionPlan existing = findById(id);
-
         existing.setName(entity.getName());
         existing.setBranchesLimit(entity.getBranchesLimit());
         existing.setUsersLimit(entity.getUsersLimit());

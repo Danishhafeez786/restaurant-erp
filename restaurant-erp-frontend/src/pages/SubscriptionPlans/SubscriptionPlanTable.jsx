@@ -27,37 +27,33 @@ export default function SubscriptionPlanTable() {
 
   const [searchCriteria, setSearchCriteria] = useState({
     name: "",
-    isActive: "",
-    minMonthlyPrice: "",
-    maxMonthlyPrice: "",
-    minUsersLimit: "",
-    maxUsersLimit: "",
+    isActive: ""
   });
 
-    const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("user"));
 
-    const canCreate = user?.permissions?.includes("PLAN_CREATE");
+  const canCreate = user?.permissions?.includes("PLAN_CREATE");
 
-    const canView = user?.permissions?.includes("PLAN_VIEW");
+  const canView = user?.permissions?.includes("PLAN_VIEW");
 
-    const canUpdate = user?.permissions?.includes("PLAN_UPDATE");
+  const canUpdate = user?.permissions?.includes("PLAN_UPDATE");
 
-    const canDelete = user?.permissions?.includes("PLAN_DELETE");
+  const canDelete = user?.permissions?.includes("PLAN_DELETE");
 
-    const canRestore = user?.permissions?.includes("PLAN_REACTIVATE");
+  const canRestore = user?.permissions?.includes("PLAN_REACTIVATE");
 
   useEffect(() => {
     loadPlans();
   }, [currentPage, pageSize, sortBy, direction]);
 
   useEffect(() => {
-  const timer = setTimeout(() => {
-    setCurrentPage(0);
-    loadPlans();
-  }, 300);
+    const timer = setTimeout(() => {
+      setCurrentPage(0);
+      loadPlans();
+    }, 300);
 
-  return () => clearTimeout(timer);
-}, [searchCriteria, sortBy, direction, pageSize]);
+    return () => clearTimeout(timer);
+  }, [searchCriteria, sortBy, direction, pageSize]);
 
   useEffect(() => {
     console.log("Connecting to Subscription Plan SSE...");
@@ -77,11 +73,7 @@ export default function SubscriptionPlanTable() {
         isActive:
           searchCriteria.isActive === ""
             ? null
-            : searchCriteria.isActive === "true",
-        minMonthlyPrice: searchCriteria.minMonthlyPrice || null,
-        maxMonthlyPrice: searchCriteria.maxMonthlyPrice || null,
-        minUsersLimit: searchCriteria.minUsersLimit || null,
-        maxUsersLimit: searchCriteria.maxUsersLimit || null,
+            : searchCriteria.isActive === "true"
       };
 
       const response = await axiosClient.post(
@@ -168,142 +160,109 @@ export default function SubscriptionPlanTable() {
 
       {/* SEARCH FILTERS */}
 
-      {/* Search Toolbar */}
-      <div className="mb-6 rounded-xl border bg-white p-4 shadow-sm">
+     {/* Search Toolbar */}
+<div className="mb-6 rounded-xl border bg-white p-4 shadow-sm">
   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
 
     {/* Plan Name */}
-    <input
-      type="text"
-      placeholder="Plan Name"
-      value={searchCriteria.name}
-      onChange={(e) =>
-        setSearchCriteria((prev) => ({
-          ...prev,
-          name: e.target.value,
-        }))
-      }
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    />
-
-    
-
-    {/* Min Monthly Price */}
-    <input
-      type="number"
-      placeholder="Min Price"
-      value={searchCriteria.minMonthlyPrice}
-      onChange={(e) =>
-        setSearchCriteria((prev) => ({
-          ...prev,
-          minMonthlyPrice: e.target.value,
-        }))
-      }
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    />
-
-    {/* Max Monthly Price */}
-    <input
-      type="number"
-      placeholder="Max Price"
-      value={searchCriteria.maxMonthlyPrice}
-      onChange={(e) =>
-        setSearchCriteria((prev) => ({
-          ...prev,
-          maxMonthlyPrice: e.target.value,
-        }))
-      }
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    />
-
-    {/* Min Users */}
-    <input
-      type="number"
-      placeholder="Min Users"
-      value={searchCriteria.minUsersLimit}
-      onChange={(e) =>
-        setSearchCriteria((prev) => ({
-          ...prev,
-          minUsersLimit: e.target.value,
-        }))
-      }
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    />
-
-    {/* Max Users */}
-    <input
-      type="number"
-      placeholder="Max Users"
-      value={searchCriteria.maxUsersLimit}
-      onChange={(e) =>
-        setSearchCriteria((prev) => ({
-          ...prev,
-          maxUsersLimit: e.target.value,
-        }))
-      }
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    />
+    <div>
+      <label className="mb-1 block text-sm font-medium text-gray-700">
+        Plan Name
+      </label>
+      <input
+        type="text"
+        placeholder="Enter plan name"
+        value={searchCriteria.name}
+        onChange={(e) =>
+          setSearchCriteria((prev) => ({
+            ...prev,
+            name: e.target.value,
+          }))
+        }
+        className="h-11 w-full rounded-lg border border-gray-300 px-4 focus:border-[#0d4039] focus:outline-none focus:ring-2 focus:ring-[#0d4039]/20"
+      />
+    </div>
 
     {/* Status */}
-    <select
-      value={searchCriteria.isActive}
-      onChange={(e) =>
-        setSearchCriteria((prev) => ({
-          ...prev,
-          isActive: e.target.value,
-        }))
-      }
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    >
-      <option value="">Status</option>
-      <option value="true">Active</option>
-      <option value="false">Inactive</option>
-    </select>
+    <div>
+      <label className="mb-1 block text-sm font-medium text-gray-700">
+        Status
+      </label>
+      <select
+        value={searchCriteria.isActive}
+        onChange={(e) =>
+          setSearchCriteria((prev) => ({
+            ...prev,
+            isActive: e.target.value,
+          }))
+        }
+        className="h-11 w-full rounded-lg border border-gray-300 px-4 focus:border-[#0d4039] focus:outline-none focus:ring-2 focus:ring-[#0d4039]/20"
+      >
+        <option value="">All Status</option>
+        <option value="true">Active</option>
+        <option value="false">Inactive</option>
+      </select>
+    </div>
 
     {/* Sort By */}
-    <select
-      value={sortBy}
-      onChange={(e) => {
-        setCurrentPage(0);
-        setSortBy(e.target.value);
-      }}
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    >
-      <option value="createdAt">Created</option>
-      <option value="name">Plan Name</option>
-      <option value="monthlyPrice">Monthly Price</option>
-      <option value="yearlyPrice">Yearly Price</option>
-      <option value="usersLimit">Users Limit</option>
-      <option value="branchesLimit">Branches Limit</option>
-    </select>
+    <div>
+      <label className="mb-1 block text-sm font-medium text-gray-700">
+        Sort By
+      </label>
+      <select
+        value={sortBy}
+        onChange={(e) => {
+          setCurrentPage(0);
+          setSortBy(e.target.value);
+        }}
+        className="h-11 w-full rounded-lg border border-gray-300 px-4 focus:border-[#0d4039] focus:outline-none focus:ring-2 focus:ring-[#0d4039]/20"
+      >
+        <option value="createdAt">Created Date</option>
+        <option value="name">Plan Name</option>
+        <option value="monthlyPrice">Monthly Price</option>
+        <option value="yearlyPrice">Yearly Price</option>
+        <option value="usersLimit">Users Limit</option>
+        <option value="branchesLimit">Branches Limit</option>
+      </select>
+    </div>
 
     {/* Sort Direction */}
-    <select
-      value={direction}
-      onChange={(e) => {
-        setCurrentPage(0);
-        setDirection(e.target.value);
-      }}
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    >
-      <option value="DESC">Newest</option>
-      <option value="ASC">Oldest</option>
-    </select>
+    <div>
+      <label className="mb-1 block text-sm font-medium text-gray-700">
+        Order
+      </label>
+      <select
+        value={direction}
+        onChange={(e) => {
+          setCurrentPage(0);
+          setDirection(e.target.value);
+        }}
+        className="h-11 w-full rounded-lg border border-gray-300 px-4 focus:border-[#0d4039] focus:outline-none focus:ring-2 focus:ring-[#0d4039]/20"
+      >
+        <option value="DESC">Newest First</option>
+        <option value="ASC">Oldest First</option>
+      </select>
+    </div>
 
     {/* Page Size */}
-    <select
-      value={pageSize}
-      onChange={(e) => {
-        setCurrentPage(0);
-        setPageSize(Number(e.target.value));
-      }}
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    >
-      <option value={10}>10</option>
-      <option value={20}>20</option>
-      <option value={50}>50</option>
-      <option value={100}>100</option>
-    </select>
+    <div>
+      <label className="mb-1 block text-sm font-medium text-gray-700">
+        Records Per Page
+      </label>
+      <select
+        value={pageSize}
+        onChange={(e) => {
+          setCurrentPage(0);
+          setPageSize(Number(e.target.value));
+        }}
+        className="h-11 w-full rounded-lg border border-gray-300 px-4 focus:border-[#0d4039] focus:outline-none focus:ring-2 focus:ring-[#0d4039]/20"
+      >
+        <option value={2}>2</option>
+        <option value={25}>25</option>
+        <option value={50}>50</option>
+        <option value={100}>100</option>
+      </select>
+    </div>
 
   </div>
 </div>
@@ -350,49 +309,49 @@ export default function SubscriptionPlanTable() {
                 <td className="py-3">
 
                   {canView && (
-                  <button
-                    onClick={() => {
-                      setModalMode("view");
-                      setSelectedPlan(plan);
-                      setShowModal(true);
-                  }}
-                    className="text-green-600 mr-3"
-                  >
-                    View
-                  </button>
+                    <button
+                      onClick={() => {
+                        setModalMode("view");
+                        setSelectedPlan(plan);
+                        setShowModal(true);
+                      }}
+                      className="text-green-600 mr-3"
+                    >
+                      View
+                    </button>
                   )}
 
                   {canUpdate && (
-                  <button
-                    onClick={() => {
-                      setModalMode("edit");
-                      setSelectedPlan(plan);
-                      setShowModal(true);
-                    }}
-                    className="text-blue-600 mr-3"
-                  >
-                    Edit
-                  </button>
-                    )}
+                    <button
+                      onClick={() => {
+                        setModalMode("edit");
+                        setSelectedPlan(plan);
+                        setShowModal(true);
+                      }}
+                      className="text-blue-600 mr-3"
+                    >
+                      Edit
+                    </button>
+                  )}
 
                   {plan.isActive &&
                     canDelete && (
-                  <button
-                    onClick={() => handleDelete(plan.id)}
-                    className="text-red-600"
-                  >
-                    Delete
-                  </button>
+                      <button
+                        onClick={() => handleDelete(plan.id)}
+                        className="text-red-600"
+                      >
+                        Delete
+                      </button>
                     )}
 
                   {!plan.isActive &&
                     canRestore && (
-                  <button
-                    className="text-orange-600"
-                    onClick={() => handleRestore(plan.id)}
-                  >
-                    Restore
-                  </button>
+                      <button
+                        className="text-orange-600"
+                        onClick={() => handleRestore(plan.id)}
+                      >
+                        Restore
+                      </button>
                     )}
                 </td>
               </tr>
@@ -434,53 +393,53 @@ export default function SubscriptionPlanTable() {
 
             <div className="flex gap-2 mt-4">
 
-                            {canView && (
-                                <button
-                                    className="flex-1 bg-green-500 text-white py-2 rounded-lg"
-                                    onClick={() => {
-                                        setModalMode("view");
-                                        setSelectedPlan(plan);
-                                        setShowModal(true);
-                                    }}
-                                >
-                                    View
-                                </button>
-                            )}
+              {canView && (
+                <button
+                  className="flex-1 bg-green-500 text-white py-2 rounded-lg"
+                  onClick={() => {
+                    setModalMode("view");
+                    setSelectedPlan(plan);
+                    setShowModal(true);
+                  }}
+                >
+                  View
+                </button>
+              )}
 
-                            {canUpdate && (
-                                <button
-                                    className="flex-1 bg-blue-500 text-white py-2 rounded-lg"
-                                    onClick={() => {
-                                        setModalMode("edit");
-                                        setSelectedPlan(plan);
-                                        setShowModal(true);
-                                    }}
-                                >
-                                    Edit
-                                </button>
-                            )}
+              {canUpdate && (
+                <button
+                  className="flex-1 bg-blue-500 text-white py-2 rounded-lg"
+                  onClick={() => {
+                    setModalMode("edit");
+                    setSelectedPlan(plan);
+                    setShowModal(true);
+                  }}
+                >
+                  Edit
+                </button>
+              )}
 
-                            {plan.isActive &&
-                                canDelete && (
-                                    <button
-                                        className="flex-1 bg-red-500 text-white py-2 rounded-lg"
-                                        onClick={() => handleDelete(plan.id)}
-                                    >
-                                        Delete
-                                    </button>
-                                )}
+              {plan.isActive &&
+                canDelete && (
+                  <button
+                    className="flex-1 bg-red-500 text-white py-2 rounded-lg"
+                    onClick={() => handleDelete(plan.id)}
+                  >
+                    Delete
+                  </button>
+                )}
 
-                            {!plan.isActive &&
-                                canRestore && (
-                                    <button
-                                        className="flex-1 bg-orange-500 text-white py-2 rounded-lg"
-                                        onClick={() => handleRestore(plan.id)}
-                                    >
-                                        Restore
-                                    </button>
-                                )}
+              {!plan.isActive &&
+                canRestore && (
+                  <button
+                    className="flex-1 bg-orange-500 text-white py-2 rounded-lg"
+                    onClick={() => handleRestore(plan.id)}
+                  >
+                    Restore
+                  </button>
+                )}
 
-                        </div>
+            </div>
           </div>
         ))}
       </div>
@@ -492,9 +451,8 @@ export default function SubscriptionPlanTable() {
           <button
             key={index}
             onClick={() => setCurrentPage(index)}
-            className={`px-4 py-2 rounded ${
-              currentPage === index ? "bg-[#0d4039] text-white" : "bg-gray-200"
-            }`}
+            className={`px-4 py-2 rounded ${currentPage === index ? "bg-[#0d4039] text-white" : "bg-gray-200"
+              }`}
           >
             {index + 1}
           </button>

@@ -16,19 +16,9 @@ import java.util.UUID;
 public class RolePermissionModel {
 
     private UUID id;
-
-    @Valid
-    @NotNull(message = "Organization is required")
     private OrganizationModel organizationModel;
-
-    @Valid
-    @NotNull(message = "Role is required")
     private RoleModel roleModel;
-
-    @Valid
-    @NotNull(message = "Permission is required")
     private PermissionModel permissionModel;
-
     private Boolean isActive;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

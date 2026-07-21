@@ -25,8 +25,6 @@ public class SubscriptionPlanTransformer extends Transformer<SubscriptionPlan, S
                 .monthlyPrice(model.getMonthlyPrice())
                 .yearlyPrice(model.getYearlyPrice())
                 .isActive(model.getIsActive())
-                .createdAt(model.getCreatedAt())
-                .updatedAt(model.getUpdatedAt())
                 .build();
     }
 

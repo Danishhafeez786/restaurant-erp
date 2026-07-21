@@ -21,9 +21,7 @@ public class SubscriptionPlanCustomRepositoryImpl implements SubscriptionPlanCus
     private final MongoTemplate mongoTemplate;
 
     @Override
-    public Page<SubscriptionPlan> search(
-            SubscriptionPlanSearchCriteria criteria,
-            Pageable pageable) {
+    public Page<SubscriptionPlan> search(SubscriptionPlanSearchCriteria criteria, Pageable pageable) {
 
         Query query = new Query();
 
@@ -35,21 +33,8 @@ public class SubscriptionPlanCustomRepositoryImpl implements SubscriptionPlanCus
         if (criteria.getIsActive() != null)
             filters.add(Criteria.where("isActive").is(criteria.getIsActive()));
 
-        if (criteria.getMinMonthlyPrice() != null)
-            filters.add(Criteria.where("monthlyPrice").gte(criteria.getMinMonthlyPrice()));
-
-        if (criteria.getMaxMonthlyPrice() != null)
-            filters.add(Criteria.where("monthlyPrice").lte(criteria.getMaxMonthlyPrice()));
-
-        if (criteria.getMinUsersLimit() != null)
-            filters.add(Criteria.where("usersLimit").gte(criteria.getMinUsersLimit()));
-
-        if (criteria.getMaxUsersLimit() != null)
-            filters.add(Criteria.where("usersLimit").lte(criteria.getMaxUsersLimit()));
-
         if (!filters.isEmpty())
             query.addCriteria(new Criteria().andOperator(filters.toArray(new Criteria[0])));
-
 
         long total = mongoTemplate.count(query, SubscriptionPlan.class);
 
