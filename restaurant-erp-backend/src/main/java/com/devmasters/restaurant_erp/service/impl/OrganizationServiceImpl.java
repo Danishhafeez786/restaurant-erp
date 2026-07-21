@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -29,6 +30,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     public Organization create(Organization entity) {
+        entity.setCreatedAt(LocalDateTime.now());
         return organizationRepository.save(entity);
     }
 

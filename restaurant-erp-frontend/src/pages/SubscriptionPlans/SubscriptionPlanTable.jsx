@@ -257,7 +257,7 @@ export default function SubscriptionPlanTable() {
         }}
         className="h-11 w-full rounded-lg border border-gray-300 px-4 focus:border-[#0d4039] focus:outline-none focus:ring-2 focus:ring-[#0d4039]/20"
       >
-        <option value={2}>2</option>
+        <option value={10}>10</option>
         <option value={25}>25</option>
         <option value={50}>50</option>
         <option value={100}>100</option>

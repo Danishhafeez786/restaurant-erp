@@ -31,8 +31,6 @@ public class OrganizationTransformer extends Transformer<Organization, Organizat
                 .subscriptionStartDate(model.getSubscriptionStartDate())
                 .subscriptionEndDate(model.getSubscriptionEndDate())
                 .isActive(model.getIsActive())
-                .createdAt(model.getCreatedAt())
-                .updatedAt(model.getUpdatedAt())
                 .build();
     }
 

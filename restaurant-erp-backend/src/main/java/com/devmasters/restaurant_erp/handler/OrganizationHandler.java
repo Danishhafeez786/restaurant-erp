@@ -36,16 +36,12 @@ public class OrganizationHandler {
     }
 
     public PageResponse<OrganizationModel> getAll(
-            OrganizationSearchCriteria criteria,
-            Pageable pageable) {
+            OrganizationSearchCriteria criteria, Pageable pageable) {
 
-        Page<Organization> page =
-                organizationService.search(criteria, pageable);
+        Page<Organization> page = organizationService.search(criteria, pageable);
 
         return PageResponse.<OrganizationModel>builder()
-                .content(
-                        organizationTransformer.toModels(page.getContent())
-                )
+                .content(organizationTransformer.toModels(page.getContent()))
                 .totalElements(page.getTotalElements())
                 .totalPages(page.getTotalPages())
                 .page(page.getNumber())

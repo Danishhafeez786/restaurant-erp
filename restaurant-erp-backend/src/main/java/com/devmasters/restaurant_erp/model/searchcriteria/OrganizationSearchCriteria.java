@@ -13,18 +13,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class OrganizationSearchCriteria {
-
-    private String organizationName;
-
-    private String ownerName;
-
-    private String city;
-
-    private String country;
-
+    private String searchInput;
     private Boolean isActive;
-
-    private BillingCycle billingCycle;
-
-    private UUID subscriptionPlanId;
 }

@@ -61,11 +61,7 @@ public class OrganizationController {
             @RequestParam(defaultValue = "DESC") String direction) {
 
         Pageable pageable = PageRequest.of(
-                page,
-                size,
-                Sort.by(
-                        Sort.Direction.valueOf(direction.toUpperCase()),
-                        sortBy));
+            page, size, Sort.by(Sort.Direction.valueOf(direction.toUpperCase()), sortBy));
 
         return ResponseEntity.ok(
                 ApiResponse.<PageResponse<OrganizationModel>>builder()
@@ -79,11 +75,9 @@ public class OrganizationController {
     @PreAuthorize("hasAuthority('ORGANIZATION_UPDATE')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<OrganizationModel>> update(
-            @PathVariable UUID id,
-            @Valid @RequestBody OrganizationModel model) {
+            @PathVariable UUID id, @Valid @RequestBody OrganizationModel model) {
 
-        OrganizationModel response =
-                organizationHandler.update(id, model);
+        OrganizationModel response = organizationHandler.update(id, model);
 
         sendEvent("organization-updated", response);
 
@@ -98,11 +92,9 @@ public class OrganizationController {
 
     @PreAuthorize("hasAuthority('ORGANIZATION_DELETE')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> delete(
-            @PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID id) {
 
-        OrganizationModel deleted =
-                organizationHandler.delete(id);
+        OrganizationModel deleted = organizationHandler.delete(id);
 
         sendEvent("organization-deleted", deleted);
 
@@ -116,11 +108,9 @@ public class OrganizationController {
 
     @PreAuthorize("hasAuthority('ORGANIZATION_RESTORE')")
     @PatchMapping("/{id}/restore")
-    public ResponseEntity<ApiResponse<Void>> restore(
-            @PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<Void>> restore(@PathVariable UUID id) {
 
-        OrganizationModel restored =
-                organizationHandler.restore(id);
+        OrganizationModel restored = organizationHandler.restore(id);
 
         sendEvent("organization-restored", restored);
 
@@ -153,18 +143,12 @@ public class OrganizationController {
         List<SseEmitter> deadEmitters = new ArrayList<>();
 
         for (SseEmitter emitter : emitters) {
-            try {
-                emitter.send(
-                        SseEmitter.event()
-                                .name(eventName)
-                                .data(data));
-
+            try {emitter.send(SseEmitter.event().name(eventName).data(data));
             } catch (Exception ex) {
                 emitter.complete();
                 deadEmitters.add(emitter);
             }
         }
-
         emitters.removeAll(deadEmitters);
     }
 }

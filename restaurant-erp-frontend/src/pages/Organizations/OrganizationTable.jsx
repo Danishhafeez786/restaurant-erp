@@ -8,7 +8,7 @@ export default function OrganizationTable() {
   const [loading, setLoading] = useState(false);
 
   const user = JSON.parse(localStorage.getItem("user"));
-  
+
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState("create");
 
@@ -24,13 +24,8 @@ export default function OrganizationTable() {
   const [direction, setDirection] = useState("DESC");
 
   const [searchCriteria, setSearchCriteria] = useState({
-    organizationName: "",
-    ownerName: "",
-    city: "",
-    country: "",
+    searchInput: "",
     isActive: "",
-    billingCycle: "",
-    subscriptionPlanId: "",
   });
 
   // ===== LOAD DATA =====
@@ -39,16 +34,11 @@ export default function OrganizationTable() {
       setLoading(true);
 
       const payload = {
-        organizationName: searchCriteria.organizationName || null,
-        ownerName: searchCriteria.ownerName || null,
-        city: searchCriteria.city || null,
-        country: searchCriteria.country || null,
+        searchInput: searchCriteria.searchInput || null,
         isActive:
           searchCriteria.isActive === ""
             ? null
             : searchCriteria.isActive === "true",
-        billingCycle: searchCriteria.billingCycle || null,
-        subscriptionPlanId: searchCriteria.subscriptionPlanId || null,
       };
 
       const response = await axiosClient.post(
@@ -73,13 +63,13 @@ export default function OrganizationTable() {
   }, [currentPage, pageSize, sortBy, direction]);
 
   useEffect(() => {
-  const timer = setTimeout(() => {
-    setCurrentPage(0);
-    loadOrganizations();
-  }, 300);
+    const timer = setTimeout(() => {
+      setCurrentPage(0);
+      loadOrganizations();
+    }, 300);
 
-  return () => clearTimeout(timer);
-}, [searchCriteria, sortBy, direction, pageSize]);
+    return () => clearTimeout(timer);
+  }, [searchCriteria, sortBy, direction, pageSize]);
 
   useEffect(() => {
     console.log("Connecting to SSE...");
@@ -148,143 +138,109 @@ export default function OrganizationTable() {
 
       {/* Search Toolbar */}
       <div className="mb-6 rounded-xl border bg-white p-4 shadow-sm">
-  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
 
-    {/* Organization */}
-    <input
-      type="text"
-      placeholder="Organization"
-      value={searchCriteria.organizationName}
-      onChange={(e) =>
-        setSearchCriteria((prev) => ({
-          ...prev,
-          organizationName: e.target.value,
-        }))
-      }
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    />
+          {/* Search */}
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Search
+            </label>
+            <input
+              type="text"
+              placeholder="Organization, Owner, City, Country..."
+              value={searchCriteria.searchInput}
+              onChange={(e) =>
+                setSearchCriteria((prev) => ({
+                  ...prev,
+                  searchInput: e.target.value,
+                }))
+              }
+              className="h-11 w-full rounded-lg border border-gray-300 px-4 focus:border-[#0d4039] focus:outline-none focus:ring-2 focus:ring-[#0d4039]/20"
+            />
+          </div>
 
-    {/* Owner */}
-    <input
-      type="text"
-      placeholder="Owner"
-      value={searchCriteria.ownerName}
-      onChange={(e) =>
-        setSearchCriteria((prev) => ({
-          ...prev,
-          ownerName: e.target.value,
-        }))
-      }
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    />
+          {/* Status */}
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Status
+            </label>
+            <select
+              value={searchCriteria.isActive}
+              onChange={(e) =>
+                setSearchCriteria((prev) => ({
+                  ...prev,
+                  isActive: e.target.value,
+                }))
+              }
+              className="h-11 w-full rounded-lg border border-gray-300 px-4 focus:border-[#0d4039] focus:outline-none focus:ring-2 focus:ring-[#0d4039]/20"
+            >
+              <option value="">All Status</option>
+              <option value="true">Active</option>
+              <option value="false">Inactive</option>
+            </select>
+          </div>
 
-    {/* City */}
-    <input
-      type="text"
-      placeholder="City"
-      value={searchCriteria.city}
-      onChange={(e) =>
-        setSearchCriteria((prev) => ({
-          ...prev,
-          city: e.target.value,
-        }))
-      }
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    />
+          {/* Sort By */}
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Sort By
+            </label>
+            <select
+              value={sortBy}
+              onChange={(e) => {
+                setCurrentPage(0);
+                setSortBy(e.target.value);
+              }}
+              className="h-11 w-full rounded-lg border border-gray-300 px-4 focus:border-[#0d4039] focus:outline-none focus:ring-2 focus:ring-[#0d4039]/20"
+            >
+              <option value="createdAt">Created Date</option>
+              <option value="organizationName">Organization</option>
+              <option value="ownerName">Owner</option>
+              <option value="city">City</option>
+              <option value="country">Country</option>
+            </select>
+          </div>
 
-    {/* Country */}
-    <input
-      type="text"
-      placeholder="Country"
-      value={searchCriteria.country}
-      onChange={(e) =>
-        setSearchCriteria((prev) => ({
-          ...prev,
-          country: e.target.value,
-        }))
-      }
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    />
+          {/* Sort Order */}
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Order
+            </label>
+            <select
+              value={direction}
+              onChange={(e) => {
+                setCurrentPage(0);
+                setDirection(e.target.value);
+              }}
+              className="h-11 w-full rounded-lg border border-gray-300 px-4 focus:border-[#0d4039] focus:outline-none focus:ring-2 focus:ring-[#0d4039]/20"
+            >
+              <option value="DESC">Newest First</option>
+              <option value="ASC">Oldest First</option>
+            </select>
+          </div>
 
-    {/* Status */}
-    <select
-      value={searchCriteria.isActive}
-      onChange={(e) =>
-        setSearchCriteria((prev) => ({
-          ...prev,
-          isActive: e.target.value,
-        }))
-      }
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    >
-      <option value="">Status</option>
-      <option value="true">Active</option>
-      <option value="false">Inactive</option>
-    </select>
+          {/* Records Per Page */}
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Records Per Page
+            </label>
+            <select
+              value={pageSize}
+              onChange={(e) => {
+                setCurrentPage(0);
+                setPageSize(Number(e.target.value));
+              }}
+              className="h-11 w-full rounded-lg border border-gray-300 px-4 focus:border-[#0d4039] focus:outline-none focus:ring-2 focus:ring-[#0d4039]/20"
+            >
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+            </select>
+          </div>
 
-    {/* Billing */}
-    <select
-      value={searchCriteria.billingCycle}
-      onChange={(e) =>
-        setSearchCriteria((prev) => ({
-          ...prev,
-          billingCycle: e.target.value,
-        }))
-      }
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    >
-      <option value="">Billing</option>
-      <option value="MONTHLY">Monthly</option>
-      <option value="QUARTERLY">Quarterly</option>
-      <option value="YEARLY">Yearly</option>
-    </select>
-
-    {/* Sort By */}
-    <select
-      value={sortBy}
-      onChange={(e) => {
-        setCurrentPage(0);
-        setSortBy(e.target.value);
-      }}
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    >
-      <option value="createdAt">Created</option>
-      <option value="organizationName">Organization</option>
-      <option value="ownerName">Owner</option>
-      <option value="city">City</option>
-      <option value="country">Country</option>
-    </select>
-
-    {/* Direction */}
-    <select
-      value={direction}
-      onChange={(e) => {
-        setCurrentPage(0);
-        setDirection(e.target.value);
-      }}
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    >
-      <option value="DESC">Newest</option>
-      <option value="ASC">Oldest</option>
-    </select>
-
-    {/* Page Size */}
-    <select
-      value={pageSize}
-      onChange={(e) => {
-        setCurrentPage(0);
-        setPageSize(Number(e.target.value));
-      }}
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    >
-      <option value={10}>10</option>
-      <option value={20}>20</option>
-      <option value={50}>50</option>
-      <option value={100}>100</option>
-    </select>
-
-  </div>
-</div>
+        </div>
+      </div>
 
       {/* TABLE */}
       <div className="hidden md:block overflow-x-auto">
@@ -343,16 +299,16 @@ export default function OrganizationTable() {
                     }}
                     className="text-blue-600 mr-3"
                   >
-                  Edit
+                    Edit
                   </button>}
 
                   {org.isActive && user?.permissions?.includes("ORGANIZATION_DELETE") && (
-                      <button
-                        onClick={() => handleDelete(org.id)}
-                        className="text-red-600"
-                      >
-                        Delete
-                      </button>
+                    <button
+                      onClick={() => handleDelete(org.id)}
+                      className="text-red-600"
+                    >
+                      Delete
+                    </button>
                   )}
 
                   {!org.isActive && user?.permissions?.includes("ORGANIZATION_REACTIVATE") && (
@@ -419,7 +375,7 @@ export default function OrganizationTable() {
               >
                 View
               </button>}
-              
+
               {user?.permissions?.includes("ORGANIZATION_UPDATE") && <button
                 className="flex-1 bg-blue-500 text-white py-2 rounded-lg"
                 onClick={() => {
@@ -431,7 +387,7 @@ export default function OrganizationTable() {
                 Edit
               </button>}
 
-              {organization.isActive && user.permissions.includes("ORGANIZATION_DELETE") &&(
+              {organization.isActive && user.permissions.includes("ORGANIZATION_DELETE") && (
                 <button
                   className="flex-1 bg-red-500 text-white py-2 rounded-lg"
                   onClick={() => handleDelete(organization.id)}

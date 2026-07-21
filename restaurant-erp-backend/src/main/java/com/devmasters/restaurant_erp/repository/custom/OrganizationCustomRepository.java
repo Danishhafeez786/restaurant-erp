@@ -7,8 +7,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface OrganizationCustomRepository {
 
-    Page<Organization> search(
-            OrganizationSearchCriteria criteria,
-            Pageable pageable
-    );
+    Page<Organization> search(OrganizationSearchCriteria criteria, Pageable pageable);
 }

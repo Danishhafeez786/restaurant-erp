@@ -23,96 +23,34 @@ public class OrganizationCustomRepositoryImpl
     private final MongoTemplate mongoTemplate;
 
     @Override
-    public Page<Organization> search(OrganizationSearchCriteria criteria,
-            Pageable pageable) {
+    public Page<Organization> search(OrganizationSearchCriteria criteria, Pageable pageable) {
 
         Query query = new Query();
 
         List<Criteria> filters = new ArrayList<>();
 
-        if (criteria.getOrganizationName() != null
-                && !criteria.getOrganizationName().isBlank()) {
-
-            filters.add(
-                    Criteria.where("organizationName")
-                            .regex(criteria.getOrganizationName(), "i")
-            );
+        if (criteria.getSearchInput() != null && !criteria.getSearchInput().isBlank()) {
+            filters.add(new Criteria().orOperator(
+                    Criteria.where("organizationName").regex(criteria.getSearchInput(), "i"),
+                    Criteria.where("ownerName").regex(criteria.getSearchInput(), "i"),
+                    Criteria.where("city").regex(criteria.getSearchInput(), "i"),
+                    Criteria.where("country").regex(criteria.getSearchInput(), "i")
+            ));
         }
 
-        if (criteria.getOwnerName() != null
-                && !criteria.getOwnerName().isBlank()) {
+        if (criteria.getIsActive() != null)
+            filters.add(Criteria.where("isActive").is(criteria.getIsActive()));
 
-            filters.add(
-                    Criteria.where("ownerName")
-                            .regex(criteria.getOwnerName(), "i")
-            );
-        }
+        if (!filters.isEmpty())
+            query.addCriteria(new Criteria().andOperator(filters.toArray(new Criteria[0])));
 
-        if (criteria.getCity() != null
-                && !criteria.getCity().isBlank()) {
-
-            filters.add(
-                    Criteria.where("city")
-                            .regex(criteria.getCity(), "i")
-            );
-        }
-
-        if (criteria.getCountry() != null
-                && !criteria.getCountry().isBlank()) {
-
-            filters.add(
-                    Criteria.where("country")
-                            .regex(criteria.getCountry(), "i")
-            );
-        }
-
-        if (criteria.getBillingCycle() != null) {
-            filters.add(
-                    Criteria.where("billingCycle")
-                            .is(criteria.getBillingCycle())
-            );
-        }
-
-        if (criteria.getSubscriptionPlanId() != null) {
-            filters.add(
-                    Criteria.where("subscriptionPlan.$id")
-                            .is(criteria.getSubscriptionPlanId())
-            );
-        }
-
-        if (criteria.getIsActive() != null) {
-            filters.add(
-                    Criteria.where("isActive")
-                            .is(criteria.getIsActive())
-            );
-        }
-
-        if (!filters.isEmpty()) {
-            query.addCriteria(
-                    new Criteria().andOperator(
-                            filters.toArray(new Criteria[0])
-                    )
-            );
-        }
-
-        long total = mongoTemplate.count(
-                query,
-                Organization.class
-        );
+        long total = mongoTemplate.count(query, Organization.class);
 
         query.with(pageable);
 
-        List<Organization> organizations =
-                mongoTemplate.find(
-                        query,
-                        Organization.class
-                );
+        List<Organization> organizations = mongoTemplate.find(query, Organization.class);
 
-        return new PageImpl<>(
-                organizations,
-                pageable,
-                total
-        );
+        return new PageImpl<>(organizations, pageable, total);
     }
 }
 
