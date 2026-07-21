@@ -260,7 +260,25 @@ export default function OrganizationTable() {
           <tbody>
             {organizations.map((org) => (
               <tr key={org.id} className="border-b hover:bg-gray-50">
-                <td className="py-3">{org.organizationName}</td>
+                <td className="py-3">
+  <div className="flex items-center gap-3">
+    {org.logoUrl ? (
+      <img
+        src={org.logoUrl}
+        alt={org.organizationName}
+        className="w-12 h-12 rounded-lg border object-cover flex-shrink-0"
+      />
+    ) : (
+      <div className="w-12 h-12 rounded-lg border flex items-center justify-center bg-gray-100 text-gray-400 text-xs flex-shrink-0">
+        No Image
+      </div>
+    )}
+
+    <span className="font-medium text-gray-800">
+      {org.organizationName}
+    </span>
+  </div>
+</td>
 
                 <td>{org.ownerName}</td>
 
