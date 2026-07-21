@@ -179,68 +179,68 @@ export default function Settings() {
 
     const filteredModules = useMemo(() => {
 
-    const search = filters.search.trim().toLowerCase();
+        const search = filters.search.trim().toLowerCase();
 
-    return (matrix.modules || [])
-        .map(module => {
+        return (matrix.modules || [])
+            .map(module => {
 
-            const permissions = module.permissions.filter(permission => {
+                const permissions = module.permissions.filter(permission => {
 
-                // Search
-                if (search) {
+                    // Search
+                    if (search) {
 
-                    const match =
-                        module.module.toLowerCase().includes(search) ||
-                        permission.name.toLowerCase().includes(search) ||
-                        permission.code.toLowerCase().includes(search);
+                        const match =
+                            module.module.toLowerCase().includes(search) ||
+                            permission.name.toLowerCase().includes(search) ||
+                            permission.code.toLowerCase().includes(search);
 
-                    if (!match) {
-                        return false;
-                    }
-                }
-
-                // Module Filter
-                if (filters.module && module.module !== filters.module) {
-                    return false;
-                }
-
-                // Role / Status Filter
-                if (filters.role || filters.status !== "") {
-
-                    const assignments = matrix.assignments.filter(a =>
-                        a.permissionId === permission.id
-                    );
-
-                    const exists = assignments.some(a => {
-                        if (filters.role && a.roleId !== filters.role) {
+                        if (!match) {
                             return false;
                         }
+                    }
 
-                        if (filters.status !== "" && a.isActive !== (filters.status === "true")) {
-                            return false;
-                        }
-
-                        return true;
-
-                    });
-
-                    if (!exists) {
+                    // Module Filter
+                    if (filters.module && module.module !== filters.module) {
                         return false;
                     }
-                }
 
-                return true;
-            });
+                    // Role / Status Filter
+                    if (filters.role || filters.status !== "") {
 
-            return {
-                ...module,
-                permissions
-            };
+                        const assignments = matrix.assignments.filter(a =>
+                            a.permissionId === permission.id
+                        );
 
-        })
-        .filter(module => module.permissions.length > 0);
+                        const exists = assignments.some(a => {
+                            if (filters.role && a.roleId !== filters.role) {
+                                return false;
+                            }
 
-}, [matrix, filters]);
+                            if (filters.status !== "" && a.isActive !== (filters.status === "true")) {
+                                return false;
+                            }
+
+                            return true;
+
+                        });
+
+                        if (!exists) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                });
+
+                return {
+                    ...module,
+                    permissions
+                };
+
+            })
+            .filter(module => module.permissions.length > 0);
+
+    }, [matrix, filters]);
 
     const openCreate = () => {
 
@@ -401,75 +401,51 @@ export default function Settings() {
 
     return (
 
-        <div className="min-h-screen bg-gray-100 lg:flex">
+        <div className="flex-1 p-4 md:p-6 overflow-y-auto">
 
-            <Sidebar />
+            <SummaryCards summary={summary} />
 
-            <div className="flex-1 p-4 md:p-6 overflow-y-auto">
+            <div className="mt-6">
 
-                <SummaryCards summary={summary} />
-
-                <div className="mt-6">
-
-                    <SettingsToolbar
-                        roles={roles}
-                        permissions={permissions}
-                        filters={filters}
-                        modules={filteredModules}
-                        setFilters={setFilters}
-                        onAdd={openCreate}
-                    />
-
-                </div>
-
-                <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 mt-6">
-
-                    <div className="xl:col-span-3">
-
-                        <PermissionMatrix
-                            loading={loading}
-                            modules={filteredModules}
-                            roles={roles}
-                            assignments={matrix.assignments}
-                            filters={filters}
-                            onPermissionToggle={handlePermissionToggle}
-                        />
-
-                    </div>
-
-                    <RoleList
-
-                        roles={roles}
-
-                        rolePermissions={rolePermissions}
-
-                        selectedRole={selectedRole}
-
-                        setSelectedRole={setSelectedRole}
-
-                    />
-
-                </div>
+                <SettingsToolbar
+                    roles={roles}
+                    permissions={permissions}
+                    filters={filters}
+                    modules={filteredModules}
+                    setFilters={setFilters}
+                    onAdd={openCreate}
+                />
 
             </div>
 
-            {/* <RolePermissionModal
+            <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 mt-6">
 
-                open={modalOpen}
+                <div className="xl:col-span-3">
 
-                mode={modalMode}
+                    <PermissionMatrix
+                        loading={loading}
+                        modules={filteredModules}
+                        roles={roles}
+                        assignments={matrix.assignments}
+                        filters={filters}
+                        onPermissionToggle={handlePermissionToggle}
+                    />
 
-                data={selectedPermission}
+                </div>
 
-                roles={roles}
+                <RoleList
 
-                permissions={permissions}
+                    roles={roles}
 
-                onClose={() => setModalOpen(false)}
+                    rolePermissions={rolePermissions}
 
-                onSave={savePermission}
+                    selectedRole={selectedRole}
 
-            /> */}
+                    setSelectedRole={setSelectedRole}
+
+                />
+
+            </div>
 
         </div>
 

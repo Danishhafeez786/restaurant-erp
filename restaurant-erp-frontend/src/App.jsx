@@ -5,6 +5,7 @@ import AuthProvider from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import SystemSettings from './pages/SystemSettings';
 import CreateEmployee from './pages/CreateEmployee';
 import Dashboard from './pages/Dashboard';
 import Employee from './pages/employees/Employee';
@@ -28,20 +29,30 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/settings" element={<Settings />} />
-          <Route path="/dashboard" element={ <ProtectedRoute> <Dashboard /> </ProtectedRoute>} />
-          <Route path="/create-employee" element={ <ProtectedRoute> <CreateEmployee /> </ProtectedRoute> } />
-          <Route path="/subscription-plans" element={ <ProtectedRoute> <SubscriptionPlans /> </ProtectedRoute> } />
-          <Route path="/organizations"element={ <ProtectedRoute> <Organization /> </ProtectedRoute>}/>
-          <Route path="/branch"element={ <ProtectedRoute> <Branch /> </ProtectedRoute> }/>
-          <Route path="/role"element={<Role />}/>
-          <Route path="/permission"element={ <ProtectedRoute> <Permission /> </ProtectedRoute> }/>
+          <Route path="/system-settings" element={<ProtectedRoute><SystemSettings /></ProtectedRoute>}>
+            <Route index element={<SubscriptionPlans />} />
+            <Route path="subscription-plans" element={<SubscriptionPlans />} />
+            <Route path="organizations" element={<Organization />} />
+            <Route path="branch" element={<Branch />} />
+            <Route path="role" element={<Role />} />
+            <Route path="permission" element={<Permission />} />
+            <Route path="settings" element={<Settings />} />
+          </Route>
+
+          <Route path="/dashboard" element={<ProtectedRoute> <Dashboard /> </ProtectedRoute>} />
+          <Route path="/create-employee" element={<ProtectedRoute> <CreateEmployee /> </ProtectedRoute>} />
+          <Route path="/subscription-plans" element={<ProtectedRoute> <SubscriptionPlans /> </ProtectedRoute>} />
+          <Route path="/organizations" element={<ProtectedRoute> <Organization /> </ProtectedRoute>} />
+          <Route path="/branch" element={<ProtectedRoute> <Branch /> </ProtectedRoute>} />
+          <Route path="/role" element={<Role />} />
+          <Route path="/permission" element={<ProtectedRoute> <Permission /> </ProtectedRoute>} />
           <Route path="/" element={<Navigate to="/dashboard" />} />
           <Route path="*" element={<Navigate to="/dashboard" />} />
-          <Route path="/employee" element={ <ProtectedRoute> <Employee /> </ProtectedRoute> } />
-          <Route path="/category-management" element={ <ProtectedRoute> <Category /> </ProtectedRoute> } />
-          <Route path="/table-management" element={ <ProtectedRoute> <Tables /> </ProtectedRoute> } />
-          <Route path="/modifier-group" element={ <ProtectedRoute> <ModifierGroup /> </ProtectedRoute> } />
-          <Route path="/modifier" element={ <ProtectedRoute> <Modifier /> </ProtectedRoute> } />
+          <Route path="/employee" element={<ProtectedRoute> <Employee /> </ProtectedRoute>} />
+          <Route path="/category-management" element={<ProtectedRoute> <Category /> </ProtectedRoute>} />
+          <Route path="/table-management" element={<ProtectedRoute> <Tables /> </ProtectedRoute>} />
+          <Route path="/modifier-group" element={<ProtectedRoute> <ModifierGroup /> </ProtectedRoute>} />
+          <Route path="/modifier" element={<ProtectedRoute> <Modifier /> </ProtectedRoute>} />
         </Routes>
       </AuthProvider>
       {/* ✅ Global Toast Container (always available) */}

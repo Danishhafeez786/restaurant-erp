@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -6,6 +6,7 @@ import {
   UserGroupIcon,
   UserPlusIcon,
   ShoppingCartIcon,
+  Cog6ToothIcon,
   ClipboardDocumentListIcon,
   TableCellsIcon,
   Squares2X2Icon,
@@ -23,6 +24,9 @@ const Sidebar = () => {
   const navigate = useNavigate();
 
   const [isOpen, setIsOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(() => {
+    return JSON.parse(localStorage.getItem("sidebarCollapsed")) || false;
+  });
   const [openMenu, setOpenMenu] = useState(null);
 
   const user = JSON.parse(localStorage.getItem("user"));
@@ -38,6 +42,13 @@ const Sidebar = () => {
     navigate("/login");
   };
 
+  useEffect(() => {
+    localStorage.setItem(
+      "sidebarCollapsed",
+      JSON.stringify(collapsed)
+    );
+  }, [collapsed]);
+
   const menuGroups = [
     {
       title: "Dashboard",
@@ -46,40 +57,9 @@ const Sidebar = () => {
     },
 
     {
-      title: "Subscription Plans",
-      icon: <ChartBarIcon className="w-5 h-5" />,
-      children: [
-        {
-          title: "Subscription Plans",
-          path: "/subscription-plans",
-          icon: <ChartBarIcon className="w-5 h-5" />,
-        },
-        {
-          title: "Organizations",
-          path: "/organizations",
-          icon: <BuildingOfficeIcon className="w-5 h-5" />,
-        },
-        {
-          title: "Branch",
-          path: "/branch",
-          icon: <BuildingOfficeIcon className="w-5 h-5" />,
-        },
-        {
-          title: "Role",
-          path: "/role",
-          icon: <BuildingOfficeIcon className="w-5 h-5" />,
-        },
-        {
-          title: "Permission",
-          path: "/permission",
-          icon: <BuildingOfficeIcon className="w-5 h-5" />,
-        },
-        {
-          title: "Settings",
-          path: "/settings",
-          icon: <BuildingOfficeIcon className="w-5 h-5" />,
-        }
-      ],
+      title: "System Settings",
+      path: "/system-settings",
+      icon: <Cog6ToothIcon className="w-5 h-5" />
     },
 
     {
@@ -204,11 +184,13 @@ const Sidebar = () => {
   const SidebarContent = () => (
     <>
       {/* USER INFO */}
-      <div className="px-6 py-8 border-b border-white/10">
-        <h2 className="font-bold text-xl text-white">{user?.fullName}</h2>
+      {!collapsed && (
+        <div className="px-6 py-8 border-b border-white/10">
+          <h2 className="font-bold text-xl text-white">{user?.fullName}</h2>
 
-        <p className="text-gray-200 mt-4 font-medium">{user?.role}</p>
-      </div>
+          <p className="text-gray-200 mt-4 font-medium">{user?.role}</p>
+        </div>
+      )}
 
       {/* MENUS */}
       <div className="flex-1 overflow-y-auto py-4">
@@ -217,14 +199,21 @@ const Sidebar = () => {
             {/* SIMPLE MENU */}
             {!menu.children ? (
               <button
+                title={collapsed ? menu.title : ""}
                 onClick={() => {
                   navigate(menu.path);
                   setIsOpen(false);
                 }}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition text-left"
+                className={`w-full flex items-center px-4 py-3 rounded-lg hover:bg-white/10 transition text-left ${collapsed ? "justify-center" : "gap-3"
+                  }`}
               >
                 {menu.icon}
-                <span className="font-semibold">{menu.title}</span>
+
+                {!collapsed && (
+                  <span className="font-semibold">
+                    {menu.title}
+                  </span>
+                )}
               </button>
             ) : (
               <>
@@ -232,27 +221,34 @@ const Sidebar = () => {
                 <button
                   onClick={() => toggleMenu(menu.title)}
                   className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition
-                    ${
-                      openMenu === menu.title
-                        ? "bg-white/10 border border-white/20"
-                        : "hover:bg-white/10"
+                    ${openMenu === menu.title
+                      ? "bg-white/10 border border-white/20"
+                      : "hover:bg-white/10"
                     }`}
                 >
-                  <div className="flex items-center gap-3">
+                  <div
+                    className={`flex items-center ${collapsed ? "justify-center w-full" : "gap-3"
+                      }`}
+                  >
                     {menu.icon}
 
-                    <span className="font-semibold">{menu.title}</span>
+                    {!collapsed && (
+                      <span className="font-semibold">
+                        {menu.title}
+                      </span>
+                    )}
                   </div>
 
-                  <ChevronDownIcon
-                    className={`w-5 h-5 transition-transform duration-300 ${
-                      openMenu === menu.title ? "rotate-180" : ""
-                    }`}
-                  />
+                  {!collapsed && (
+                    <ChevronDownIcon
+                      className={`w-5 h-5 transition-transform duration-300 ${openMenu === menu.title ? "rotate-180" : ""
+                        }`}
+                    />
+                  )}
                 </button>
 
                 {/* SUBMENU */}
-                {openMenu === menu.title && (
+                {!collapsed && openMenu === menu.title && (
                   <div className="ml-8 mt-3 flex flex-col gap-3">
                     {menu.children.map((child) => (
                       <button
@@ -285,7 +281,7 @@ const Sidebar = () => {
           className="w-full bg-red-500 hover:bg-red-600 rounded-xl py-3 font-semibold flex items-center justify-center gap-2"
         >
           <ArrowRightOnRectangleIcon className="w-5 h-5" />
-          Logout
+          {!collapsed && "Logout"}
         </button>
       </div>
     </>
@@ -300,12 +296,11 @@ const Sidebar = () => {
           <span className="text-yellow-400">POS</span>
         </h1>
 
-        <button onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? (
-            <XMarkIcon className="w-8 h-8" />
-          ) : (
-            <Bars3Icon className="w-8 h-8" />
-          )}
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="p-2 rounded-lg hover:bg-white/10"
+        >
+          <Bars3Icon className="w-6 h-6" />
         </button>
       </div>
 
@@ -339,16 +334,14 @@ const Sidebar = () => {
                   <>
                     <button
                       onClick={() => toggleMenu(menu.title)}
-                      className={`w-full py-4 px-6 flex justify-center items-center gap-3 font-semibold border-b border-white/10 ${
-                        openMenu === menu.title ? "bg-white/10" : ""
-                      }`}
+                      className={`w-full py-4 px-6 flex justify-center items-center gap-3 font-semibold border-b border-white/10 ${openMenu === menu.title ? "bg-white/10" : ""
+                        }`}
                     >
                       <span>{menu.title}</span>
 
                       <ChevronDownIcon
-                        className={`w-5 h-5 transition-transform ${
-                          openMenu === menu.title ? "rotate-180" : ""
-                        }`}
+                        className={`w-5 h-5 transition-transform ${openMenu === menu.title ? "rotate-180" : ""
+                          }`}
                       />
                     </button>
 
@@ -388,14 +381,30 @@ const Sidebar = () => {
       )}
 
       {/* DESKTOP SIDEBAR */}
-      <div className="hidden lg:flex w-[300px] h-screen bg-[#0d4039] text-white flex-col shadow-2xl">
-        <div className="px-6 py-6 border-b border-white/10">
-          <h1 className="text-3xl font-bold">
-            Foodie
-            <span className="text-yellow-400">POS</span>
-          </h1>
+      <div
+        className={`hidden lg:flex h-screen bg-[#0d4039] text-white flex-col shadow-2xl transition-all duration-300 ${collapsed ? "w-20" : "w-[300px]"
+          }`}
+      >
+        <div className="flex justify-between items-center">
+          {!collapsed && (
+            <div>
+              <h1 className="text-3xl font-bold">
+                Foodie
+                <span className="text-yellow-400">POS</span>
+              </h1>
 
-          <p className="text-gray-300 mt-2 text-sm">Restaurant ERP System</p>
+              <p className="text-gray-300 mt-2 text-sm">
+                Restaurant ERP System
+              </p>
+            </div>
+          )}
+
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className="p-2 rounded-lg hover:bg-white/10"
+          >
+            <Bars3Icon className="w-6 h-6" />
+          </button>
         </div>
 
         <SidebarContent />

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../../api/axiosClient";
+import { toast } from "react-toastify";
 
 export default function SubscriptionPlanModalBox({
   isOpen,
@@ -84,12 +85,11 @@ export default function SubscriptionPlanModalBox({
       });
 
       resetForm();
+      toast.success("Subscription plan created successfully.");
       onSuccess();
       onClose();
     } catch (error) {
-      console.error(error);
-
-      alert(
+      toast.error(
         error?.response?.data?.message ||
           "Unable to save subscription plan."
       );
