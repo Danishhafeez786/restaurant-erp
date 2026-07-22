@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../../api/axiosClient";
 import BranchModalBox from "./BranchModalBox";
-
+import { PlusIcon } from "@heroicons/react/24/outline";
 
 export default function BranchTable() {
 
@@ -77,13 +77,13 @@ export default function BranchTable() {
   }, [currentPage, pageSize, sortBy, direction]);
 
   useEffect(() => {
-  const timer = setTimeout(() => {
-    setCurrentPage(0);
-    loadBranches();
-  }, 300);
+    const timer = setTimeout(() => {
+      setCurrentPage(0);
+      loadBranches();
+    }, 300);
 
-  return () => clearTimeout(timer);
-}, [searchCriteria, sortBy, direction, pageSize]);
+    return () => clearTimeout(timer);
+  }, [searchCriteria, sortBy, direction, pageSize]);
 
   useEffect(() => {
 
@@ -178,120 +178,121 @@ export default function BranchTable() {
             setSelectedBranch(null);
             setShowModal(true);
           }}
-          className="bg-[#0d4039] text-white px-6 py-2 rounded-lg"
+          className="px-3 sm:px-6 py-2 bg-[#0d4039] text-white rounded-lg font-medium flex items-center justify-center gap-2"
         >
-          + Add Branch
+          <PlusIcon className="w-5 h-5" title="Add Branch" />
+          <span className="hidden sm:inline">Add Branch</span>
         </button>}
 
       </div>
       {/* Filters */}
 
       <div className="mb-6 rounded-xl border bg-white p-4 shadow-sm">
-  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
 
-    <input
-      type="text"
-      placeholder="Branch Name"
-      value={searchCriteria.branchName}
-      onChange={(e) =>
-        setSearchCriteria((prev) => ({
-          ...prev,
-          branchName: e.target.value,
-        }))
-      }
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    />
+          <input
+            type="text"
+            placeholder="Branch Name"
+            value={searchCriteria.branchName}
+            onChange={(e) =>
+              setSearchCriteria((prev) => ({
+                ...prev,
+                branchName: e.target.value,
+              }))
+            }
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+          />
 
-    <input
-      type="text"
-      placeholder="Branch Code"
-      value={searchCriteria.branchCode}
-      onChange={(e) =>
-        setSearchCriteria((prev) => ({
-          ...prev,
-          branchCode: e.target.value,
-        }))
-      }
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    />
+          <input
+            type="text"
+            placeholder="Branch Code"
+            value={searchCriteria.branchCode}
+            onChange={(e) =>
+              setSearchCriteria((prev) => ({
+                ...prev,
+                branchCode: e.target.value,
+              }))
+            }
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+          />
 
-    <input
-      type="text"
-      placeholder="City"
-      value={searchCriteria.city}
-      onChange={(e) =>
-        setSearchCriteria((prev) => ({
-          ...prev,
-          city: e.target.value,
-        }))
-      }
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    />
+          <input
+            type="text"
+            placeholder="City"
+            value={searchCriteria.city}
+            onChange={(e) =>
+              setSearchCriteria((prev) => ({
+                ...prev,
+                city: e.target.value,
+              }))
+            }
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+          />
 
-    <input
-      type="text"
-      placeholder="Phone"
-      value={searchCriteria.phone}
-      onChange={(e) =>
-        setSearchCriteria((prev) => ({
-          ...prev,
-          phone: e.target.value,
-        }))
-      }
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    />
+          <input
+            type="text"
+            placeholder="Phone"
+            value={searchCriteria.phone}
+            onChange={(e) =>
+              setSearchCriteria((prev) => ({
+                ...prev,
+                phone: e.target.value,
+              }))
+            }
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+          />
 
-    <select
-      value={searchCriteria.isActive}
-      onChange={(e) =>
-        setSearchCriteria((prev) => ({
-          ...prev,
-          isActive: e.target.value,
-        }))
-      }
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    >
-      <option value="">Status</option>
-      <option value="true">Active</option>
-      <option value="false">Inactive</option>
-    </select>
+          <select
+            value={searchCriteria.isActive}
+            onChange={(e) =>
+              setSearchCriteria((prev) => ({
+                ...prev,
+                isActive: e.target.value,
+              }))
+            }
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+          >
+            <option value="">Status</option>
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
+          </select>
 
-    <select
-      value={sortBy}
-      onChange={(e) => setSortBy(e.target.value)}
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    >
-      <option value="createdAt">Created</option>
-      <option value="branchName">Branch Name</option>
-      <option value="branchCode">Branch Code</option>
-      <option value="city">City</option>
-    </select>
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+          >
+            <option value="createdAt">Created</option>
+            <option value="branchName">Branch Name</option>
+            <option value="branchCode">Branch Code</option>
+            <option value="city">City</option>
+          </select>
 
-    <select
-      value={direction}
-      onChange={(e) => setDirection(e.target.value)}
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    >
-      <option value="DESC">Newest</option>
-      <option value="ASC">Oldest</option>
-    </select>
+          <select
+            value={direction}
+            onChange={(e) => setDirection(e.target.value)}
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+          >
+            <option value="DESC">Newest</option>
+            <option value="ASC">Oldest</option>
+          </select>
 
-    <select
-      value={pageSize}
-      onChange={(e) => {
-        setCurrentPage(0);
-        setPageSize(Number(e.target.value));
-      }}
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    >
-      <option value={10}>10</option>
-      <option value={20}>20</option>
-      <option value={50}>50</option>
-      <option value={100}>100</option>
-    </select>
+          <select
+            value={pageSize}
+            onChange={(e) => {
+              setCurrentPage(0);
+              setPageSize(Number(e.target.value));
+            }}
+            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+          >
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
+          </select>
 
-  </div>
-</div>
+        </div>
+      </div>
 
       {/* Table */}
 
@@ -370,7 +371,7 @@ export default function BranchTable() {
 
                   <td className="space-x-3">
 
-                    {user.permissions.includes("BRANCH_VIEW") &&<button
+                    {user.permissions.includes("BRANCH_VIEW") && <button
                       className="text-green-600"
                       disabled={!user.permissions.includes("BRANCH_VIEW")}
                       onClick={() => {
@@ -475,7 +476,7 @@ export default function BranchTable() {
               </div>
 
               <div className="flex gap-2 mt-4">
-                {user.permissions.includes("BRANCH_VIEW") &&<button
+                {user.permissions.includes("BRANCH_VIEW") && <button
                   className="flex-1 bg-green-500 text-white py-2 rounded-lg"
                   onClick={() => {
                     setSelectedBranch(branch);
@@ -498,12 +499,12 @@ export default function BranchTable() {
                 </button>}
                 {branch.isActive ? (
                   user.permissions.includes("BRANCH_DELETE") &&
-                    <button
-                      className="flex-1 bg-red-500 text-white py-2 rounded-lg"
-                      onClick={() => handleDelete(branch.id)}
-                    >
-                      Delete
-                    </button>
+                  <button
+                    className="flex-1 bg-red-500 text-white py-2 rounded-lg"
+                    onClick={() => handleDelete(branch.id)}
+                  >
+                    Delete
+                  </button>
                 ) : (
                   user.permissions.includes("BRANCH_REACTIVATE") &&
                   <button
@@ -528,9 +529,8 @@ export default function BranchTable() {
           <button
             key={index}
             onClick={() => setCurrentPage(index)}
-            className={`px-4 py-2 rounded ${
-              currentPage === index ? "bg-[#0d4039] text-white" : "bg-gray-200"
-            }`}
+            className={`px-4 py-2 rounded ${currentPage === index ? "bg-[#0d4039] text-white" : "bg-gray-200"
+              }`}
           >
             {index + 1}
           </button>

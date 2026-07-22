@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../../api/axiosClient";
-
+import { PlusIcon } from "@heroicons/react/24/outline";
 import OrganizationModalBox from "./OrganizationModalBox";
 
 export default function OrganizationTable() {
@@ -127,9 +127,10 @@ export default function OrganizationTable() {
             setSelectedOrganization(null);
             setShowModal(true);
           }}
-          className="px-6 py-2 bg-[#0d4039] text-white rounded-lg"
+          className="px-3 sm:px-6 py-2 bg-[#0d4039] text-white rounded-lg font-medium flex items-center justify-center gap-2"
         >
-          + Add Organization
+          <PlusIcon className="w-5 h-5" title="Add Organization" />
+          <span className="hidden sm:inline">Add Organization</span>
         </button>}
       </div>
 
@@ -261,24 +262,24 @@ export default function OrganizationTable() {
             {organizations.map((org) => (
               <tr key={org.id} className="border-b hover:bg-gray-50">
                 <td className="py-3">
-  <div className="flex items-center gap-3">
-    {org.logoUrl ? (
-      <img
-        src={org.logoUrl}
-        alt={org.organizationName}
-        className="w-12 h-12 rounded-lg border object-cover flex-shrink-0"
-      />
-    ) : (
-      <div className="w-12 h-12 rounded-lg border flex items-center justify-center bg-gray-100 text-gray-400 text-xs flex-shrink-0">
-        No Image
-      </div>
-    )}
+                  <div className="flex items-center gap-3">
+                    {org.logoUrl ? (
+                      <img
+                        src={org.logoUrl}
+                        alt={org.organizationName}
+                        className="w-12 h-12 rounded-lg border object-cover flex-shrink-0"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 rounded-lg border flex items-center justify-center bg-gray-100 text-gray-400 text-xs flex-shrink-0">
+                        No Image
+                      </div>
+                    )}
 
-    <span className="font-medium text-gray-800">
-      {org.organizationName}
-    </span>
-  </div>
-</td>
+                    <span className="font-medium text-gray-800">
+                      {org.organizationName}
+                    </span>
+                  </div>
+                </td>
 
                 <td>{org.ownerName}</td>
 

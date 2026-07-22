@@ -89,10 +89,7 @@ export default function SubscriptionPlanModalBox({
       onSuccess();
       onClose();
     } catch (error) {
-      toast.error(
-        error?.response?.data?.message ||
-          "Unable to save subscription plan."
-      );
+      toast.error(error?.response?.data?.message || "Unable to save subscription plan.");
     }
   };
 
@@ -112,14 +109,12 @@ export default function SubscriptionPlanModalBox({
       });
 
       onSuccess();
+      toast.success("Subscription plan updated successfully.");
       onClose();
     } catch (error) {
       console.error(error);
 
-      alert(
-        error?.response?.data?.message ||
-          "Unable to update subscription plan."
-      );
+      toast.error(error?.response?.data?.message || "Unable to update subscription plan.");  
     }
   };
 

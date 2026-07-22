@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../../api/axiosClient";
 import PermissionModalBox from "./PermissionModalBox";
+import { PlusIcon } from "@heroicons/react/24/outline";
 
 export default function PermissionTable() {
   const [permissions, setPermissions] = useState([]);
@@ -127,9 +128,10 @@ export default function PermissionTable() {
             setSelectedPermission(null);
             setShowModal(true);
           }}
-          className="px-6 py-2 bg-[#0d4039] text-white rounded-lg"
+          className="px-3 sm:px-6 py-2 bg-[#0d4039] text-white rounded-lg font-medium flex items-center justify-center gap-2"
         >
-          + Add Permission
+          <PlusIcon className="w-5 h-5" title="Add Permission" />
+          <span className="hidden sm:inline">Add Permission</span>
         </button>
       </div>
 

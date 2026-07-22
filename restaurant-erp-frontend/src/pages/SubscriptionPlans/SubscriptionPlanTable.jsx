@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "../../api/axiosClient";
 import SubscriptionPlanModal from "./SubscriptionPlanModalBox";
+import { PlusIcon } from "@heroicons/react/24/outline";
+import { toast } from "react-toastify";
 
 export default function SubscriptionPlanTable() {
   const navigate = useNavigate();
@@ -25,10 +27,7 @@ export default function SubscriptionPlanTable() {
 
   const [direction, setDirection] = useState("DESC");
 
-  const [searchCriteria, setSearchCriteria] = useState({
-    name: "",
-    isActive: ""
-  });
+  const [searchCriteria, setSearchCriteria] = useState({ name: "", isActive: "" });
 
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -41,6 +40,55 @@ export default function SubscriptionPlanTable() {
   const canDelete = user?.permissions?.includes("PLAN_DELETE");
 
   const canRestore = user?.permissions?.includes("PLAN_REACTIVATE");
+
+  const [confirmModal, setConfirmModal] = useState({
+    open: false,
+    title: "",
+    message: "",
+    action: null,
+  });
+
+  const openDeleteModal = (id) => {
+    setConfirmModal({
+      open: true,
+      title: "Delete Subscription Plan",
+      message: "Are you sure you want to delete this subscription plan?",
+      action: async () => {
+        try {
+          await axiosClient.delete(`/subscription_plans/${id}`);
+          toast.success("Subscription Plan Deleted Successfully");
+          loadPlans();
+        } catch (error) {
+          toast.error(
+            error?.response?.data?.message || "Failed to delete plan"
+          );
+        } finally {
+          setConfirmModal((prev) => ({ ...prev, open: false }));
+        }
+      },
+    });
+  };
+
+  const openRestoreModal = (id) => {
+    setConfirmModal({
+      open: true,
+      title: "Restore Subscription Plan",
+      message: "Are you sure you want to restore this subscription plan?",
+      action: async () => {
+        try {
+          await axiosClient.patch(`/subscription_plans/${id}/restore`);
+          toast.success("Subscription Plan Restored Successfully");
+          loadPlans();
+        } catch (error) {
+          toast.error(
+            error?.response?.data?.message || "Failed to restore plan"
+          );
+        } finally {
+          setConfirmModal((prev) => ({ ...prev, open: false }));
+        }
+      },
+    });
+  };
 
   useEffect(() => {
     loadPlans();
@@ -92,47 +140,6 @@ export default function SubscriptionPlanTable() {
     }
   };
 
-  const handleDelete = async (id) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this subscription plan?",
-    );
-
-    if (!confirmed) return;
-
-    try {
-      await axiosClient.delete(`/subscription_plans/${id}`);
-
-      alert("Subscription Plan Deleted Successfully");
-
-      loadPlans();
-    } catch (error) {
-      console.error(error);
-
-      alert(error?.response?.data?.message || "Failed to delete plan");
-    }
-  };
-
-  const handleRestore = async (id) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to restore this subscription plan?",
-    );
-
-    if (!confirmed) return;
-
-    try {
-      alert("Restoring subscription plan...");
-      await axiosClient.patch(`/subscription_plans/${id}/restore`);
-
-      alert("Subscription Plan Restored Successfully");
-
-      loadPlans();
-    } catch (error) {
-      console.error(error);
-
-      alert(error?.response?.data?.message || "Failed to restore plan");
-    }
-  };
-
   const getStatusColor = (status) => {
     return status ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700";
   };
@@ -144,128 +151,129 @@ export default function SubscriptionPlanTable() {
       <div className="flex justify-between items-center mb-5">
         <h2 className="text-2xl font-bold">Subscription Plans</h2>
 
-        <button
+        {canCreate && <button
           onClick={() => {
             setModalMode("create");
             setSelectedPlan(null);
             setShowModal(true);
           }}
-          className="px-6 py-2 bg-[#0d4039] text-white rounded-lg"
+          className="px-3 sm:px-6 py-2 bg-[#0d4039] text-white rounded-lg font-medium flex items-center justify-center gap-2"
         >
-          + Add Plan
-        </button>
+          <PlusIcon className="w-5 h-5" />
+          <span className="hidden sm:inline">Add Plan</span>
+        </button>}
       </div>
 
       {/* Filters */}
 
       {/* SEARCH FILTERS */}
 
-     {/* Search Toolbar */}
-<div className="mb-6 rounded-xl border bg-white p-4 shadow-sm">
-  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
+      {/* Search Toolbar */}
+      <div className="mb-6 rounded-xl border bg-white p-4 shadow-sm">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
 
-    {/* Plan Name */}
-    <div>
-      <label className="mb-1 block text-sm font-medium text-gray-700">
-        Plan Name
-      </label>
-      <input
-        type="text"
-        placeholder="Enter plan name"
-        value={searchCriteria.name}
-        onChange={(e) =>
-          setSearchCriteria((prev) => ({
-            ...prev,
-            name: e.target.value,
-          }))
-        }
-        className="h-11 w-full rounded-lg border border-gray-300 px-4 focus:border-[#0d4039] focus:outline-none focus:ring-2 focus:ring-[#0d4039]/20"
-      />
-    </div>
+          {/* Plan Name */}
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Plan Name
+            </label>
+            <input
+              type="text"
+              placeholder="Enter plan name"
+              value={searchCriteria.name}
+              onChange={(e) =>
+                setSearchCriteria((prev) => ({
+                  ...prev,
+                  name: e.target.value,
+                }))
+              }
+              className="h-11 w-full rounded-lg border border-gray-300 px-4 focus:border-[#0d4039] focus:outline-none focus:ring-2 focus:ring-[#0d4039]/20"
+            />
+          </div>
 
-    {/* Status */}
-    <div>
-      <label className="mb-1 block text-sm font-medium text-gray-700">
-        Status
-      </label>
-      <select
-        value={searchCriteria.isActive}
-        onChange={(e) =>
-          setSearchCriteria((prev) => ({
-            ...prev,
-            isActive: e.target.value,
-          }))
-        }
-        className="h-11 w-full rounded-lg border border-gray-300 px-4 focus:border-[#0d4039] focus:outline-none focus:ring-2 focus:ring-[#0d4039]/20"
-      >
-        <option value="">All Status</option>
-        <option value="true">Active</option>
-        <option value="false">Inactive</option>
-      </select>
-    </div>
+          {/* Status */}
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Status
+            </label>
+            <select
+              value={searchCriteria.isActive}
+              onChange={(e) =>
+                setSearchCriteria((prev) => ({
+                  ...prev,
+                  isActive: e.target.value,
+                }))
+              }
+              className="h-11 w-full rounded-lg border border-gray-300 px-4 focus:border-[#0d4039] focus:outline-none focus:ring-2 focus:ring-[#0d4039]/20"
+            >
+              <option value="">All Status</option>
+              <option value="true">Active</option>
+              <option value="false">Inactive</option>
+            </select>
+          </div>
 
-    {/* Sort By */}
-    <div>
-      <label className="mb-1 block text-sm font-medium text-gray-700">
-        Sort By
-      </label>
-      <select
-        value={sortBy}
-        onChange={(e) => {
-          setCurrentPage(0);
-          setSortBy(e.target.value);
-        }}
-        className="h-11 w-full rounded-lg border border-gray-300 px-4 focus:border-[#0d4039] focus:outline-none focus:ring-2 focus:ring-[#0d4039]/20"
-      >
-        <option value="createdAt">Created Date</option>
-        <option value="name">Plan Name</option>
-        <option value="monthlyPrice">Monthly Price</option>
-        <option value="yearlyPrice">Yearly Price</option>
-        <option value="usersLimit">Users Limit</option>
-        <option value="branchesLimit">Branches Limit</option>
-      </select>
-    </div>
+          {/* Sort By */}
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Sort By
+            </label>
+            <select
+              value={sortBy}
+              onChange={(e) => {
+                setCurrentPage(0);
+                setSortBy(e.target.value);
+              }}
+              className="h-11 w-full rounded-lg border border-gray-300 px-4 focus:border-[#0d4039] focus:outline-none focus:ring-2 focus:ring-[#0d4039]/20"
+            >
+              <option value="createdAt">Created Date</option>
+              <option value="name">Plan Name</option>
+              <option value="monthlyPrice">Monthly Price</option>
+              <option value="yearlyPrice">Yearly Price</option>
+              <option value="usersLimit">Users Limit</option>
+              <option value="branchesLimit">Branches Limit</option>
+            </select>
+          </div>
 
-    {/* Sort Direction */}
-    <div>
-      <label className="mb-1 block text-sm font-medium text-gray-700">
-        Order
-      </label>
-      <select
-        value={direction}
-        onChange={(e) => {
-          setCurrentPage(0);
-          setDirection(e.target.value);
-        }}
-        className="h-11 w-full rounded-lg border border-gray-300 px-4 focus:border-[#0d4039] focus:outline-none focus:ring-2 focus:ring-[#0d4039]/20"
-      >
-        <option value="DESC">Newest First</option>
-        <option value="ASC">Oldest First</option>
-      </select>
-    </div>
+          {/* Sort Direction */}
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Order
+            </label>
+            <select
+              value={direction}
+              onChange={(e) => {
+                setCurrentPage(0);
+                setDirection(e.target.value);
+              }}
+              className="h-11 w-full rounded-lg border border-gray-300 px-4 focus:border-[#0d4039] focus:outline-none focus:ring-2 focus:ring-[#0d4039]/20"
+            >
+              <option value="DESC">Newest First</option>
+              <option value="ASC">Oldest First</option>
+            </select>
+          </div>
 
-    {/* Page Size */}
-    <div>
-      <label className="mb-1 block text-sm font-medium text-gray-700">
-        Records Per Page
-      </label>
-      <select
-        value={pageSize}
-        onChange={(e) => {
-          setCurrentPage(0);
-          setPageSize(Number(e.target.value));
-        }}
-        className="h-11 w-full rounded-lg border border-gray-300 px-4 focus:border-[#0d4039] focus:outline-none focus:ring-2 focus:ring-[#0d4039]/20"
-      >
-        <option value={10}>10</option>
-        <option value={25}>25</option>
-        <option value={50}>50</option>
-        <option value={100}>100</option>
-      </select>
-    </div>
+          {/* Page Size */}
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Records Per Page
+            </label>
+            <select
+              value={pageSize}
+              onChange={(e) => {
+                setCurrentPage(0);
+                setPageSize(Number(e.target.value));
+              }}
+              className="h-11 w-full rounded-lg border border-gray-300 px-4 focus:border-[#0d4039] focus:outline-none focus:ring-2 focus:ring-[#0d4039]/20"
+            >
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+            </select>
+          </div>
 
-  </div>
-</div>
+        </div>
+      </div>
 
       {/* Desktop Table */}
 
@@ -337,7 +345,7 @@ export default function SubscriptionPlanTable() {
                   {plan.isActive &&
                     canDelete && (
                       <button
-                        onClick={() => handleDelete(plan.id)}
+                        onClick={() => openDeleteModal(plan.id)}
                         className="text-red-600"
                       >
                         Delete
@@ -348,7 +356,7 @@ export default function SubscriptionPlanTable() {
                     canRestore && (
                       <button
                         className="text-orange-600"
-                        onClick={() => handleRestore(plan.id)}
+                        onClick={() => openRestoreModal(plan.id)}
                       >
                         Restore
                       </button>
@@ -423,7 +431,7 @@ export default function SubscriptionPlanTable() {
                 canDelete && (
                   <button
                     className="flex-1 bg-red-500 text-white py-2 rounded-lg"
-                    onClick={() => handleDelete(plan.id)}
+                    onClick={() => openDeleteModal(plan.id)}
                   >
                     Delete
                   </button>
@@ -433,7 +441,7 @@ export default function SubscriptionPlanTable() {
                 canRestore && (
                   <button
                     className="flex-1 bg-orange-500 text-white py-2 rounded-lg"
-                    onClick={() => handleRestore(plan.id)}
+                    onClick={() => openRestoreModal(plan.id)}
                   >
                     Restore
                   </button>
@@ -458,6 +466,43 @@ export default function SubscriptionPlanTable() {
           </button>
         ))}
       </div>
+
+
+      {confirmModal.open && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-lg w-[90%] max-w-md p-6">
+
+            <h2 className="text-xl font-bold text-gray-800">
+              {confirmModal.title}
+            </h2>
+
+            <p className="mt-3 text-gray-600">
+              {confirmModal.message}
+            </p>
+
+            <div className="flex justify-end gap-3 mt-6">
+
+              <button
+                onClick={() =>
+                  setConfirmModal((prev) => ({ ...prev, open: false }))
+                }
+                className="px-5 py-2 rounded-lg border border-gray-300 hover:bg-gray-100"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={confirmModal.action}
+                className="px-5 py-2 rounded-lg bg-[#0d4039] text-white hover:bg-[#0b322d]"
+              >
+                Confirm
+              </button>
+
+            </div>
+
+          </div>
+        </div>
+      )}
 
       {/* View Modal */}
 

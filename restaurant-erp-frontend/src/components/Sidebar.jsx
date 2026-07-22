@@ -297,7 +297,7 @@ const Sidebar = () => {
         </h1>
 
         <button
-          onClick={() => setCollapsed(!collapsed)}
+          onClick={() => setIsOpen(!isOpen)}
           className="p-2 rounded-lg hover:bg-white/10"
         >
           <Bars3Icon className="w-6 h-6" />

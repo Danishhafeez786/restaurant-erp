@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../../api/axiosClient";
-
+import { PlusIcon } from "@heroicons/react/24/outline";
 import RoleModalBox from "./RoleModalBox";
 
 export default function RoleTable() {
@@ -140,9 +140,10 @@ export default function RoleTable() {
             setShowModal(true);
           }}
 
-          className="px-6 py-2 bg-[#0d4039] text-white rounded-lg"
+          className="px-3 sm:px-6 py-2 bg-[#0d4039] text-white rounded-lg font-medium flex items-center justify-center gap-2"
         >
-          + Add Role
+          <PlusIcon className="w-5 h-5" title="Add Role" />
+          <span className="hidden sm:inline">Add Role</span>
         </button>
       </div>
 
