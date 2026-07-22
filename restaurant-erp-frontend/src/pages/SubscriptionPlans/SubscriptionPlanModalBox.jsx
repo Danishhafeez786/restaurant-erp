@@ -85,7 +85,6 @@ export default function SubscriptionPlanModalBox({
       });
 
       resetForm();
-      toast.success("Subscription plan created successfully.");
       onSuccess();
       onClose();
     } catch (error) {
@@ -109,7 +108,6 @@ export default function SubscriptionPlanModalBox({
       });
 
       onSuccess();
-      toast.success("Subscription plan updated successfully.");
       onClose();
     } catch (error) {
       console.error(error);

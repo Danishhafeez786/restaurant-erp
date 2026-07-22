@@ -4,6 +4,7 @@ import axiosClient from "../../api/axiosClient";
 import SubscriptionPlanModal from "./SubscriptionPlanModalBox";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { toast } from "react-toastify";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function SubscriptionPlanTable() {
   const navigate = useNavigate();
@@ -56,8 +57,7 @@ export default function SubscriptionPlanTable() {
       action: async () => {
         try {
           await axiosClient.delete(`/subscription_plans/${id}`);
-          toast.success("Subscription Plan Deleted Successfully");
-          loadPlans();
+          // toast.success("Subscription Plan Deleted Successfully");
         } catch (error) {
           toast.error(
             error?.response?.data?.message || "Failed to delete plan"
@@ -77,8 +77,7 @@ export default function SubscriptionPlanTable() {
       action: async () => {
         try {
           await axiosClient.patch(`/subscription_plans/${id}/restore`);
-          toast.success("Subscription Plan Restored Successfully");
-          loadPlans();
+          // toast.success("Subscription Plan Restored Successfully");
         } catch (error) {
           toast.error(
             error?.response?.data?.message || "Failed to restore plan"
@@ -104,12 +103,31 @@ export default function SubscriptionPlanTable() {
   }, [searchCriteria, sortBy, direction, pageSize]);
 
   useEffect(() => {
-    console.log("Connecting to Subscription Plan SSE...");
-
     const eventSource = new EventSource(
-      "http://localhost:8080/api/subscription_plans/stream",
+      `${API_URL}/subscription_plans/stream`
     );
 
+    eventSource.addEventListener("subscription-created", () => {
+      loadPlans();
+      toast.success("A new subscription plan was created.");
+    });
+
+    eventSource.addEventListener("subscription-updated", () => {
+      loadPlans();
+      toast.success("A subscription plan was updated.");
+    });
+
+    eventSource.addEventListener("subscription-deleted", async (event) => {
+      loadPlans();
+      toast.success("A subscription plan was deleted.");
+    });
+
+    eventSource.addEventListener("subscription-restored", () => {
+      loadPlans();
+      toast.success("A subscription plan was restored.");
+    });
+
+    return () => eventSource.close();
   }, []);
 
   const loadPlans = async () => {

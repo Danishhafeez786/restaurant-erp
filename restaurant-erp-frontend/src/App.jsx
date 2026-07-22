@@ -23,6 +23,7 @@ import './App.css';
 
 function App() {
   return (
+    <>
     <Router>
       <AuthProvider>
         <Routes>
@@ -60,6 +61,8 @@ function App() {
         closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="colored" // or "light" / "dark"
       />
     </Router>
+     <ToastContainer position="top-right" autoClose={3000} />
+    </>
   );
 }
 
