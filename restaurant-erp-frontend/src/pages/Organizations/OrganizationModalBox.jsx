@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../../api/axiosClient";
+import { toast } from "react-toastify";
 
 export default function OrganizationModalBox({
   isOpen,
@@ -121,7 +122,7 @@ export default function OrganizationModalBox({
       resetForm();
       onClose();
     } catch (error) {
-      console.error(error);
+      toast.error(error?.response?.data?.message || "Unable to save organization.");
     }
   };
 

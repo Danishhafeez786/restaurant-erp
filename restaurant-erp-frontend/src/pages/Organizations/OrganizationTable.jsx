@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import axiosClient from "../../api/axiosClient";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import OrganizationModalBox from "./OrganizationModalBox";
+const API_URL = import.meta.env.VITE_API_URL;
+import { toast } from "react-toastify";
 
 export default function OrganizationTable() {
   const [organizations, setOrganizations] = useState([]);
@@ -27,6 +29,51 @@ export default function OrganizationTable() {
     searchInput: "",
     isActive: "",
   });
+
+  const [confirmModal, setConfirmModal] = useState({
+    open: false,
+    title: "",
+    message: "",
+    action: null,
+  });
+
+  const openDeleteModal = (id) => {
+    setConfirmModal({
+      open: true,
+      title: "Delete Organization",
+      message: "Are you sure you want to delete this organization?",
+      action: async () => {
+        try {
+          await axiosClient.delete(`/organization/${id}`);
+        } catch (error) {
+          toast.error(
+            error?.response?.data?.message || "Failed to delete organization"
+          );
+        } finally {
+          setConfirmModal((prev) => ({ ...prev, open: false }));
+        }
+      },
+    });
+  };
+
+  const openRestoreModal = (id) => {
+    setConfirmModal({
+      open: true,
+      title: "Restore Organization",
+      message: "Are you sure you want to restore this organization?",
+      action: async () => {
+        try {
+          await axiosClient.patch(`/organization/${id}/restore`);
+        } catch (error) {
+          toast.error(
+            error?.response?.data?.message || "Failed to restore organization"
+          );
+        } finally {
+          setConfirmModal((prev) => ({ ...prev, open: false }));
+        }
+      },
+    });
+  };
 
   // ===== LOAD DATA =====
   const loadOrganizations = async () => {
@@ -72,45 +119,33 @@ export default function OrganizationTable() {
   }, [searchCriteria, sortBy, direction, pageSize]);
 
   useEffect(() => {
-    console.log("Connecting to SSE...");
+      const eventSource = new EventSource(
+        `${API_URL}/organization/stream`
+      );
+  
+      eventSource.addEventListener("organization-created", () => {
+        loadOrganizations();
+        toast.success("A new organization was created.");
+      });
+  
+      eventSource.addEventListener("organization-updated", () => {
+        loadOrganizations();
+        toast.success("An organization was updated.");
+      });
+  
+      eventSource.addEventListener("organization-deleted", async (event) => {
+        loadOrganizations();
+        toast.success("An organization was deleted.");
+      });
+  
+      eventSource.addEventListener("organization-restored", () => {
+        loadOrganizations();
+        toast.success("An organization was restored.");
+      });
+  
+      return () => eventSource.close();
+    }, []);
 
-    const eventSource = new EventSource(
-      "http://localhost:8080/api/organization/stream",
-    );
-
-
-    return () => eventSource.close();
-  }, []);
-
-  // ===== DELETE =====
-  const handleDelete = async (id) => {
-    if (!window.confirm("Delete this organization?")) return;
-
-    try {
-      await axiosClient.delete(`/organization/${id}`);
-
-      alert("Organization Deleted Successfully");
-
-      loadOrganizations();
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  // ===== RESTORE =====
-  const handleRestore = async (id) => {
-    if (!window.confirm("Restore this organization?")) return;
-
-    try {
-      await axiosClient.patch(`/organization/${id}/restore`);
-
-      alert("Organization Restored Successfully");
-
-      loadOrganizations();
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const getStatusColor = (status) =>
     status ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700";
@@ -323,7 +358,7 @@ export default function OrganizationTable() {
 
                   {org.isActive && user?.permissions?.includes("ORGANIZATION_DELETE") && (
                     <button
-                      onClick={() => handleDelete(org.id)}
+                      onClick={() => openDeleteModal(org.id)}
                       className="text-red-600"
                     >
                       Delete
@@ -332,7 +367,7 @@ export default function OrganizationTable() {
 
                   {!org.isActive && user?.permissions?.includes("ORGANIZATION_REACTIVATE") && (
                     <button
-                      onClick={() => handleRestore(org.id)}
+                      onClick={() => openRestoreModal(org.id)}
                       className="text-orange-600"
                     >
                       Restore
@@ -409,7 +444,7 @@ export default function OrganizationTable() {
               {organization.isActive && user.permissions.includes("ORGANIZATION_DELETE") && (
                 <button
                   className="flex-1 bg-red-500 text-white py-2 rounded-lg"
-                  onClick={() => handleDelete(organization.id)}
+                  onClick={() => openDeleteModal(organization.id)}
                 >
                   Delete
                 </button>
@@ -418,7 +453,7 @@ export default function OrganizationTable() {
               {!organization.isActive && user?.permissions?.includes("ORGANIZATION_REACTIVATE") && (
                 <button
                   className="flex-1 bg-orange-500 text-white py-2 rounded-lg"
-                  onClick={() => handleRestore(organization.id)}
+                  onClick={() => openRestoreModal(organization.id)}
                 >
                   Restore
                 </button>
@@ -440,6 +475,42 @@ export default function OrganizationTable() {
           </button>
         ))}
       </div>
+
+      {confirmModal.open && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-lg w-[90%] max-w-md p-6">
+
+            <h2 className="text-xl font-bold text-gray-800">
+              {confirmModal.title}
+            </h2>
+
+            <p className="mt-3 text-gray-600">
+              {confirmModal.message}
+            </p>
+
+            <div className="flex justify-end gap-3 mt-6">
+
+              <button
+                onClick={() =>
+                  setConfirmModal((prev) => ({ ...prev, open: false }))
+                }
+                className="px-5 py-2 rounded-lg border border-gray-300 hover:bg-gray-100"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={confirmModal.action}
+                className="px-5 py-2 rounded-lg bg-[#0d4039] text-white hover:bg-[#0b322d]"
+              >
+                Confirm
+              </button>
+
+            </div>
+
+          </div>
+        </div>
+      )}
 
       {/* MODAL */}
       <OrganizationModalBox

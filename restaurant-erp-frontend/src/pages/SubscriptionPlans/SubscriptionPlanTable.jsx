@@ -57,7 +57,6 @@ export default function SubscriptionPlanTable() {
       action: async () => {
         try {
           await axiosClient.delete(`/subscription_plans/${id}`);
-          // toast.success("Subscription Plan Deleted Successfully");
         } catch (error) {
           toast.error(
             error?.response?.data?.message || "Failed to delete plan"
@@ -77,7 +76,6 @@ export default function SubscriptionPlanTable() {
       action: async () => {
         try {
           await axiosClient.patch(`/subscription_plans/${id}/restore`);
-          // toast.success("Subscription Plan Restored Successfully");
         } catch (error) {
           toast.error(
             error?.response?.data?.message || "Failed to restore plan"

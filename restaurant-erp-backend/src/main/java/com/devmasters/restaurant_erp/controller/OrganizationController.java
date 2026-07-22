@@ -125,23 +125,17 @@ public class OrganizationController {
     @PreAuthorize("hasAuthority('ORGANIZATION_VIEW')")
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter stream() {
-
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
-
         emitters.add(emitter);
-
         emitter.onCompletion(() -> emitters.remove(emitter));
         emitter.onTimeout(() -> emitters.remove(emitter));
         emitter.onError(e -> emitters.remove(emitter));
-
         return emitter;
     }
 
 
     private void sendEvent(String eventName, Object data) {
-
         List<SseEmitter> deadEmitters = new ArrayList<>();
-
         for (SseEmitter emitter : emitters) {
             try {emitter.send(SseEmitter.event().name(eventName).data(data));
             } catch (Exception ex) {
