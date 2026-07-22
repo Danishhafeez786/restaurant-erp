@@ -476,6 +476,7 @@ export default function OrganizationTable() {
         ))}
       </div>
 
+      {/* {Model Box} */}
       {confirmModal.open && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl shadow-lg w-[90%] max-w-md p-6">

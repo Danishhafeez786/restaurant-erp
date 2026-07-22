@@ -13,7 +13,7 @@ import java.util.UUID;
 @Builder
 public class BranchSearchCriteria {
 
-    private String search;
+    private String searchInput;
 
     private Boolean isActive;
 

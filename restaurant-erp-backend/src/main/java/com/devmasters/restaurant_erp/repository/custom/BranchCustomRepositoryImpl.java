@@ -22,75 +22,37 @@ public class BranchCustomRepositoryImpl
     private final MongoTemplate mongoTemplate;
 
     @Override
-    public Page<Branch> search(
-            BranchSearchCriteria criteria,
-            Pageable pageable) {
-
+    public Page<Branch> search(BranchSearchCriteria criteria, Pageable pageable) {
         Query query = new Query();
-
         List<Criteria> filters = new ArrayList<>();
 
-        if(criteria.getSearch() != null
-                && !criteria.getSearch().isBlank()) {
-
-
-            String keyword = criteria.getSearch();
-
-
-            filters.add(
-                    new Criteria().orOperator(
-
+        if(criteria.getSearchInput() != null && !criteria.getSearchInput().isBlank()) {
+            String keyword = criteria.getSearchInput();
+            filters.add(new Criteria().orOperator(
                             Criteria.where("branchName").regex(keyword, "i"),
                             Criteria.where("branchCode").regex(keyword, "i"),
                             Criteria.where("city").regex(keyword, "i"),
-                            Criteria.where("phone").regex(keyword, "i")
-
+                            Criteria.where("phone").regex(keyword, "i"),
+                            Criteria.where("address").regex(keyword, "i")
                     )
             );
 
         }
-        if (criteria.getOrganizationId() != null) {
+        if (criteria.getOrganizationId() != null)
+            filters.add(Criteria.where("organization.$id").is(criteria.getOrganizationId()));
 
-            filters.add(
-                    Criteria.where("organization.$id")
-                            .is(criteria.getOrganizationId())
-            );
-        }
+        if (criteria.getIsActive() != null)
+            filters.add(Criteria.where("isActive").is(criteria.getIsActive()));
 
-        if (criteria.getIsActive() != null) {
+        if (!filters.isEmpty())
+            query.addCriteria(new Criteria().andOperator(filters.toArray(new Criteria[0])));
 
-            filters.add(
-                    Criteria.where("isActive")
-                            .is(criteria.getIsActive())
-            );
-        }
-
-        if (!filters.isEmpty()) {
-
-            query.addCriteria(
-                    new Criteria().andOperator(
-                            filters.toArray(new Criteria[0])
-                    )
-            );
-        }
-
-        long total = mongoTemplate.count(
-                query,
-                Branch.class
-        );
+        long total = mongoTemplate.count(query, Branch.class);
 
         query.with(pageable);
 
-        List<Branch> branches =
-                mongoTemplate.find(
-                        query,
-                        Branch.class
-                );
+        List<Branch> branches = mongoTemplate.find(query, Branch.class);
 
-        return new PageImpl<>(
-                branches,
-                pageable,
-                total
-        );
+        return new PageImpl<>(branches, pageable, total);
     }
 }

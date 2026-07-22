@@ -25,8 +25,6 @@ public class BranchTransformer extends Transformer<Branch, BranchModel>{
                 .phone(model.getPhone())
                 .organization(organizationTransformer.toEntity(model.getOrganizationModel()))
                 .isActive(model.getIsActive())
-                .createdAt(model.getCreatedAt())
-                .updatedAt(model.getUpdatedAt())
                 .build();
     }
 

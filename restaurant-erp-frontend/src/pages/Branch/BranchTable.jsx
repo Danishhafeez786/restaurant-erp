@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import axiosClient from "../../api/axiosClient";
 import BranchModalBox from "./BranchModalBox";
 import { PlusIcon } from "@heroicons/react/24/outline";
+const API_URL = import.meta.env.VITE_API_URL;
+import { toast } from "react-toastify";
 
 export default function BranchTable() {
 
@@ -22,13 +24,55 @@ export default function BranchTable() {
   const [direction, setDirection] = useState("DESC");
 
   const [searchCriteria, setSearchCriteria] = useState({
-    branchName: "",
-    branchCode: "",
-    city: "",
-    phone: "",
+    searchInput: "",
     organizationId: "",
     isActive: "",
   });
+
+  const [confirmModal, setConfirmModal] = useState({
+    open: false,
+    title: "",
+    message: "",
+    action: null,
+  });
+
+  const openDeleteModal = (id) => {
+    setConfirmModal({
+      open: true,
+      title: "Delete Branch",
+      message: "Are you sure you want to delete this branch?",
+      action: async () => {
+        try {
+          await axiosClient.delete(`/branch/${id}`);
+        } catch (error) {
+          toast.error(
+            error?.response?.data?.message || "Failed to delete branch"
+          );
+        } finally {
+          setConfirmModal((prev) => ({ ...prev, open: false }));
+        }
+      },
+    });
+  };
+
+  const openRestoreModal = (id) => {
+    setConfirmModal({
+      open: true,
+      title: "Restore Branch",
+      message: "Are you sure you want to restore this branch?",
+      action: async () => {
+        try {
+          await axiosClient.patch(`/branch/${id}/restore`);
+        } catch (error) {
+          toast.error(
+            error?.response?.data?.message || "Failed to restore branch"
+          );
+        } finally {
+          setConfirmModal((prev) => ({ ...prev, open: false }));
+        }
+      },
+    });
+  };
 
   const loadBranches = async () => {
 
@@ -37,10 +81,7 @@ export default function BranchTable() {
       setLoading(true);
 
       const payload = {
-        branchName: searchCriteria.branchName || null,
-        branchCode: searchCriteria.branchCode || null,
-        city: searchCriteria.city || null,
-        phone: searchCriteria.phone || null,
+        searchInput: searchCriteria.searchInput || null,
         organizationId: searchCriteria.organizationId || null,
         isActive:
           searchCriteria.isActive === ""
@@ -86,63 +127,37 @@ export default function BranchTable() {
   }, [searchCriteria, sortBy, direction, pageSize]);
 
   useEffect(() => {
-
-    const eventSource = new EventSource(
-      "http://localhost:8080/api/branch/stream"
-    );
-
-    eventSource.addEventListener("branch-created", loadBranches);
-    eventSource.addEventListener("branch-updated", loadBranches);
-    eventSource.addEventListener("branch-deleted", loadBranches);
-    eventSource.addEventListener("branch-restored", loadBranches);
-
-    return () => eventSource.close();
-
-  }, []);
-
-  const handleDelete = async (id) => {
-
-    if (!window.confirm("Delete this branch?")) return;
-
-    try {
-
-      await axiosClient.delete(`/branch/${id}`);
-
-      loadBranches();
-
-    } catch (error) {
-
-      console.error(error);
-
-    }
-
-  };
-
-  const handleRestore = async (id) => {
-
-    if (!window.confirm("Restore this branch?")) return;
-
-    try {
-
-      await axiosClient.patch(`/branch/${id}/restore`);
-
-      loadBranches();
-
-    } catch (error) {
-
-      console.error(error);
-
-    }
-
-  };
+        const eventSource = new EventSource(
+          `${API_URL}/branch/stream`
+        );
+    
+        eventSource.addEventListener("branch-created", () => {
+          loadBranches();
+          toast.success("A new branch was created.");
+        });
+    
+        eventSource.addEventListener("branch-updated", () => {
+          loadBranches();
+          toast.success("A branch was updated.");
+        });
+    
+        eventSource.addEventListener("branch-deleted", async (event) => {
+          loadBranches();
+          toast.success("A branch was deleted.");
+        });
+    
+        eventSource.addEventListener("branch-restored", () => {
+          loadBranches();
+          toast.success("A branch was restored.");
+        });
+    
+        return () => eventSource.close();
+      }, []);
 
   const resetFilters = () => {
 
     setSearchCriteria({
-      branchName: "",
-      branchCode: "",
-      city: "",
-      phone: "",
+      searchInput: "",
       organizationId: "",
       isActive: "",
     });
@@ -190,106 +205,92 @@ export default function BranchTable() {
       <div className="mb-6 rounded-xl border bg-white p-4 shadow-sm">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
 
-          <input
-            type="text"
-            placeholder="Branch Name"
-            value={searchCriteria.branchName}
-            onChange={(e) =>
-              setSearchCriteria((prev) => ({
-                ...prev,
-                branchName: e.target.value,
-              }))
-            }
-            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-          />
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Search
+            </label>
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchCriteria.searchInput}
+              onChange={(e) =>
+                setSearchCriteria((prev) => ({
+                  ...prev,
+                  searchInput: e.target.value,
+                }))
+              }
+              className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+            />
+          </div>
 
-          <input
-            type="text"
-            placeholder="Branch Code"
-            value={searchCriteria.branchCode}
-            onChange={(e) =>
-              setSearchCriteria((prev) => ({
-                ...prev,
-                branchCode: e.target.value,
-              }))
-            }
-            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-          />
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Status
+            </label>
+            <select
+              value={searchCriteria.isActive}
+              onChange={(e) =>
+                setSearchCriteria((prev) => ({
+                  ...prev,
+                  isActive: e.target.value,
+                }))
+              }
+              className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+            >
+              <option value="">Status</option>
+              <option value="true">Active</option>
+              <option value="false">Inactive</option>
+            </select>
+          </div>
 
-          <input
-            type="text"
-            placeholder="City"
-            value={searchCriteria.city}
-            onChange={(e) =>
-              setSearchCriteria((prev) => ({
-                ...prev,
-                city: e.target.value,
-              }))
-            }
-            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-          />
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Sort By
+            </label>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+            >
+              <option value="createdAt">Created</option>
+              <option value="branchName">Branch Name</option>
+              <option value="branchCode">Branch Code</option>
+              <option value="city">City</option>
+            </select>
+          </div>
 
-          <input
-            type="text"
-            placeholder="Phone"
-            value={searchCriteria.phone}
-            onChange={(e) =>
-              setSearchCriteria((prev) => ({
-                ...prev,
-                phone: e.target.value,
-              }))
-            }
-            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-          />
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Order
+            </label>
+            <select
+              value={direction}
+              onChange={(e) => setDirection(e.target.value)}
+              className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+            >
+              <option value="DESC">Newest</option>
+              <option value="ASC">Oldest</option>
+            </select>
+          </div>
 
-          <select
-            value={searchCriteria.isActive}
-            onChange={(e) =>
-              setSearchCriteria((prev) => ({
-                ...prev,
-                isActive: e.target.value,
-              }))
-            }
-            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-          >
-            <option value="">Status</option>
-            <option value="true">Active</option>
-            <option value="false">Inactive</option>
-          </select>
-
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-          >
-            <option value="createdAt">Created</option>
-            <option value="branchName">Branch Name</option>
-            <option value="branchCode">Branch Code</option>
-            <option value="city">City</option>
-          </select>
-
-          <select
-            value={direction}
-            onChange={(e) => setDirection(e.target.value)}
-            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-          >
-            <option value="DESC">Newest</option>
-            <option value="ASC">Oldest</option>
-          </select>
-
-          <select
-            value={pageSize}
-            onChange={(e) => {
-              setCurrentPage(0);
-              setPageSize(Number(e.target.value));
-            }}
-            className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-          >
-            <option value={10}>10</option>
-            <option value={20}>20</option>
-            <option value={50}>50</option>
-            <option value={100}>100</option>
-          </select>
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Records Per Page
+            </label>
+            <select
+              value={pageSize}
+              onChange={(e) => {
+                setCurrentPage(0);
+                setPageSize(Number(e.target.value));
+              }}
+              className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
+            >
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+            </select>
+          </div>
 
         </div>
       </div>
@@ -398,7 +399,7 @@ export default function BranchTable() {
                       user?.permissions?.includes("BRANCH_DELETE") && (
                         <button
                           className="text-red-600"
-                          onClick={() => handleDelete(branch.id)}
+                          onClick={() => openDeleteModal(branch.id)}
                         >
                           Delete
                         </button>
@@ -407,7 +408,7 @@ export default function BranchTable() {
                       user?.permissions?.includes("BRANCH_REACTIVATE") && (
                         <button
                           className="text-green-600"
-                          onClick={() => handleRestore(branch.id)}
+                          onClick={() => openRestoreModal(branch.id)}
                         >
                           Restore
                         </button>
@@ -501,7 +502,7 @@ export default function BranchTable() {
                   user.permissions.includes("BRANCH_DELETE") &&
                   <button
                     className="flex-1 bg-red-500 text-white py-2 rounded-lg"
-                    onClick={() => handleDelete(branch.id)}
+                    onClick={() => openDeleteModal(branch.id)}
                   >
                     Delete
                   </button>
@@ -510,7 +511,7 @@ export default function BranchTable() {
                   <button
                     className="flex-1 bg-orange-500 text-white py-2 rounded-lg"
                     disabled={!user?.permissions?.includes("BRANCH_REACTIVATE")}
-                    onClick={() => handleRestore(branch.id)}
+                    onClick={() => openRestoreModal(branch.id)}
                   >
                     Restore
                   </button>
@@ -536,6 +537,43 @@ export default function BranchTable() {
           </button>
         ))}
       </div>
+
+      {/* {Model Box} */}
+      {confirmModal.open && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-lg w-[90%] max-w-md p-6">
+
+            <h2 className="text-xl font-bold text-gray-800">
+              {confirmModal.title}
+            </h2>
+
+            <p className="mt-3 text-gray-600">
+              {confirmModal.message}
+            </p>
+
+            <div className="flex justify-end gap-3 mt-6">
+
+              <button
+                onClick={() =>
+                  setConfirmModal((prev) => ({ ...prev, open: false }))
+                }
+                className="px-5 py-2 rounded-lg border border-gray-300 hover:bg-gray-100"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={confirmModal.action}
+                className="px-5 py-2 rounded-lg bg-[#0d4039] text-white hover:bg-[#0b322d]"
+              >
+                Confirm
+              </button>
+
+            </div>
+
+          </div>
+        </div>
+      )}
 
       {/* Modal */}
 
