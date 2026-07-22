@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "../../api/axiosClient";
 import SubscriptionPlanModal from "./SubscriptionPlanModalBox";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, EyeIcon, PencilSquareIcon, TrashIcon, ArrowPathIcon,} from "@heroicons/react/24/outline";
 import { toast } from "react-toastify";
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -294,33 +294,33 @@ export default function SubscriptionPlanTable() {
       {/* Desktop Table */}
 
       <div className="hidden md:block overflow-x-auto">
-        <table className="w-full">
+        <table className="w-full border-separate border-spacing-0 rounded-xl border border-gray-200 text-sm">
           <thead>
-            <tr className="border-b text-left">
-              <th className="py-3">Name</th>
-              <th>Monthly</th>
-              <th>Yearly</th>
-              <th>Branches</th>
-              <th>Users</th>
-              <th>Status</th>
-              <th>Action</th>
+            <tr className="bg-gray-100">
+              <th className="rounded-tl-xl px-4 py-3 text-left">Name</th>
+              <th className="px-4 py-3 text-left">Monthly</th>
+              <th className="px-4 py-3 text-left">Yearly</th>
+              <th className="px-4 py-3 text-left">Branches</th>
+              <th className="px-4 py-3 text-left">Users</th>
+              <th className="px-4 py-3 text-left">Status</th>
+              <th className="rounded-tr-xl px-4 py-3 text-left">Action</th>
             </tr>
           </thead>
 
           <tbody>
             {plans.map((plan) => (
               <tr key={plan.id} className="border-b hover:bg-gray-50">
-                <td className="py-3">{plan.name}</td>
+                <td className="px-4 py-3 ">{plan.name}</td>
 
-                <td>Rs. {plan.monthlyPrice}</td>
+                <td className="px-4 py-3 ">Rs. {plan.monthlyPrice}</td>
 
-                <td>Rs. {plan.yearlyPrice}</td>
+                <td className="px-4 py-3 ">Rs. {plan.yearlyPrice}</td>
 
-                <td>{plan.branchesLimit}</td>
+                <td className="px-4 py-3 ">{plan.branchesLimit}</td>
 
-                <td>{plan.usersLimit}</td>
+                <td className="px-4 py-3 ">{plan.usersLimit}</td>
 
-                <td>
+                <td className="px-4 py-3 ">
                   <span
                     className={`px-3 py-1 rounded-full text-sm ${getStatusColor(
                       plan.isActive,
@@ -330,7 +330,7 @@ export default function SubscriptionPlanTable() {
                   </span>
                 </td>
 
-                <td className="py-3">
+                <td className="px-4 py-3 ">
 
                   {canView && (
                     <button
@@ -341,7 +341,7 @@ export default function SubscriptionPlanTable() {
                       }}
                       className="text-green-600 mr-3"
                     >
-                      View
+                      <EyeIcon className="w-5 h-5" title="View" />
                     </button>
                   )}
 
@@ -354,7 +354,7 @@ export default function SubscriptionPlanTable() {
                       }}
                       className="text-blue-600 mr-3"
                     >
-                      Edit
+                      <PencilSquareIcon className="w-5 h-5" title="Edit" />
                     </button>
                   )}
 
@@ -364,7 +364,7 @@ export default function SubscriptionPlanTable() {
                         onClick={() => openDeleteModal(plan.id)}
                         className="text-red-600"
                       >
-                        Delete
+                        <TrashIcon className="w-5 h-5" title="Delete" />
                       </button>
                     )}
 
@@ -374,7 +374,7 @@ export default function SubscriptionPlanTable() {
                         className="text-orange-600"
                         onClick={() => openRestoreModal(plan.id)}
                       >
-                        Restore
+                        <ArrowPathIcon className="w-5 h-5" title="Restore" />
                       </button>
                     )}
                 </td>

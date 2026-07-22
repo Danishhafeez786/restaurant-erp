@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../../api/axiosClient";
 import BranchModalBox from "./BranchModalBox";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, EyeIcon, PencilSquareIcon, TrashIcon, ArrowPathIcon,} from "@heroicons/react/24/outline";
 const API_URL = import.meta.env.VITE_API_URL;
 import { toast } from "react-toastify";
 
@@ -299,20 +299,20 @@ export default function BranchTable() {
 
       <div className="overflow-x-auto hidden md:block">
 
-        <table className="w-full">
+        <table className="w-full border-separate border-spacing-0 rounded-xl border border-gray-200 text-sm">
 
           <thead>
 
-            <tr className="border-b">
+            <tr className="bg-gray-100">
 
-              <th className="text-left py-3">Branch Name</th>
-              <th className="text-left">Branch Code</th>
-              <th className="text-left">Address</th>
-              <th className="text-left">City</th>
-              <th className="text-left">Phone</th>
-              <th className="text-left">Organization</th>
-              <th className="text-left">Status</th>
-              <th className="text-left">Actions</th>
+              <th className="rounded-tl-xl px-4 py-3 text-left">Branch Name</th>
+              <th className="px-4 py-3 text-left">Branch Code</th>
+              <th className="px-4 py-3 text-left">Address</th>
+              <th className="px-4 py-3 text-left">City</th>
+              <th className="px-4 py-3 text-left">Phone</th>
+              <th className="px-4 py-3 text-left">Organization</th>
+              <th className="px-4 py-3 text-left">Status</th>
+              <th className="rounded-tr-xl px-4 py-3 text-left">Actions</th>
 
             </tr>
 
@@ -342,23 +342,23 @@ export default function BranchTable() {
                   className="border-b hover:bg-gray-50"
                 >
 
-                  <td className="py-3">{branch.branchName}</td>
+                  <td className="px-4 py-3 ">{branch.branchName}</td>
 
-                  <td>{branch.branchCode}</td>
+                  <td className="px-4 py-3 ">{branch.branchCode}</td>
 
-                  <td>{branch.address}</td>
+                  <td className="px-4 py-3 ">{branch.address}</td>
 
-                  <td>{branch.city}</td>
+                  <td className="px-4 py-3 ">{branch.city}</td>
 
-                  <td>{branch.phone}</td>
+                  <td className="px-4 py-3 ">{branch.phone}</td>
 
-                  <td>
+                  <td className="px-4 py-3 ">
 
                     {branch.organizationModel?.organizationName || "-"}
 
                   </td>
 
-                  <td>
+                  <td className="px-4 py-3 ">
 
                     <span
                       className={`px-3 py-1 rounded-full text-sm ${getStatusColor(
@@ -370,7 +370,7 @@ export default function BranchTable() {
 
                   </td>
 
-                  <td className="space-x-3">
+                  <td className="px-4 py-3 ">
 
                     {user.permissions.includes("BRANCH_VIEW") && <button
                       className="text-green-600"
@@ -381,7 +381,7 @@ export default function BranchTable() {
                         setShowModal(true);
                       }}
                     >
-                      View
+                      <EyeIcon className="w-5 h-5" title="View" />
                     </button>}
 
                     {user.permissions.includes("BRANCH_UPDATE") && <button
@@ -392,7 +392,7 @@ export default function BranchTable() {
                         setShowModal(true);
                       }}
                     >
-                      Edit
+                      <PencilSquareIcon className="w-5 h-5" title="Edit" />
                     </button>}
 
                     {branch.isActive ? (
@@ -401,7 +401,7 @@ export default function BranchTable() {
                           className="text-red-600"
                           onClick={() => openDeleteModal(branch.id)}
                         >
-                          Delete
+                          <TrashIcon className="w-5 h-5" title="Delete" />
                         </button>
                       )
                     ) : (
@@ -410,7 +410,7 @@ export default function BranchTable() {
                           className="text-green-600"
                           onClick={() => openRestoreModal(branch.id)}
                         >
-                          Restore
+                          <ArrowPathIcon className="w-5 h-5" title="Restore" />
                         </button>
                       )
                     )}

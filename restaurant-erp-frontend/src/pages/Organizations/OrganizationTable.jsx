@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../../api/axiosClient";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, EyeIcon, PencilSquareIcon, TrashIcon, ArrowPathIcon,} from "@heroicons/react/24/outline";
 import OrganizationModalBox from "./OrganizationModalBox";
 const API_URL = import.meta.env.VITE_API_URL;
 import { toast } from "react-toastify";
@@ -280,23 +280,23 @@ export default function OrganizationTable() {
 
       {/* TABLE */}
       <div className="hidden md:block overflow-x-auto">
-        <table className="w-full">
+        <table className="w-full border-separate border-spacing-0 rounded-xl border border-gray-200 text-sm">
           <thead>
-            <tr className="border-b text-left">
-              <th className="py-3">Organization</th>
-              <th>Owner</th>
-              <th>City</th>
-              <th>Country</th>
-              <th>Plan</th>
-              <th>Status</th>
-              <th>Action</th>
+            <tr className="bg-gray-100">
+              <th className="rounded-tl-xl px-4 py-3 text-left">Organization</th>
+              <th className="px-4 py-3 text-left">Owner</th>
+              <th className="px-4 py-3 text-left">City</th>
+              <th className="px-4 py-3 text-left">Country</th>
+              <th className="px-4 py-3 text-left">Plan</th>
+              <th className="px-4 py-3 text-left">Status</th>
+              <th className="rounded-tr-xl px-4 py-3 text-left">Action</th>
             </tr>
           </thead>
 
           <tbody>
             {organizations.map((org) => (
               <tr key={org.id} className="border-b hover:bg-gray-50">
-                <td className="py-3">
+                <td className="px-4 py-3 ">
                   <div className="flex items-center gap-3">
                     {org.logoUrl ? (
                       <img
@@ -316,15 +316,15 @@ export default function OrganizationTable() {
                   </div>
                 </td>
 
-                <td>{org.ownerName}</td>
+                <td className="px-4 py-3 ">{org.ownerName}</td>
 
-                <td>{org.city}</td>
+                <td className="px-4 py-3 ">{org.city}</td>
 
-                <td>{org.country}</td>
+                <td className="px-4 py-3 ">{org.country}</td>
 
-                <td>{org.subscriptionModel?.name || "N/A"}</td>
+                <td className="px-4 py-3 ">{org.subscriptionModel?.name || "N/A"}</td>
 
-                <td>
+                <td className="px-4 py-3 ">
                   <span
                     className={`px-3 py-1 rounded-full text-sm ${getStatusColor(
                       org.isActive,
@@ -334,7 +334,7 @@ export default function OrganizationTable() {
                   </span>
                 </td>
 
-                <td>
+                <td className="px-4 py-3 ">
                   {user?.permissions?.includes("ORGANIZATION_VIEW") && <button
                     onClick={() => {
                       setModalMode("view");
@@ -343,7 +343,7 @@ export default function OrganizationTable() {
                     }}
                     className="text-green-600 mr-3"
                   >
-                    View
+                    <EyeIcon className="w-5 h-5" title="View" />
                   </button>}
                   {user?.permissions?.includes("ORGANIZATION_UPDATE") && <button
                     onClick={() => {
@@ -353,7 +353,7 @@ export default function OrganizationTable() {
                     }}
                     className="text-blue-600 mr-3"
                   >
-                    Edit
+                    <PencilSquareIcon className="w-5 h-5" title="Edit" />
                   </button>}
 
                   {org.isActive && user?.permissions?.includes("ORGANIZATION_DELETE") && (
@@ -361,7 +361,7 @@ export default function OrganizationTable() {
                       onClick={() => openDeleteModal(org.id)}
                       className="text-red-600"
                     >
-                      Delete
+                      <TrashIcon className="w-5 h-5" title="Delete" />
                     </button>
                   )}
 
@@ -370,7 +370,7 @@ export default function OrganizationTable() {
                       onClick={() => openRestoreModal(org.id)}
                       className="text-orange-600"
                     >
-                      Restore
+                      <ArrowPathIcon className="w-5 h-5" title="Restore" />
                     </button>
                   )}
                 </td>
