@@ -25,9 +25,6 @@ public class BranchHandler {
             throw new RuntimeException("Branch already exists with name : " + model.getBranchName());
         }
 
-        if (branchService.existsByBranchCodeIgnoreCase(model.getBranchCode())) {
-            throw new RuntimeException("Branch already exists with code : " + model.getBranchCode());
-        }
         model.setBranchCode(model.getOrganizationModel()
                 .getOrganizationName() +  " - Branch - " + branchService
                 .createBranchCode(model.getOrganizationModel()));

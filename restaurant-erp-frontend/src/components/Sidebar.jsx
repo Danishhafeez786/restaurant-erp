@@ -274,16 +274,7 @@ const Sidebar = () => {
         ))}
       </div>
 
-      {/* LOGOUT */}
-      <div className="p-4 border-t border-white/10">
-        <button
-          onClick={logout}
-          className="w-full bg-red-500 hover:bg-red-600 rounded-xl py-3 font-semibold flex items-center justify-center gap-2"
-        >
-          <ArrowRightOnRectangleIcon className="w-5 h-5" />
-          {!collapsed && "Logout"}
-        </button>
-      </div>
+
     </>
   );
 
@@ -382,32 +373,48 @@ const Sidebar = () => {
 
       {/* DESKTOP SIDEBAR */}
       <div
-        className={`hidden lg:flex h-screen bg-[#0d4039] text-white flex-col shadow-2xl transition-all duration-300 ${collapsed ? "w-20" : "w-[300px]"
+        className={`hidden lg:flex min-h-screen bg-[#0d4039] text-white flex-col shadow-2xl transition-all duration-300 ${collapsed ? "w-20" : "w-[300px]"
           }`}
       >
-        <div className="flex justify-between items-center">
-          {!collapsed && (
-            <div>
-              <h1 className="text-3xl font-bold">
-                Foodie
-                <span className="text-yellow-400">POS</span>
-              </h1>
+        {/* Header */}
+        <div className="p-6 border-b border-white/10">
+          <div className="flex justify-between items-start">
+            {!collapsed && (
+              <div>
+                <h1 className="text-3xl font-bold">
+                  Foodie<span className="text-yellow-400">POS</span>
+                </h1>
 
-              <p className="text-gray-300 mt-2 text-sm">
-                Restaurant ERP System
-              </p>
-            </div>
-          )}
+                <p className="text-gray-300 mt-2 text-sm">
+                  Restaurant ERP System
+                </p>
+              </div>
+            )}
 
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className="p-2 rounded-lg hover:bg-white/10"
-          >
-            <Bars3Icon className="w-6 h-6" />
-          </button>
+            <button
+              onClick={() => setCollapsed(!collapsed)}
+              className="p-2 rounded-lg hover:bg-white/10"
+            >
+              <Bars3Icon className="w-6 h-6" />
+            </button>
+          </div>
         </div>
 
-        <SidebarContent />
+        {/* Navigation */}
+        <div className="flex-1 overflow-y-auto">
+          <SidebarContent />
+        </div>
+
+        {/* LOGOUT */}
+      <div className="p-4 border-t border-white/10">
+        <button
+          onClick={logout}
+          className="w-full bg-red-500 hover:bg-red-600 rounded-xl py-3 font-semibold flex items-center justify-center gap-2"
+        >
+          <ArrowRightOnRectangleIcon className="w-5 h-5" />
+          {!collapsed && "Logout"}
+        </button>
+      </div>
       </div>
     </>
   );

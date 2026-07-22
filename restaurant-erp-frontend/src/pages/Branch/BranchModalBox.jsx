@@ -101,32 +101,33 @@ export default function BranchModalBox({
   }, [formData]);
 
   const handleSave = async () => {
-  if (!isFormValid) {
-    return;
-  }
-
-  try {
-    if (isCreate) {
-      await axiosClient.post("/branch", formData);
-
-      await onSuccess();
-
-      resetForm();
-    } else {
-      await axiosClient.put(`/branch/${branch.id}`, formData);
-
-      await onSuccess();
-
-      onClose();
+    if (!isFormValid) {
+      return;
     }
-  } catch (error) {
-    console.error(error);
 
-    alert(error?.response?.data?.message || "Unable to save branch.");
-  }
-};
+    try {
+      if (isCreate) {
+        await axiosClient.post("/branch", formData);
 
-    if (!isOpen) return null;
+        await onSuccess();
+
+        resetForm();
+        onClose();
+      } else {
+        await axiosClient.put(`/branch/${branch.id}`, formData);
+
+        await onSuccess();
+
+        onClose();
+      }
+    } catch (error) {
+      console.error(error);
+
+      alert(error?.response?.data?.message || "Unable to save branch.");
+    }
+  };
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
@@ -163,11 +164,10 @@ export default function BranchModalBox({
               onChange={handleChange}
               disabled={isView}
               placeholder="Enter Branch Name"
-              className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2 ${
-                !isView && formData.branchName.trim() === ""
+              className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2 ${!isView && formData.branchName.trim() === ""
                   ? "border-gray-300 focus:ring-red-400"
                   : "border-gray-300 focus:ring-blue-500"
-              }`}
+                }`}
             />
           </div>
 
@@ -184,11 +184,10 @@ export default function BranchModalBox({
               onChange={handleChange}
               disabled={isView}
               placeholder="Enter Address"
-              className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2 ${
-                !isView && formData.address.trim() === ""
+              className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2 ${!isView && formData.address.trim() === ""
                   ? "border-gray-300 focus:ring-red-400"
                   : "border-gray-300 focus:ring-blue-500"
-              }`}
+                }`}
             />
           </div>
 
@@ -205,11 +204,10 @@ export default function BranchModalBox({
               onChange={handleChange}
               disabled={isView}
               placeholder="Enter City"
-              className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2 ${
-                !isView && formData.city.trim() === ""
+              className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2 ${!isView && formData.city.trim() === ""
                   ? "border-gray-300 focus:ring-red-400"
                   : "border-gray-300 focus:ring-blue-500"
-              }`}
+                }`}
             />
           </div>
 
@@ -227,11 +225,10 @@ export default function BranchModalBox({
               onChange={handleChange}
               disabled={isView}
               placeholder="Enter Phone"
-              className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2 ${
-                !isView && formData.phone.trim() === ""
+              className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2 ${!isView && formData.phone.trim() === ""
                   ? "border-gray-300 focus:ring-red-400"
                   : "border-gray-300 focus:ring-blue-500"
-              }`}
+                }`}
             />
           </div>
 
@@ -245,11 +242,10 @@ export default function BranchModalBox({
               value={formData.organizationModel?.id || ""}
               onChange={handleOrganizationChange}
               disabled={isView}
-              className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2 ${
-                !isView && !formData.organizationModel
+              className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2 ${!isView && !formData.organizationModel
                   ? "border-gray-300 focus:ring-red-400"
                   : "border-gray-300 focus:ring-blue-500"
-              }`}
+                }`}
             >
               <option value="">Select Organization</option>
 
@@ -289,13 +285,12 @@ export default function BranchModalBox({
             <button
               onClick={handleSave}
               disabled={!isFormValid}
-              className={`rounded-lg px-5 py-2 text-white transition ${
-                !isFormValid
+              className={`rounded-lg px-5 py-2 text-white transition ${!isFormValid
                   ? "cursor-not-allowed bg-gray-400"
                   : isCreate
-                  ? "bg-green-600 hover:bg-green-700"
-                  : "bg-blue-600 hover:bg-blue-700"
-              }`}
+                    ? "bg-green-600 hover:bg-green-700"
+                    : "bg-blue-600 hover:bg-blue-700"
+                }`}
             >
               {isCreate ? "Save" : "Update"}
             </button>
