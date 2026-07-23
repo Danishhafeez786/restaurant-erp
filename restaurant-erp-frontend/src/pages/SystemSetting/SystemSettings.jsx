@@ -46,32 +46,26 @@ export default function SystemSettings() {
                     whitespace-nowrap
                   "
                 >
-                  {menus.map((menu) => (
-                    <NavLink
-                      key={menu.path}
-                      to={menu.path}
-                      className={({ isActive }) =>
-                        `
-                        shrink-0
-                        rounded-sm
-                        px-4 py-2
-                        text-sm
-                        font-semibold
-                        transition-all
-                        duration-300
-                        active:scale-95
-                        hover:scale-105
-                        ${
-                          isActive
+                  {menus.map((menu, index) => {
+                    const active =
+                      location.pathname === "/system-settings" && index === 0;
+
+                    return (
+                      <NavLink
+                        key={menu.path}
+                        to={menu.path}
+                        className={({ isActive }) =>
+                          `px-4 py-2 rounded-sm text-sm font-semibold transition-all
+                        ${isActive || active
                             ? "bg-green-600 text-white shadow-md"
                             : "text-gray-600 hover:bg-white hover:text-green-600 hover:shadow"
+                          }`
                         }
-                        `
-                      }
-                    >
-                      {menu.title}
-                    </NavLink>
-                  ))}
+                      >
+                        {menu.title}
+                      </NavLink>
+                    );
+                  })}
                 </div>
               </div>
 
