@@ -24,39 +24,42 @@ import './App.css';
 function App() {
   return (
     <>
-    <Router>
-      <AuthProvider>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/system-settings" element={<ProtectedRoute><SystemSettings /></ProtectedRoute>}>
-            <Route index element={<SubscriptionPlans />} />
-            <Route path="subscription-plans" element={<SubscriptionPlans />} />
-            <Route path="organizations" element={<Organization />} />
-            <Route path="branch" element={<Branch />} />
-            <Route path="role" element={<Role />} />
-            <Route path="permission" element={<Permission />} />
-            <Route path="settings" element={<Settings />} />
-          </Route>
+      <Router>
+        <AuthProvider>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/system-settings" element={<ProtectedRoute><SystemSettings /></ProtectedRoute>}>
+              <Route
+                index
+                element={<Navigate to="subscription-plans" replace />}
+              />
+              <Route path="subscription-plans" element={<SubscriptionPlans />} />
+              <Route path="organizations" element={<Organization />} />
+              <Route path="branch" element={<Branch />} />
+              <Route path="role" element={<Role />} />
+              <Route path="permission" element={<Permission />} />
+              <Route path="settings" element={<Settings />} />
+            </Route>
 
-          <Route path="/dashboard" element={<ProtectedRoute> <Dashboard /> </ProtectedRoute>} />
-          <Route path="/create-employee" element={<ProtectedRoute> <CreateEmployee /> </ProtectedRoute>} />
-          <Route path="/" element={<Navigate to="/dashboard" />} />
-          <Route path="*" element={<Navigate to="/dashboard" />} />
-          <Route path="/employee" element={<ProtectedRoute> <Employee /> </ProtectedRoute>} />
-          <Route path="/category-management" element={<ProtectedRoute> <Category /> </ProtectedRoute>} />
-          <Route path="/table-management" element={<ProtectedRoute> <Tables /> </ProtectedRoute>} />
-          <Route path="/modifier-group" element={<ProtectedRoute> <ModifierGroup /> </ProtectedRoute>} />
-          <Route path="/modifier" element={<ProtectedRoute> <Modifier /> </ProtectedRoute>} />
-        </Routes>
-      </AuthProvider>
-      {/* ✅ Global Toast Container (always available) */}
-      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false}
-        closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="colored" // or "light" / "dark"
-      />
-    </Router>
-     <ToastContainer position="top-right" autoClose={3000} />
+            <Route path="/dashboard" element={<ProtectedRoute> <Dashboard /> </ProtectedRoute>} />
+            <Route path="/create-employee" element={<ProtectedRoute> <CreateEmployee /> </ProtectedRoute>} />
+            <Route path="/" element={<Navigate to="/dashboard" />} />
+            <Route path="*" element={<Navigate to="/dashboard" />} />
+            <Route path="/employee" element={<ProtectedRoute> <Employee /> </ProtectedRoute>} />
+            <Route path="/category-management" element={<ProtectedRoute> <Category /> </ProtectedRoute>} />
+            <Route path="/table-management" element={<ProtectedRoute> <Tables /> </ProtectedRoute>} />
+            <Route path="/modifier-group" element={<ProtectedRoute> <ModifierGroup /> </ProtectedRoute>} />
+            <Route path="/modifier" element={<ProtectedRoute> <Modifier /> </ProtectedRoute>} />
+          </Routes>
+        </AuthProvider>
+        {/* ✅ Global Toast Container (always available) */}
+        <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false}
+          closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="colored" // or "light" / "dark"
+        />
+      </Router>
+      <ToastContainer position="top-right" autoClose={3000} />
     </>
   );
 }

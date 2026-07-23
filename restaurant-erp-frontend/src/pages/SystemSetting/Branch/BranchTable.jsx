@@ -151,7 +151,6 @@ export default function BranchTable() {
 
       const payload = {
         searchInput: searchCriteria.searchInput || null,
-        organizationId: searchCriteria.organizationId || null,
         isActive:
           searchCriteria.isActive === ""
             ? null
@@ -252,26 +251,29 @@ export default function BranchTable() {
         </div>
         {/* Filters */}
 
-        <div className="mb-6 rounded-xl border bg-white p-4 shadow-sm">
+        <div>
           <div className="flex flex-wrap items-center gap-4">
-            <FilterField label="Search" className="flex-1 min-w-[400px]">
+            {/* Search */}
+            <FilterField label="Search" className="flex-1 min-w-[300px]">
               <input
                 type="text"
-                value={searchCriteria.name}
+                value={searchCriteria.searchInput}
                 onChange={(e) =>
                   setSearchCriteria((prev) => ({
                     ...prev,
-                    name: e.target.value,
+                    searchInput: e.target.value,
                   }))
                 }
-                placeholder="Branch Name...."
+                placeholder="Role Name, Organization, Description..."
                 className="w-full border-0 bg-transparent text-sm focus:outline-none"
               />
             </FilterField>
 
             {/* Status */}
-
-            <FilterField label="Status" className="flex-1 min-w-[100px]">
+            <FilterField
+              label="Status"
+              className="w-full xl:flex-1 xl:min-w-[300px]"
+            >
               <CustomSelect
                 options={statusOptions}
                 value={searchCriteria.isActive}
@@ -285,10 +287,9 @@ export default function BranchTable() {
             </FilterField>
 
             {/* Order */}
-
             <FilterField
               label="Order"
-              className="w-full xl:flex-1 xl:min-w-[100px]"
+              className="w-full xl:flex-1 xl:min-w-[300px]"
             >
               <CustomSelect
                 options={orderOptions}
@@ -300,8 +301,7 @@ export default function BranchTable() {
               />
             </FilterField>
 
-            {/* Page Size */}
-
+            {/* Rows */}
             <FilterField
               label="Rows"
               className="w-full xl:flex-1 xl:min-w-[50px]"
@@ -317,11 +317,10 @@ export default function BranchTable() {
             </FilterField>
 
             {/* Reset */}
-
             <button
               onClick={() => {
                 setSearchCriteria({
-                  name: "",
+                  searchInput: "",
                   isActive: "",
                 });
 
@@ -330,7 +329,7 @@ export default function BranchTable() {
                 setPageSize(10);
                 setCurrentPage(0);
               }}
-              className="w-full md:w-auto h-12 flex items-center justify-center gap-2 rounded-xl bg-gray-100 px-6 font-bold transition hover:bg-gray-200 on-slect-hover:outline-black focus:outline-none focus:ring-2 focus:ring-gray-300"
+              className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gray-100 px-6 font-bold transition hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 md:w-auto"
             >
               <ArrowPathIcon className="h-5 w-5" />
               <span>Reset</span>
@@ -434,25 +433,25 @@ export default function BranchTable() {
 
                       {branch.isActive
                         ? user?.permissions?.includes("BRANCH_DELETE") && (
-                            <button
-                              className="text-Balck-600"
-                              onClick={() => openDeleteModal(branch.id)}
-                              className="text-red-600 mr-3 items-center text-sm hover:bg-gray-50 border rounded-lg p-1 "
-                            >
-                              <Trash className="w-5 h-5 " title="Delete" />
-                            </button>
-                          )
+                          <button
+                            className="text-Balck-600"
+                            onClick={() => openDeleteModal(branch.id)}
+                            className="text-red-600 mr-3 items-center text-sm hover:bg-gray-50 border rounded-lg p-1 "
+                          >
+                            <Trash className="w-5 h-5 " title="Delete" />
+                          </button>
+                        )
                         : user?.permissions?.includes("BRANCH_REACTIVATE") && (
-                            <button
-                              className="text-orange-600 mr-3 items-center text-sm hover:bg-gray-50 border rounded-lg p-1 "
-                              onClick={() => openRestoreModal(branch.id)}
-                            >
-                              <ArrowPathIcon
-                                className="w-5 h-5 "
-                                title="Restore"
-                              />
-                            </button>
-                          )}
+                          <button
+                            className="text-orange-600 mr-3 items-center text-sm hover:bg-gray-50 border rounded-lg p-1 "
+                            onClick={() => openRestoreModal(branch.id)}
+                          >
+                            <ArrowPathIcon
+                              className="w-5 h-5 "
+                              title="Restore"
+                            />
+                          </button>
+                        )}
                     </td>
                   </tr>
                 ))}
@@ -532,24 +531,24 @@ export default function BranchTable() {
                   )}
                   {branch.isActive
                     ? user.permissions.includes("BRANCH_DELETE") && (
-                        <button
-                          className="flex-1 bg-red-500 text-white py-2 rounded-lg"
-                          onClick={() => openDeleteModal(branch.id)}
-                        >
-                          Delete
-                        </button>
-                      )
+                      <button
+                        className="flex-1 bg-red-500 text-white py-2 rounded-lg"
+                        onClick={() => openDeleteModal(branch.id)}
+                      >
+                        Delete
+                      </button>
+                    )
                     : user.permissions.includes("BRANCH_REACTIVATE") && (
-                        <button
-                          className="flex-1 bg-orange-500 text-white py-2 rounded-lg"
-                          disabled={
-                            !user?.permissions?.includes("BRANCH_REACTIVATE")
-                          }
-                          onClick={() => openRestoreModal(branch.id)}
-                        >
-                          Restore
-                        </button>
-                      )}
+                      <button
+                        className="flex-1 bg-orange-500 text-white py-2 rounded-lg"
+                        disabled={
+                          !user?.permissions?.includes("BRANCH_REACTIVATE")
+                        }
+                        onClick={() => openRestoreModal(branch.id)}
+                      >
+                        Restore
+                      </button>
+                    )}
                 </div>
               </div>
             ))
@@ -585,11 +584,10 @@ export default function BranchTable() {
               disabled={currentPage === 0}
               onClick={() => setCurrentPage((prev) => prev - 1)}
               className={`rounded-xl border px-4 py-2 text-sm transition
-      ${
-        currentPage === 0
-          ? "cursor-not-allowed border-gray-200 text-gray-400"
-          : "border-gray-300 hover:bg-gray-50"
-      }`}
+      ${currentPage === 0
+                  ? "cursor-not-allowed border-gray-200 text-gray-400"
+                  : "border-gray-300 hover:bg-gray-50"
+                }`}
             >
               Previous
             </button>
@@ -602,11 +600,10 @@ export default function BranchTable() {
                 onClick={() => setCurrentPage(index)}
                 className={`h-10 w-10 rounded-xl text-sm font-medium transition
 
-        ${
-          currentPage === index
-            ? "bg-[#0d4039] text-white shadow-sm"
-            : "border border-gray-200 bg-white hover:bg-gray-50"
-        }`}
+        ${currentPage === index
+                    ? "bg-[#0d4039] text-white shadow-sm"
+                    : "border border-gray-200 bg-white hover:bg-gray-50"
+                  }`}
               >
                 {index + 1}
               </button>
@@ -619,11 +616,10 @@ export default function BranchTable() {
               onClick={() => setCurrentPage((prev) => prev + 1)}
               className={`rounded-xl border px-4 py-2 text-sm transition
 
-      ${
-        currentPage === totalPages - 1 || totalPages === 0
-          ? "cursor-not-allowed border-gray-200 text-gray-400"
-          : "border-gray-300 hover:bg-gray-50"
-      }`}
+      ${currentPage === totalPages - 1 || totalPages === 0
+                  ? "cursor-not-allowed border-gray-200 text-gray-400"
+                  : "border-gray-300 hover:bg-gray-50"
+                }`}
             >
               Next
             </button>

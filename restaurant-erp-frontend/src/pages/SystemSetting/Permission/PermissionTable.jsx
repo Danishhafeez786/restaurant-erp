@@ -1,7 +1,41 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../../../api/axiosClient";
 import PermissionModalBox from "./PermissionModalBox";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import FilterField from "../../../components/FilterField";
+import CustomSelect from "../../../components/CustomSelect";
+import { Listbox } from "@headlessui/react";
+import { toast } from "react-toastify";
+import { PenLine } from "lucide-react";
+import {
+  PlusIcon,
+  EyeIcon,
+  TrashIcon,
+  ArrowPathIcon,
+  ChevronUpIcon,
+  ChevronDownIcon,
+  ChevronUpDownIcon,
+  CheckIcon,
+} from "@heroicons/react/24/outline";
+import { Trash, ScanEye } from "lucide-react";
+const statusOptions = [
+  { label: "All", value: "" },
+  { label: "Active", value: "true" },
+  { label: "Inactive", value: "false" },
+];
+
+const orderOptions = [
+  { label: "Descending", value: "DESC" },
+  { label: "Ascending", value: "ASC" },
+];
+
+const pageSizeOptions = [
+  { label: "10", value: 10 },
+  { label: "25", value: 25 },
+  { label: "50", value: 50 },
+  { label: "100", value: 100 },
+];
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function PermissionTable() {
   const [permissions, setPermissions] = useState([]);
@@ -19,11 +53,107 @@ export default function PermissionTable() {
   const [direction, setDirection] = useState("DESC");
 
   const [searchCriteria, setSearchCriteria] = useState({
-    code: "",
-    name: "",
-    module: "",
+
+    searchInput: "",
     isActive: "",
+
   });
+
+  const [confirmModal, setConfirmModal] = useState({
+    open: false,
+    title: "",
+    message: "",
+    action: null,
+  });
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const canCreate = user?.permissions?.includes("PERMISSION_CREATE");
+
+  const canView = user?.permissions?.includes("PERMISSION_VIEW");
+
+  const canUpdate = user?.permissions?.includes("PERMISSION_UPDATE");
+
+  const canDelete = user?.permissions?.includes("PERMISSION_DELETE");
+
+  const canRestore = user?.permissions?.includes("PERMISSION_REACTIVATE");
+
+  const handleSort = (field) => {
+    setCurrentPage(0);
+
+    if (sortBy === field) {
+      setDirection((prev) => (prev === "ASC" ? "DESC" : "ASC"));
+    } else {
+      setSortBy(field);
+      setDirection("ASC");
+    }
+  };
+
+  const SortableHeader = ({ label, field }) => {
+    const active = sortBy === field;
+
+    return (
+      <th
+        onClick={() => handleSort(field)}
+        className="cursor-pointer px-4 py-3 text-left hover:bg-gray-200"
+      >
+        <div className="flex items-center gap-1">
+          <span>{label}</span>
+
+          {active ? (
+            direction === "ASC" ? (
+              <ChevronUpIcon className="h-4 w-4 text-[#0d4039]" />
+            ) : (
+              <ChevronDownIcon className="h-4 w-4 text-[#0d4039]" />
+            )
+          ) : (
+            <div className="flex flex-col leading-none opacity-40">
+              <ChevronUpIcon className="h-3 w-3 -mb-1" />
+              <ChevronDownIcon className="h-3 w-3" />
+            </div>
+          )}
+        </div>
+      </th>
+    );
+  };
+
+  const openDeleteModal = (id) => {
+    setConfirmModal({
+      open: true,
+      title: "Delete Permission",
+      message: "Are you sure you want to delete this permission?",
+      action: async () => {
+        try {
+          await axiosClient.delete(`/permission/${id}`);
+        } catch (error) {
+          toast.error(
+            error?.response?.data?.message || "Failed to delete permission",
+          );
+        } finally {
+          setConfirmModal((prev) => ({ ...prev, open: false }));
+        }
+      },
+    });
+  };
+
+  const openRestoreModal = (id) => {
+    setConfirmModal({
+      open: true,
+      title: "Restore Permission",
+      message: "Are you sure you want to restore this permission?",
+      action: async () => {
+        try {
+          await axiosClient.patch(`/permission/${id}/restore`);
+        } catch (error) {
+          toast.error(
+            error?.response?.data?.message || "Failed to restore permission",
+          );
+        } finally {
+          setConfirmModal((prev) => ({ ...prev, open: false }));
+        }
+      },
+    });
+  };
 
   // ===== LOAD =====
   const loadPermissions = async () => {
@@ -31,9 +161,7 @@ export default function PermissionTable() {
       setLoading(true);
 
       const payload = {
-        code: searchCriteria.code || null,
-        name: searchCriteria.name || null,
-        module: searchCriteria.module || null,
+        searchInput: searchCriteria.searchInput || null,
         isActive:
           searchCriteria.isActive === ""
             ? null
@@ -62,287 +190,318 @@ export default function PermissionTable() {
   }, [currentPage, pageSize, sortBy, direction]);
 
   useEffect(() => {
-  const timer = setTimeout(() => {
-    setCurrentPage(0);
-    loadPermissions();
-  }, 300);
+    const timer = setTimeout(() => {
+      setCurrentPage(0);
+      loadPermissions();
+    }, 300);
 
-  return () => clearTimeout(timer);
-}, [searchCriteria, sortBy, direction, pageSize]);
+    return () => clearTimeout(timer);
+  }, [searchCriteria, sortBy, direction, pageSize]);
 
   // ===== SSE =====
   useEffect(() => {
-    const eventSource = new EventSource(
-      "http://localhost:8080/api/permission/stream",
-    );
+    const eventSource = new EventSource(`${API_URL}/permission/stream`);
 
-    const refresh = () => loadPermissions();
+    eventSource.addEventListener("permission-created", () => {
+      loadPermissions();
+      toast.success("A new permission was created.");
+    });
 
-    eventSource.addEventListener("permission-created", refresh);
-    eventSource.addEventListener("permission-updated", refresh);
-    eventSource.addEventListener("permission-deleted", refresh);
-    eventSource.addEventListener("permission-restored", refresh);
+    eventSource.addEventListener("permission-updated", () => {
+      loadPermissions();
+      toast.success("A permission was updated.");
+    });
 
-    return () => {
-      eventSource.close();
-    };
+    eventSource.addEventListener("permission-deleted", async (event) => {
+      loadPermissions();
+      toast.success("A permission was deleted.");
+    });
+
+    eventSource.addEventListener("permission-restored", () => {
+      loadPermissions();
+      toast.success("A permission was restored.");
+    });
+
+    return () => eventSource.close();
   }, []);
 
-  // ===== DELETE (SOFT DELETE FIX) =====
-  const handleDelete = async (id) => {
-    if (!window.confirm("Delete this permission?")) return;
-
-    try {
-      await axiosClient.delete(`/permission/${id}`);
-      loadPermissions();
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleRestore = async (id) => {
-    if (!window.confirm("Restore this permission?")) return;
-
-    try {
-      await axiosClient.patch(`/permission/${id}/restore`);
-      loadPermissions();
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const getStatusColor = (status) =>
-    status ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700";
+    status
+      ? "bg-green-100 text-green-700"
+      : "bg-red-100 text-red-700";
 
   const pages = Array.from({ length: totalPages }, (_, i) => i);
 
   return (
-    <div className="bg-white rounded-2xl shadow-md p-4 md:p-6">
+    <div>
       {/* HEADER */}
-      <div className="flex justify-between items-center mb-5">
-        <h2 className="text-2xl font-bold">Permissions</h2>
+      <div className="bg-white rounded-2xl shadow-md p-4 md:p-6">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-5">
+          <h2 className="text-2xl font-bold">Permissions</h2>
 
-        <button
-          onClick={() => {
-            setModalMode("create");
-            setSelectedPermission(null);
-            setShowModal(true);
-          }}
-          className="px-3 sm:px-6 py-2 bg-[#0d4039] text-white rounded-lg font-medium flex items-center justify-center gap-2"
-        >
-          <PlusIcon className="w-5 h-5" title="Add Permission" />
-          <span className="hidden sm:inline">Add Permission</span>
-        </button>
+          {canCreate && (
+            <button
+              onClick={() => {
+                setModalMode("create");
+                setSelectedPermission(null);
+                setShowModal(true);
+              }}
+            className="flex items-center justify-center gap-2 rounded-lg bg-[#0d4039] px-3 py-2 font-medium text-white sm:px-6"
+          >
+            <PlusIcon className="h-5 w-5" />
+            <span className="hidden sm:inline">
+              Add Permission
+            </span>
+          </button>)}
+        </div>
+
+        {/* Filters */}
+        <div>
+          <div className="flex flex-wrap items-center gap-4">
+
+            {/* Search */}
+            <FilterField label="Search" className="flex-1 min-w-[300px]">
+              <input
+                type="text"
+                value={searchCriteria.searchInput}
+                onChange={(e) =>
+                  setSearchCriteria((prev) => ({
+                    ...prev,
+                    searchInput: e.target.value,
+                  }))
+                }
+                placeholder="Permission Name..."
+                className="w-full border-0 bg-transparent text-sm focus:outline-none"
+              />
+            </FilterField>
+
+            {/* Status */}
+            <FilterField
+              label="Status"
+              className="w-full xl:flex-1 xl:min-w-[300px]"
+            >
+              <CustomSelect
+                options={statusOptions}
+                value={searchCriteria.isActive}
+                onChange={(item) =>
+                  setSearchCriteria((prev) => ({
+                    ...prev,
+                    isActive: item.value,
+                  }))
+                }
+              />
+            </FilterField>
+
+            {/* Order */}
+            <FilterField
+              label="Order"
+              className="w-full xl:flex-1 xl:min-w-[300px]"
+            >
+              <CustomSelect
+                options={orderOptions}
+                value={direction}
+                onChange={(item) => {
+                  setCurrentPage(0);
+                  setDirection(item.value);
+                }}
+              />
+            </FilterField>
+
+            {/* Rows */}
+            <FilterField
+              label="Rows"
+              className="w-full xl:flex-1 xl:min-w-[50px]"
+            >
+              <CustomSelect
+                options={pageSizeOptions}
+                value={pageSize}
+                onChange={(item) => {
+                  setCurrentPage(0);
+                  setPageSize(item.value);
+                }}
+              />
+            </FilterField>
+
+            {/* Reset */}
+            <button
+              onClick={() => {
+                setSearchCriteria({
+                  searchInput: "",
+                  isActive: "",
+                });
+
+                setSortBy("createdAt");
+                setDirection("DESC");
+                setPageSize(10);
+                setCurrentPage(0);
+              }}
+              className="h-12 w-full rounded-xl bg-gray-100 px-6 font-bold transition hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 md:w-auto flex items-center justify-center gap-2"
+            >
+              <ArrowPathIcon className="h-5 w-5" />
+              <span>Reset</span>
+            </button>
+
+          </div>
+        </div>
       </div>
 
-      {/* FILTERS */}
-      <div className="mb-6 rounded-xl border bg-white p-4 shadow-sm">
-  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
-
-    {/* Code */}
-    <input
-      type="text"
-      placeholder="Code"
-      value={searchCriteria.code}
-      onChange={(e) =>
-        setSearchCriteria((prev) => ({
-          ...prev,
-          code: e.target.value,
-        }))
-      }
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    />
-
-    {/* Name */}
-    <input
-      type="text"
-      placeholder="Name"
-      value={searchCriteria.name}
-      onChange={(e) =>
-        setSearchCriteria((prev) => ({
-          ...prev,
-          name: e.target.value,
-        }))
-      }
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    />
-
-    {/* Module */}
-    <input
-      type="text"
-      placeholder="Module"
-      value={searchCriteria.module}
-      onChange={(e) =>
-        setSearchCriteria((prev) => ({
-          ...prev,
-          module: e.target.value,
-        }))
-      }
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    />
-
-    {/* Status */}
-    <select
-      value={searchCriteria.isActive}
-      onChange={(e) =>
-        setSearchCriteria((prev) => ({
-          ...prev,
-          isActive: e.target.value,
-        }))
-      }
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    >
-      <option value="">Status</option>
-      <option value="true">Active</option>
-      <option value="false">Inactive</option>
-    </select>
-
-    {/* Sort By */}
-    <select
-      value={sortBy}
-      onChange={(e) => {
-        setCurrentPage(0);
-        setSortBy(e.target.value);
-      }}
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    >
-      <option value="createdAt">Created</option>
-      <option value="code">Code</option>
-      <option value="name">Name</option>
-      <option value="module">Module</option>
-    </select>
-
-    {/* Direction */}
-    <select
-      value={direction}
-      onChange={(e) => {
-        setCurrentPage(0);
-        setDirection(e.target.value);
-      }}
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    >
-      <option value="DESC">Newest</option>
-      <option value="ASC">Oldest</option>
-    </select>
-
-    {/* Page Size */}
-    <select
-      value={pageSize}
-      onChange={(e) => {
-        setCurrentPage(0);
-        setPageSize(Number(e.target.value));
-      }}
-      className="h-11 w-full rounded-lg border px-4 focus:border-[#0d4039] focus:outline-none"
-    >
-      <option value={10}>10</option>
-      <option value={20}>20</option>
-      <option value={50}>50</option>
-      <option value={100}>100</option>
-    </select>
-
-  </div>
-</div>
-
       {/* TABLE */}
-      <div className="hidden md:block overflow-x-auto">
-        {loading ? (
-          <div className="text-center py-10">Loading...</div>
-        ) : (
-          <table className="w-full border-separate border-spacing-y-2">
-            <thead>
-              <tr className="border-b text-left">
-                <th>Code</th>
-                <th>Name</th>
-                <th>Module</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
+      <br />
+      <div className="bg-white rounded-2xl shadow-md p-4 md:p-6">
+        {/* Summary */}
+        <div className="flex items-center justify-between mb-4">
+          <p className="text-sm text-gray-500">
+            Showing{" "}
+            <span className="font-semibold text-green-600">
+              {permissions.length}
+            </span>{" "}
+            Permissions
+          </p>
+        </div>
 
-            <tbody>
-              {permissions.map((p) => (
-                <tr key={p.id} className="border-b hover:bg-gray-50">
-                  <td>{p.code}</td>
-                  <td>{p.name}</td>
-                  <td>{p.module}</td>
+        {/* Desktop Table */}
+        <div className="hidden lg:block overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+          {loading ? (
+            <div className="py-10 text-center text-gray-500">
+              Loading...
+            </div>
+          ) : (
+            <table className="min-w-full">
+              <thead className="border-b border-gray-200 bg-gray-50">
+                <tr className="bg-gray-100">
+                  <SortableHeader label="Code" field="code" />
 
-                  <td>
-                    <span
-                      className={`px-3 py-1 rounded-full text-sm ${getStatusColor(p.isActive)}`}
-                    >
-                      {p.isActive ? "ACTIVE" : "INACTIVE"}
-                    </span>
-                  </td>
+                  <SortableHeader label="Permission Name" field="name" />
 
-                  <td>
-                    <button
-                      onClick={() => {
-                        setModalMode("view");
-                        setSelectedPermission(p);
-                        setShowModal(true);
-                      }}
-                      className="text-green-600 mr-3"
-                    >
-                      View
-                    </button>
+                  <SortableHeader label="Module" field="module" />
 
-                    <button
-                      onClick={() => {
-                        setModalMode("edit");
-                        setSelectedPermission(p);
-                        setShowModal(true);
-                      }}
-                      className="text-blue-600 mr-3"
-                    >
-                      Edit
-                    </button>
+                  <SortableHeader label="Status" field="isActive" />
 
-                    {p.isActive ? (
-                      <button
-                        onClick={() => handleDelete(p.id)}
-                        className="text-red-600"
-                      >
-                        Delete
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => handleRestore(p.id)}
-                        className="text-green-600"
-                      >
-                        Restore
-                      </button>
-                    )}
-                  </td>
+                  <th className="rounded-tr-xl px-4 py-3 text-left">
+                    Action
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+              </thead>
+
+              <tbody>
+                {permissions.map((permission) => (
+                  <tr
+                    key={permission.id}
+                    className="border-b border-gray-100 transition-colors hover:bg-gray-50"
+                  >
+                    <td className="px-4 py-3 font-medium text-gray-800">
+                      {permission.code}
+                    </td>
+
+                    <td className="px-4 py-3 text-gray-600">
+                      {permission.name}
+                    </td>
+
+                    <td className="px-4 py-3 text-gray-600">
+                      {permission.module}
+                    </td>
+
+                    <td className="px-4 py-3">
+                      <span
+                        className={`rounded-full px-3 py-1 text-sm font-medium ${getStatusColor(
+                          permission.isActive
+                        )}`}
+                      >
+                        {permission.isActive
+                          ? "ACTIVE"
+                          : "INACTIVE"}
+                      </span>
+                    </td>
+
+                    <td className="px-4 py-3">
+                      {canView && (
+                        <button
+                          onClick={() => {
+                            setModalMode("view");
+                            setSelectedPermission(permission);
+                            setShowModal(true);
+                          }}
+                          className="mr-3 rounded-lg border p-1 text-green-600 hover:bg-gray-50"
+                        >
+                          <EyeIcon
+                            className="h-5 w-5"
+                            title="View"
+                          />
+                        </button>)}
+
+                      {canUpdate && (
+                        <button
+                          onClick={() => {
+                            setModalMode("edit");
+                            setSelectedPermission(permission);
+                            setShowModal(true);
+                          }}
+                          className="mr-3 rounded-lg border p-1 text-blue-600 hover:bg-gray-50"
+                        >
+                          <PenLine
+                            className="h-5 w-5"
+                            title="Edit"
+                          />
+                        </button>)}
+
+                      {permission.isActive && canDelete && (
+                        <button
+                          onClick={() => openDeleteModal(permission.id)}
+                          className="mr-3 rounded-lg border p-1 text-red-600 hover:bg-gray-50"
+                        >
+                          <Trash
+                            className="h-5 w-5"
+                            title="Delete"
+                          />
+                        </button>
+                      )}
+                      {canRestore && !permission.isActive && (
+                        <button
+                          onClick={() => openRestoreModal(permission.id)}
+                          className="mr-3 rounded-lg border p-1 text-orange-600 hover:bg-gray-50"
+                        >
+                          <ArrowPathIcon
+                            className="h-5 w-5"
+                            title="Restore"
+                          />
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
       </div>
 
       {/* MOBILE */}
+      {/* MOBILE */}
       <div className="md:hidden space-y-4">
         {loading ? (
-          <div className="text-center py-10 bg-white rounded-xl border">
+          <div className="rounded-xl border bg-white py-10 text-center">
             Loading...
           </div>
         ) : (
           permissions.map((permission) => (
             <div
               key={permission.id}
-              className="border rounded-xl p-4 bg-white"
+              className="rounded-xl border bg-white p-4"
             >
-              <div className="flex justify-between items-start">
-                <h3 className="font-bold text-lg">
+              <div className="flex items-start justify-between">
+                <h3 className="text-lg font-bold">
                   {permission.name}
                 </h3>
 
                 <span
-                  className={`px-3 py-1 rounded-full text-xs ${getStatusColor(
+                  className={`rounded-full px-3 py-1 text-xs ${getStatusColor(
                     permission.isActive
                   )}`}
                 >
-                  {permission.isActive ? "ACTIVE" : "INACTIVE"}
+                  {permission.isActive
+                    ? "ACTIVE"
+                    : "INACTIVE"}
                 </span>
               </div>
 
@@ -352,50 +511,57 @@ export default function PermissionTable() {
                 </p>
 
                 <p>
-                  <b>Module:</b> {permission.module}
+                  <b>Module:</b>{" "}
+                  {permission.module || "N/A"}
                 </p>
               </div>
 
-              <div className="flex gap-2 mt-4">
-                <button
-                  className="flex-1 bg-green-500 text-white py-2 rounded-lg"
-                  onClick={() => {
-                    setModalMode("view");
-                    setSelectedPermission(permission);
-                    setShowModal(true);
-                  }}
-                >
-                  View
-                </button>
+              <div className="mt-4 flex gap-2">
 
-                {permission.isActive ? (
-                  <>
-                    <button
-                      className="flex-1 bg-blue-500 text-white py-2 rounded-lg"
-                      onClick={() => {
-                        setModalMode("edit");
-                        setSelectedPermission(permission);
-                        setShowModal(true);
-                      }}
-                    >
-                      Edit
-                    </button>
-
-                    <button
-                      className="flex-1 bg-red-500 text-white py-2 rounded-lg"
-                      onClick={() => handleDelete(permission.id)}
-                    >
-                      Delete
-                    </button>
-                  </>
-                ) : (
+                {canView && (
                   <button
-                    className="flex-1 bg-orange-500 text-white py-2 rounded-lg"
-                    onClick={() => handleRestore(permission.id)}
+                    className="flex-1 rounded-lg bg-green-500 py-2 text-white"
+                    onClick={() => {
+                      setModalMode("view");
+                      setSelectedPermission(permission);
+                      setShowModal(true);
+                    }}
+                  >
+                    View
+                  </button>
+                )}
+
+                {canUpdate && (
+                  <button
+                    className="flex-1 rounded-lg bg-blue-500 py-2 text-white"
+                    onClick={() => {
+                      setModalMode("edit");
+                      setSelectedPermission(permission);
+                      setShowModal(true);
+                    }}
+                  >
+                    Edit
+                  </button>
+                )}
+
+                {permission.isActive && canDelete && (
+                  <button
+                    className="flex-1 rounded-lg bg-red-500 py-2 text-white"
+                    onClick={() => openDeleteModal(permission.id)}
+                  >
+                    Delete
+                  </button>
+                )}
+
+                {!permission.isActive && canRestore && (
+                  <button
+                    className="flex-1 rounded-lg bg-orange-500 py-2 text-white"
+                    onClick={() => openRestoreModal(permission.id)}
                   >
                     Restore
                   </button>
                 )}
+
               </div>
             </div>
           ))
@@ -404,18 +570,100 @@ export default function PermissionTable() {
 
 
       {/* PAGINATION */}
-      <div className="flex justify-center gap-2 mt-5">
-        {pages.map((i) => (
+      <div className="mt-6 flex flex-col gap-4 border-t border-gray-200 pt-5 md:flex-row md:items-center md:justify-between">
+
+        {/* Left */}
+        <div className="text-sm text-gray-500">
+          Showing{" "}
+          <span className="font-semibold text-green-600">
+            {permissions.length === 0 ? 0 : currentPage * pageSize + 1}
+          </span>{" "}
+          to{" "}
+          <span className="font-semibold text-green-600">
+            {Math.min(
+              (currentPage + 1) * pageSize,
+              currentPage * pageSize + permissions.length
+            )}
+          </span>{" "}
+          results
+        </div>
+
+        {/* Right */}
+        <div className="flex items-center gap-2">
+
+          {/* Previous */}
           <button
-            key={i}
-            onClick={() => setCurrentPage(i)}
-            className={`px-3 py-1 rounded ${currentPage === i ? "bg-[#0d4039] text-white" : "bg-gray-200"
+            disabled={currentPage === 0}
+            onClick={() => setCurrentPage((prev) => prev - 1)}
+            className={`rounded-xl border px-4 py-2 text-sm transition ${currentPage === 0
+                ? "cursor-not-allowed border-gray-200 text-gray-400"
+                : "border-gray-300 hover:bg-gray-50"
               }`}
           >
-            {i + 1}
+            Previous
           </button>
-        ))}
+
+          {/* Page Numbers */}
+          {pages.map((page) => (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`h-10 w-10 rounded-xl text-sm font-medium transition ${currentPage === page
+                  ? "bg-[#0d4039] text-white shadow-sm"
+                  : "border border-gray-200 bg-white hover:bg-gray-50"
+                }`}
+            >
+              {page + 1}
+            </button>
+          ))}
+
+          {/* Next */}
+          <button
+            disabled={
+              currentPage === pages.length - 1 || pages.length === 0
+            }
+            onClick={() => setCurrentPage((prev) => prev + 1)}
+            className={`rounded-xl border px-4 py-2 text-sm transition ${currentPage === pages.length - 1 || pages.length === 0
+                ? "cursor-not-allowed border-gray-200 text-gray-400"
+                : "border-gray-300 hover:bg-gray-50"
+              }`}
+          >
+            Next
+          </button>
+
+        </div>
       </div>
+
+      {/* {Model Box} */}
+      {confirmModal.open && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-lg w-[90%] max-w-md p-6">
+            <h2 className="text-xl font-bold text-gray-800">
+              {confirmModal.title}
+            </h2>
+
+            <p className="mt-3 text-gray-600">{confirmModal.message}</p>
+
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() =>
+                  setConfirmModal((prev) => ({ ...prev, open: false }))
+                }
+                className="px-5 py-2 rounded-lg border border-gray-300 hover:bg-gray-100"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={confirmModal.action}
+                className="px-5 py-2 rounded-lg bg-[#0d4039] text-white hover:bg-[#0b322d]"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* MODAL RESET */}
       {showModal && (

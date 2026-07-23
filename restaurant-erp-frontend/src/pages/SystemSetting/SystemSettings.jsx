@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 
 const menus = [
@@ -11,6 +11,8 @@ const menus = [
 ];
 
 export default function SystemSettings() {
+  const location = useLocation();
+
   return (
     <div className="min-h-screen bg-gray-100 lg:flex">
       <Sidebar />
@@ -47,16 +49,13 @@ export default function SystemSettings() {
                   "
                 >
                   {menus.map((menu, index) => {
-                    const active =
-                      location.pathname === "/system-settings" && index === 0;
-
                     return (
                       <NavLink
                         key={menu.path}
                         to={menu.path}
+                        end
                         className={({ isActive }) =>
-                          `px-4 py-2 rounded-sm text-sm font-semibold transition-all
-                        ${isActive || active
+                          `px-4 py-2 rounded-sm text-sm font-semibold transition-all ${isActive
                             ? "bg-green-600 text-white shadow-md"
                             : "text-gray-600 hover:bg-white hover:text-green-600 hover:shadow"
                           }`

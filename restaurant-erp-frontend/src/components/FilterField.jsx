@@ -16,6 +16,10 @@ export default function FilterField({ label, children, className = "" }) {
         className="
           flex items-center
           px-3 py-2
+          rounded-tl-xl
+          lg:rounded-bl-xl
+          lg:rounded-tr-none
+          sm:rounded-tr-xl
           bg-gray-100
           border-b border-gray-200
           md:border-b-0 md:border-r
