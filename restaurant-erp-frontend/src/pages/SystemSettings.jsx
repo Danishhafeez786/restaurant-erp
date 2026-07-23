@@ -15,55 +15,76 @@ export default function SystemSettings() {
     <div className="min-h-screen bg-gray-100 lg:flex">
       <Sidebar />
 
-      <div className="flex-1 flex flex-col">
+      <div className="flex flex-1 flex-col">
+        {/* Header */}
+        <div className="border-b bg-white shadow-sm">
+          <div className="px-4 py-4 sm:px-6 lg:px-8 lg:py-5">
+            {/* Top Section */}
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              {/* Left */}
+              <div>
+                <h1 className="text-xl font-bold text-gray-800 sm:text-2xl">
+                  System Settings
+                </h1>
 
-        {/* Page Header */}
-        <div className="bg-white shadow-sm border-b px-6 py-5">
-          <h1 className="text-2xl font-bold text-gray-800">
-            System Settings
-          </h1>
+                <p className="mt-1 text-sm text-gray-500">
+                  Manage system configuration.
+                </p>
+              </div>
 
-          <p className="text-gray-500 mt-1">
-            Manage system configuration.
-          </p>
-        </div>
-
-        {/* Top Navigation */}
-        <div className="bg-white border-b shadow-sm">
-
-          <div className="overflow-x-auto">
-
-            <div className="flex whitespace-nowrap">
-
-              {menus.map((menu) => (
-                <NavLink
-                  key={menu.path}
-                  to={menu.path}
-                  className={({ isActive }) =>
-                    `px-6 py-4 text-sm font-semibold border-b-2 transition-all duration-200
-                    ${
-                      isActive
-                        ? "border-green-600 text-green-700"
-                        : "border-transparent text-gray-600 hover:text-green-600 hover:border-green-300"
-                    }`
-                  }
+              {/* Navigation */}
+              <div className="w-full lg:flex-1 lg:flex lg:justify-center">
+                <div
+                  className="
+                    flex
+                    gap-2
+                    rounded-xl
+                    bg-gray-100
+                    p-1
+                    overflow-x-auto
+                    scrollbar-hide
+                    whitespace-nowrap
+                  "
                 >
-                  {menu.title}
-                </NavLink>
-              ))}
+                  {menus.map((menu) => (
+                    <NavLink
+                      key={menu.path}
+                      to={menu.path}
+                      className={({ isActive }) =>
+                        `
+                        shrink-0
+                        rounded-sm
+                        px-4 py-2
+                        text-sm
+                        font-semibold
+                        transition-all
+                        duration-300
+                        active:scale-95
+                        hover:scale-105
+                        ${
+                          isActive
+                            ? "bg-green-600 text-white shadow-md"
+                            : "text-gray-600 hover:bg-white hover:text-green-600 hover:shadow"
+                        }
+                        `
+                      }
+                    >
+                      {menu.title}
+                    </NavLink>
+                  ))}
+                </div>
+              </div>
 
+              {/* Desktop Spacer */}
+              <div className="hidden lg:block w-56" />
             </div>
-
           </div>
-
         </div>
 
-        {/* Content */}
-
-        <div className="flex-1 p-6 overflow-y-auto">
+        {/* Page Content */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
           <Outlet />
         </div>
-
       </div>
     </div>
   );

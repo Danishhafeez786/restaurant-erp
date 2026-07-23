@@ -57,52 +57,20 @@ const Sidebar = () => {
     },
 
     {
-      title: "System Settings",
-      path: "/system-settings",
-      icon: <Cog6ToothIcon className="w-5 h-5" />
-    },
-
-    {
-      title: "Employee Management",
-      icon: <UserGroupIcon className="w-5 h-5" />,
-      children: [
-        {
-          title: "Create Employee",
-          path: "/create-employee",
-          icon: <UserPlusIcon className="w-5 h-5" />,
-        },
-        {
-          title: "Employee List",
+          title: "Employee",
           path: "/employee",
           icon: <ClipboardDocumentListIcon className="w-5 h-5" />,
-        },
-      ],
     },
 
     {
-      title: "Orders",
-      icon: <ShoppingCartIcon className="w-5 h-5" />,
-      children: [
-        {
-          title: "POS Orders",
+          title: "Orders",
           path: "/pos-orders",
           icon: <Squares2X2Icon className="w-5 h-5" />,
-        },
-        {
-          title: "Kitchen Orders",
-          path: "/kitchen-orders",
-          icon: <ClipboardDocumentListIcon className="w-5 h-5" />,
-        },
-        {
-          title: "Delivery Orders",
-          path: "/delivery",
-          icon: <TruckIcon className="w-5 h-5" />,
-        },
-      ],
+    
     },
 
     {
-      title: "Restaurant Management",
+      title: "Restaurant",
       icon: <TableCellsIcon className="w-5 h-5" />,
       children: [
         {
@@ -134,32 +102,10 @@ const Sidebar = () => {
     },
 
     {
-      title: "Restaurant",
-      icon: <TableCellsIcon className="w-5 h-5" />,
-      children: [
-        {
-          title: "Table Reservation",
-          path: "/tables",
-          icon: <Squares2X2Icon className="w-5 h-5" />,
-        },
-        {
-          title: "Menu Management",
-          path: "/menu",
-          icon: <ClipboardDocumentListIcon className="w-5 h-5" />,
-        },
-      ],
-    },
-
-    {
-      title: "Inventory",
-      icon: <CubeIcon className="w-5 h-5" />,
-      children: [
-        {
+    
           title: "Inventory",
           path: "/inventory",
           icon: <ClipboardDocumentListIcon className="w-5 h-5" />,
-        },
-      ],
     },
 
     {
@@ -168,17 +114,21 @@ const Sidebar = () => {
       path: "/customers",
     },
 
+    
+      {
+      title: "Settings",
+      path: "/system-settings",
+      icon: <Cog6ToothIcon className="w-5 h-5" />
+    },
+
     {
-      title: "Reports",
-      icon: <ChartBarIcon className="w-5 h-5" />,
-      children: [
-        {
           title: "Reports & Analytics",
           path: "/reports",
           icon: <ChartBarIcon className="w-5 h-5" />,
-        },
-      ],
+    
     },
+
+   
   ];
 
   const SidebarContent = () => (

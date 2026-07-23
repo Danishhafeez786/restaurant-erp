@@ -4,7 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d292dd75-23d9-4dde-9b08-d9b52fb3001b" name="Changes" comment="Add Pre Authorize To all controllers" />
+    <list default="true" id="d292dd75-23d9-4dde-9b08-d9b52fb3001b" name="Changes" comment="Add Pre Authorize To all controllers">
+      <change afterPath="$PROJECT_DIR$/restaurant-erp-frontend/src/components/FilterField.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-backend/src/main/java/com/devmasters/restaurant_erp/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-erp-frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-erp-frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-erp-frontend/src/components/Sidebar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-frontend/src/components/Sidebar.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Branch/BranchTable.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Branch/BranchTable.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Organizations/OrganizationTable.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/Organizations/OrganizationTable.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/SubscriptionPlans/SubscriptionPlanTable.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/SubscriptionPlans/SubscriptionPlanTable.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/SystemSettings.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-erp-frontend/src/pages/SystemSettings.jsx" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
