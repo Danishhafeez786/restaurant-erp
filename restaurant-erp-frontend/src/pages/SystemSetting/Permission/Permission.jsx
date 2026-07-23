@@ -1,4 +1,4 @@
-import Sidebar from "../../components/Sidebar";
+import Sidebar from "../../../components/Sidebar";
 import PermissionTable from "./PermissionTable";
 
 export default function Permission() {

@@ -1,4 +1,3 @@
-import Sidebar from "../../components/Sidebar";
 import BranchTable from "./BranchTable";
 
 export default function Branch() {

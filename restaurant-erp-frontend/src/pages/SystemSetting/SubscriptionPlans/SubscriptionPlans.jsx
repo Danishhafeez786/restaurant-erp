@@ -1,4 +1,3 @@
-import Sidebar from "../../components/Sidebar";
 import SubscriptionPlanTable from "./SubscriptionPlanTable";
 
 export default function SubscriptionPlans() {

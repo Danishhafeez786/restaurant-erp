@@ -1,18 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 
-import Sidebar from "../../components/Sidebar";
+import Sidebar from "../../../components/Sidebar";
 
-import SummaryCards from "../../components/Settings/SummaryCards";
-import SettingsToolbar from "../../components/settings/SettingsToolbar";
-import PermissionMatrix from "../../components/settings/PermissionMatrix";
-import RoleList from "../../components/settings/RoleList";
-import RolePermissionModal from "../../components/settings/RolePermissionModal";
+import SummaryCards from "../../../components/Settings/SummaryCards";
+import SettingsToolbar from "../../../components/settings/SettingsToolbar";
+import PermissionMatrix from "../../../components/settings/PermissionMatrix";
+import RoleList from "../../../components/settings/RoleList";
+import RolePermissionModal from "../../../components/settings/RolePermissionModal";
 
-import roleService from "../../services/roleService";
-import permissionService from "../../services/permissionService";
-import rolePermissionService from "../../services/rolePermissionService";
-import matrixService from "../../services/matrixService";
+import roleService from "../../../services/roleService";
+import permissionService from "../../../services/permissionService";
+import rolePermissionService from "../../../services/rolePermissionService";
+import matrixService from "../../../services/matrixService";
 
 export default function Settings() {
 

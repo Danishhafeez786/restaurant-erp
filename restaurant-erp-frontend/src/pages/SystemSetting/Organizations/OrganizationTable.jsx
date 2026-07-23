@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import axiosClient from "../../api/axiosClient";
-import FilterField from "../../components/FilterField";
-import CustomSelect from "../../components/CustomSelect";
+import axiosClient from "../../../api/axiosClient";
+import FilterField from "../../../components/FilterField";
+import CustomSelect from "../../../components/CustomSelect";
 import {
   PlusIcon,
   EyeIcon,

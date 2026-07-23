@@ -14,7 +14,7 @@
     "@heroicons/react": "^2.2.0",
     "@stomp/stompjs": "^7.3.0",
     "axios": "^1.17.0",
-    "lucide-react": "^1.25.0",
+    "lucide-react": "^1.26.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-router-dom": "^6.30.4",

@@ -1,4 +1,3 @@
-import Sidebar from "../../components/Sidebar";
 import OrganizationTable from "./OrganizationTable";
 
 export default function Organizations() {

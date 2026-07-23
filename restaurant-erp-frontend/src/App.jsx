@@ -5,20 +5,20 @@ import AuthProvider from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
-import SystemSettings from './pages/SystemSettings';
+import SystemSettings from './pages/SystemSetting/SystemSettings';
 import CreateEmployee from './pages/CreateEmployee';
 import Dashboard from './pages/Dashboard';
 import Employee from './pages/employees/Employee';
-import SubscriptionPlans from './pages/SubscriptionPlans/SubscriptionPlans';
-import Organization from "./pages/Organizations/Organizations";
-import Branch from "./pages/Branch/Branch";
-import Role from "./pages/Role/Role";
-import Permission from './pages/Permission/Permission';
-import Settings from './pages/Settings/Settings';
 import Category from './pages/Category/Category';
 import Tables from './pages/Tables/Tables';
 import ModifierGroup from './pages/ModifierGroup/ModifierGroup';
 import Modifier from './pages/Modifier/Modifier';
+import Settings from './pages/SystemSetting/Settings/Settings';
+import SubscriptionPlans from './pages/SystemSetting/SubscriptionPlans/SubscriptionPlans';
+import Organization from './pages/SystemSetting/Organizations/Organizations';
+import Branch from './pages/SystemSetting/Branch/Branch';
+import Role from './pages/SystemSetting/Role/Role';
+import Permission from './pages/SystemSetting/Permission/Permission';
 import './App.css';
 
 function App() {
@@ -42,11 +42,6 @@ function App() {
 
           <Route path="/dashboard" element={<ProtectedRoute> <Dashboard /> </ProtectedRoute>} />
           <Route path="/create-employee" element={<ProtectedRoute> <CreateEmployee /> </ProtectedRoute>} />
-          <Route path="/subscription-plans" element={<ProtectedRoute> <SubscriptionPlans /> </ProtectedRoute>} />
-          <Route path="/organizations" element={<ProtectedRoute> <Organization /> </ProtectedRoute>} />
-          <Route path="/branch" element={<ProtectedRoute> <Branch /> </ProtectedRoute>} />
-          <Route path="/role" element={<Role />} />
-          <Route path="/permission" element={<ProtectedRoute> <Permission /> </ProtectedRoute>} />
           <Route path="/" element={<Navigate to="/dashboard" />} />
           <Route path="*" element={<Navigate to="/dashboard" />} />
           <Route path="/employee" element={<ProtectedRoute> <Employee /> </ProtectedRoute>} />

@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../../components/Sidebar";
 
 const menus = [
   { title: "Subscription Plans", path: "/system-settings/subscription-plans" },
