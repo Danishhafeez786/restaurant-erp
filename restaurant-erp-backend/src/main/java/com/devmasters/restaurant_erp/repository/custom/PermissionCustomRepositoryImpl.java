@@ -16,81 +16,39 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class PermissionCustomRepositoryImpl
-        implements PermissionCustomRepository {
+public class PermissionCustomRepositoryImpl implements PermissionCustomRepository {
 
     private final MongoTemplate mongoTemplate;
 
     @Override
-    public Page<Permission> search(
-            PermissionSearchCriteria criteria,
-            Pageable pageable) {
+    public Page<Permission> search(PermissionSearchCriteria criteria, Pageable pageable) {
 
         Query query = new Query();
 
         List<Criteria> filters = new ArrayList<>();
 
-        if (criteria.getCode() != null
-                && !criteria.getCode().isBlank()) {
-
-            filters.add(
-                    Criteria.where("code")
-                            .regex(criteria.getCode(), "i")
-            );
-        }
-
-        if (criteria.getName() != null
-                && !criteria.getName().isBlank()) {
-
-            filters.add(
-                    Criteria.where("name")
-                            .regex(criteria.getName(), "i")
-            );
-        }
-
-        if (criteria.getModule() != null
-                && !criteria.getModule().isBlank()) {
-
-            filters.add(
-                    Criteria.where("module")
-                            .regex(criteria.getModule(), "i")
-            );
-        }
-
-        if (criteria.getIsActive() != null) {
-
-            filters.add(
-                    Criteria.where("isActive")
-                            .is(criteria.getIsActive())
-            );
-        }
-
-        if (!filters.isEmpty()) {
-
-            query.addCriteria(
-                    new Criteria().andOperator(
-                            filters.toArray(new Criteria[0])
+        if (criteria.getSearchInput() != null && !criteria.getSearchInput().isBlank()) {
+            String keyword = criteria.getSearchInput();
+            filters.add(new Criteria().orOperator(
+                            Criteria.where("code").regex(keyword, "i"),
+                            Criteria.where("name").regex(keyword, "i"),
+                            Criteria.where("module").regex(keyword,"i")
                     )
             );
         }
 
-        long total = mongoTemplate.count(
-                query,
-                Permission.class
-        );
+        if (criteria.getIsActive() != null)
+            filters.add(Criteria.where("isActive").is(criteria.getIsActive()));
+
+        if (!filters.isEmpty())
+            query.addCriteria(new Criteria().andOperator(filters.toArray(new Criteria[0])));
+
+        long total = mongoTemplate.count(query, Permission.class);
 
         query.with(pageable);
 
-        List<Permission> permissions =
-                mongoTemplate.find(
-                        query,
-                        Permission.class
-                );
+        List<Permission> permissions = mongoTemplate.find(query, Permission.class);
 
-        return new PageImpl<>(
-                permissions,
-                pageable,
-                total
-        );
+        return new PageImpl<>(permissions, pageable, total);
     }
 }

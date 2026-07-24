@@ -7,8 +7,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface RoleCustomRepository {
 
-    Page<Role> search(
-            RoleSearchCriteria criteria,
-            Pageable pageable
-    );
+    Page<Role> search(RoleSearchCriteria criteria, Pageable pageable);
 }

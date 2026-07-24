@@ -10,12 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class PermissionSearchCriteria {
-
-    private String code;
-
-    private String name;
-
-    private String module;
-
+    private String searchInput;
     private Boolean isActive;
 }

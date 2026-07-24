@@ -12,8 +12,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class RoleSearchCriteria {
-    private String roleName;
-    private String description;
+    private String searchInput;
     private UUID organizationId;
     private Boolean isActive;
 }

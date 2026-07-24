@@ -264,7 +264,7 @@ export default function BranchTable() {
                     searchInput: e.target.value,
                   }))
                 }
-                placeholder="Role Name, Organization, Description..."
+                placeholder="Branch Name, Branch Code, Address, City, Phone"
                 className="w-full border-0 bg-transparent text-sm focus:outline-none"
               />
             </FilterField>

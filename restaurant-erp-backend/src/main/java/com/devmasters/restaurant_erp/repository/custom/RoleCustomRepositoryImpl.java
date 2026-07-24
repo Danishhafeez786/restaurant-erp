@@ -22,56 +22,30 @@ public class RoleCustomRepositoryImpl
     private final MongoTemplate mongoTemplate;
 
     @Override
-    public Page<Role> search(
-            RoleSearchCriteria criteria,
-            Pageable pageable) {
+    public Page<Role> search(RoleSearchCriteria criteria, Pageable pageable) {
 
         Query query = new Query();
 
         List<Criteria> filters = new ArrayList<>();
 
-        if (criteria.getRoleName() != null
-                && !criteria.getRoleName().isBlank()) {
+        if (criteria.getSearchInput() != null && !criteria.getSearchInput().isBlank()) {
 
-            filters.add(
-                    Criteria.where("roleName")
-                            .regex(criteria.getRoleName(), "i")
-            );
-        }
-
-        if (criteria.getDescription() != null
-                && !criteria.getDescription().isBlank()) {
-
-            filters.add(
-                    Criteria.where("description")
-                            .regex(criteria.getDescription(), "i")
-            );
-        }
-
-        if (criteria.getOrganizationId() != null) {
-
-            filters.add(
-                    Criteria.where("organization.$id")
-                            .is(criteria.getOrganizationId())
-            );
-        }
-
-        if (criteria.getIsActive() != null) {
-
-            filters.add(
-                    Criteria.where("isActive")
-                            .is(criteria.getIsActive())
-            );
-        }
-
-        if (!filters.isEmpty()) {
-
-            query.addCriteria(
-                    new Criteria().andOperator(
-                            filters.toArray(new Criteria[0])
+            String keyword = criteria.getSearchInput();
+            filters.add(new Criteria().orOperator(
+                    Criteria.where("roleName").regex(keyword, "i"),
+                    Criteria.where("description").regex(keyword, "i")
                     )
             );
         }
+
+        if (criteria.getOrganizationId() != null)
+            filters.add(Criteria.where("organization.$id").is(criteria.getOrganizationId()));
+
+        if (criteria.getIsActive() != null)
+            filters.add(Criteria.where("isActive").is(criteria.getIsActive()));
+
+        if (!filters.isEmpty())
+            query.addCriteria(new Criteria().andOperator(filters.toArray(new Criteria[0])));
 
         long total = mongoTemplate.count(query, Role.class);
 
@@ -79,10 +53,6 @@ public class RoleCustomRepositoryImpl
 
         List<Role> roles = mongoTemplate.find(query, Role.class);
 
-        return new PageImpl<>(
-                roles,
-                pageable,
-                total
-        );
+        return new PageImpl<>(roles, pageable, total);
     }
 }
