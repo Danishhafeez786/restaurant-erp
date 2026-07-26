@@ -17,7 +17,7 @@ import {
   CheckIcon,
 } from "@heroicons/react/24/outline";
 import { toast } from "react-toastify";
-import { Trash, ScanEye, PenLine } from "lucide-react";
+import { Trash, ScanEye, PenLine, Users, Building2 } from "lucide-react";
 const statusOptions = [
   { label: "All", value: "" },
   { label: "Active", value: "true" },
@@ -43,6 +43,7 @@ export default function SubscriptionPlanTable() {
   const [plans, setPlans] = useState([]);
 
   const [loading, setLoading] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
 
   const [showModal, setShowModal] = useState(false);
 
@@ -238,7 +239,7 @@ export default function SubscriptionPlanTable() {
   };
 
   const getStatusColor = (status) => {
-    return status ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700";
+    return status ? "bg-green-200 text-green-700" : "bg-red-100 text-red-700";
   };
 
   return (
@@ -256,7 +257,7 @@ export default function SubscriptionPlanTable() {
                 setSelectedPlan(null);
                 setShowModal(true);
               }}
-              className="px-3 sm:px-6 py-2 bg-[#0d4039] text-white rounded-lg font-medium flex items-center justify-center gap-2"
+              className="px-3 sm:px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium flex items-center justify-center gap-2"
             >
               <PlusIcon className="w-5 h-5" />
               <span className="hidden sm:inline">Add Plan</span>
@@ -265,7 +266,103 @@ export default function SubscriptionPlanTable() {
         </div>
 
         <div>
-          <div className="flex flex-wrap items-center gap-4">
+          <div className="lg:hidden space-y-4">
+            {/* Search always visible */}
+            <FilterField label="Search">
+              <input
+                type="text"
+                value={searchCriteria.name}
+                onChange={(e) =>
+                  setSearchCriteria((prev) => ({
+                    ...prev,
+                    name: e.target.value,
+                  }))
+                }
+                placeholder="Plan Name..."
+                className="w-full border-0 bg-transparent text-sm focus:outline-none"
+              />
+            </FilterField>
+
+            {/* Mobile Filter Toggle */}
+            <div className="lg:hidden">
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className="w-full flex items-center justify-between rounded-xl border bg-white px-4 py-3 shadow-sm"
+              >
+                <span className="font-medium">More Filters</span>
+
+                {showFilters ? (
+                  <ChevronUpIcon className="h-5 w-5" />
+                ) : (
+                  <ChevronDownIcon className="h-5 w-5" />
+                )}
+              </button>
+            </div>
+
+            {/* Hidden on mobile until expanded */}
+            <div
+              className={`
+      space-y-4
+      ${showFilters ? "block" : "hidden"}
+      lg:block
+    `}
+            >
+              <FilterField label="Status">
+                <CustomSelect
+                  options={statusOptions}
+                  value={searchCriteria.isActive}
+                  onChange={(item) =>
+                    setSearchCriteria((prev) => ({
+                      ...prev,
+                      isActive: item.value,
+                    }))
+                  }
+                />
+              </FilterField>
+
+              <FilterField label="Order">
+                <CustomSelect
+                  options={orderOptions}
+                  value={direction}
+                  onChange={(item) => {
+                    setCurrentPage(0);
+                    setDirection(item.value);
+                  }}
+                />
+              </FilterField>
+
+              <FilterField label="Rows">
+                <CustomSelect
+                  options={pageSizeOptions}
+                  value={pageSize}
+                  onChange={(item) => {
+                    setCurrentPage(0);
+                    setPageSize(item.value);
+                  }}
+                />
+              </FilterField>
+
+              <button
+                onClick={() => {
+                  setSearchCriteria({
+                    name: "",
+                    isActive: "",
+                  });
+
+                  setSortBy("createdAt");
+                  setDirection("DESC");
+                  setPageSize(10);
+                  setCurrentPage(0);
+                }}
+                className="w-full h-12 rounded-xl bg-gray-100 font-medium hover:bg-gray-200 flex items-center justify-center gap-2"
+              >
+                <ArrowPathIcon className="h-5 w-5" />
+                Reset
+              </button>
+            </div>
+          </div>
+          {/* ================= Desktop ================= */}
+          <div className="hidden lg:flex flex-wrap items-center gap-4">
             {/* Plan Name */}
 
             <FilterField label="Search" className="flex-1 min-w-[300px]">
@@ -362,7 +459,7 @@ export default function SubscriptionPlanTable() {
         <div className=" flex items-center justify-between mb-4 ">
           <p className="text-sm text-gray-500">
             Showing{" "}
-            <span className="font-semibold text-green-600">{plans.length}</span>{" "}
+            <span className="font-semibold text-blue-500">{plans.length}</span>{" "}
             Subscription Plans
           </p>
         </div>
@@ -415,7 +512,7 @@ export default function SubscriptionPlanTable() {
                           setSelectedPlan(plan);
                           setShowModal(true);
                         }}
-                        className="text-green-600 mr-3 items-center text-sm hover:bg-gray-50 border rounded-lg p-1"
+                        className="text-blue-500 mr-3 items-center text-sm hover:bg-gray-50 border rounded-lg p-1"
                       >
                         <EyeIcon className="w-5 h-5" title="View" />
                       </button>
@@ -458,98 +555,137 @@ export default function SubscriptionPlanTable() {
           </table>
         </div>
 
-        {/* Mobile Cards */}
+        {/* Mobile List */}
+<div className="lg:hidden rounded-2xl border border-gray-200 bg-white overflow-hidden shadow-sm">
 
-        <div className="lg:hidden space-y-4">
-          {plans.map((plan) => (
-            <div key={plan.id} className="border rounded-xl p-4">
-              <div className="flex justify-between">
-                <h3 className="font-bold">{plan.name}</h3>
+  {plans.map((plan) => (
+    <div
+      key={plan.id}
+      className="
+        px-4
+        py-3
+        border-b
+        last:border-b-0
+        hover:bg-blue-50/40
+        transition
+      "
+    >
+      {/* Row 1 */}
+      <div className="flex items-start justify-between gap-3">
 
-                <span
-                  className={`px-3 py-1 rounded-full text-xs ${getStatusColor(
-                    plan.isActive,
-                  )}`}
-                >
-                  {plan.isActive ? "ACTIVE" : "INACTIVE"}
-                </span>
-              </div>
+        <div className="min-w-0 flex-1">
 
-              <div className="mt-3 space-y-1 text-sm">
-                <p>
-                  <b>Monthly:</b> Rs. {plan.monthlyPrice}
-                </p>
+          <div className="flex items-center gap-2">
 
-                <p>
-                  <b>Yearly:</b> Rs. {plan.yearlyPrice}
-                </p>
+            <h3 className="truncate font-semibold text-gray-900">
+              {plan.name}
+            </h3>
 
-                <p>
-                  <b>Users:</b> {plan.usersLimit}
-                </p>
-              </div>
+            <span
+              className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                plan.isActive
+                  ? "bg-green-100 text-green-700"
+                  : "bg-red-100 text-red-700"
+              }`}
+            >
+              {plan.isActive ? "ACTIVE" : "INACTIVE"}
+            </span>
 
-              <div className="flex gap-2 mt-4">
-                {canView && (
-                  <button
-                    className="flex-1 bg-green-500 text-white py-2 rounded-lg"
-                    onClick={() => {
-                      setModalMode("view");
-                      setSelectedPlan(plan);
-                      setShowModal(true);
-                    }}
-                  >
-                    View
-                  </button>
-                )}
+          </div>
 
-                {canUpdate && (
-                  <button
-                    className="flex-1 bg-blue-500 text-white py-2 rounded-lg"
-                    onClick={() => {
-                      setModalMode("edit");
-                      setSelectedPlan(plan);
-                      setShowModal(true);
-                    }}
-                  >
-                    Edit
-                  </button>
-                )}
+          <p className="mt-1 text-xs text-gray-500">
+            Rs. {plan.monthlyPrice}/month • Rs. {plan.yearlyPrice}/year
+          </p>
 
-                {plan.isActive && canDelete && (
-                  <button
-                    className="flex-1 bg-red-500 text-white py-2 rounded-lg"
-                    onClick={() => openDeleteModal(plan.id)}
-                  >
-                    Delete
-                  </button>
-                )}
-
-                {!plan.isActive && canRestore && (
-                  <button
-                    className="flex-1 bg-orange-500 text-white py-2 rounded-lg"
-                    onClick={() => openRestoreModal(plan.id)}
-                  >
-                    Restore
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
         </div>
+
+      </div>
+
+      {/* Row 2 */}
+
+      <div className="mt-3 flex items-center justify-between">
+
+        <div className="flex items-center gap-4 text-xs text-gray-500">
+
+          <div className="flex items-center gap-1">
+            <Users className="h-3.5 w-3.5 text-blue-500" />
+            <span>{plan.usersLimit}</span>
+          </div>
+
+          <div className="flex items-center gap-1">
+            <Building2 className="h-3.5 w-3.5 text-blue-500" />
+            <span>{plan.branchesLimit}</span>
+          </div>
+
+        </div>
+
+        <div className="flex items-center">
+
+          {canView && (
+            <button
+              onClick={() => {
+                setModalMode("view");
+                setSelectedPlan(plan);
+                setShowModal(true);
+              }}
+              className="rounded-lg p-2 text-blue-600 hover:bg-blue-100"
+            >
+              <EyeIcon className="h-5 w-5" />
+            </button>
+          )}
+
+          {canUpdate && (
+            <button
+              onClick={() => {
+                setModalMode("edit");
+                setSelectedPlan(plan);
+                setShowModal(true);
+              }}
+              className="rounded-lg p-2 text-indigo-600 hover:bg-indigo-100"
+            >
+              <PenLine className="h-5 w-5" />
+            </button>
+          )}
+
+          {plan.isActive && canDelete && (
+            <button
+              onClick={() => openDeleteModal(plan.id)}
+              className="rounded-lg p-2 text-red-600 hover:bg-red-100"
+            >
+              <Trash className="h-5 w-5" />
+            </button>
+          )}
+
+          {!plan.isActive && canRestore && (
+            <button
+              onClick={() => openRestoreModal(plan.id)}
+              className="rounded-lg p-2 text-orange-600 hover:bg-orange-100"
+            >
+              <ArrowPathIcon className="h-5 w-5" />
+            </button>
+          )}
+
+        </div>
+
+      </div>
+
+    </div>
+  ))}
+
+</div>
 
         {/* ================= Pagination ================= */}
 
-        <div className="mt-6 flex flex-col gap-4 border-t border-gray-200 pt-5 md:flex-row md:items-center md:justify-between">
+        <div className="mt-6 flex  flex-col gap-4 border-t border-gray-200 pt-5 md:flex-row md:items-center md:justify-between">
           {/* Left */}
 
-          <div className="text-sm text-gray-500">
+          <div className="text-sm text-gray-500 ">
             Showing{" "}
-            <span className="font-semibold text-green-600">
+            <span className="font-semibold text-blue-500">
               {plans.length === 0 ? 0 : currentPage * pageSize + 1}
             </span>{" "}
             to{" "}
-            <span className="font-semibold text-green-600">
+            <span className="font-semibold text-blue-500 ">
               {Math.min(
                 (currentPage + 1) * pageSize,
                 currentPage * pageSize + plans.length,
@@ -560,16 +696,16 @@ export default function SubscriptionPlanTable() {
 
           {/* Right */}
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 ">
             {/* Previous */}
 
             <button
               disabled={currentPage === 0}
               onClick={() => setCurrentPage((prev) => prev - 1)}
-              className={`rounded-xl border px-4 py-2 text-sm transition
+              className={`rounded-xl border px-4 py-2 text-sm transition 
       ${
         currentPage === 0
-          ? "cursor-not-allowed border-gray-200 text-gray-400"
+          ? "cursor-not-allowed border-gray-200 text-gray-400 "
           : "border-gray-300 hover:bg-gray-50"
       }`}
             >
@@ -582,7 +718,7 @@ export default function SubscriptionPlanTable() {
               <button
                 key={index}
                 onClick={() => setCurrentPage(index)}
-                className={`h-10 w-10 rounded-xl text-sm font-medium transition
+                className={`h-10 w-10 rounded-xl text-sm font-medium transition bg-blue-600 hover:bg-blue-700
 
         ${
           currentPage === index

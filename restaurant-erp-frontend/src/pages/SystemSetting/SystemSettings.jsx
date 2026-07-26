@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 
@@ -13,11 +14,23 @@ const menus = [
 export default function SystemSettings() {
   const location = useLocation();
 
+  const [collapsed, setCollapsed] = useState(() => {
+    const saved = localStorage.getItem("sidebarCollapsed");
+
+    if (saved === null || saved === "undefined") {
+      return true; // default collapsed
+    }
+
+    return JSON.parse(saved);
+  });
   return (
     <div className="min-h-screen bg-gray-100 lg:flex">
-      <Sidebar />
+      <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
 
-      <div className="flex flex-1 flex-col">
+      <div
+        className={`flex flex-1 flex-col transition-all duration-300
+    ${collapsed ? "lg:ml-20" : "lg:ml-[300px]"}`}
+      >
         {/* Header */}
         <div className="border-b bg-white shadow-sm">
           <div className="px-4 py-4 sm:px-6 lg:px-8 lg:py-5">
@@ -55,9 +68,10 @@ export default function SystemSettings() {
                         to={menu.path}
                         end
                         className={({ isActive }) =>
-                          `px-4 py-2 rounded-sm text-sm font-semibold transition-all ${isActive
-                            ? "bg-green-600 text-white shadow-md"
-                            : "text-gray-600 hover:bg-white hover:text-green-600 hover:shadow"
+                          `px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                            isActive
+                              ? "bg-blue-600 hover:bg-blue-700 text-white shadow-lg"
+                              : "text-gray-600 hover:bg-gray-200 hover:text-[#375eb2]"
                           }`
                         }
                       >

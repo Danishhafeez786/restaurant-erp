@@ -20,6 +20,8 @@
     "react-router-dom": "^6.30.4",
     "react-toastify": "^11.1.0",
     "recharts": "^3.10.0",
+    "simplebar": "^6.3.3",
+    "simplebar-react": "^3.3.2",
     "sockjs-client": "^1.6.1"
   },
   "devDependencies": {

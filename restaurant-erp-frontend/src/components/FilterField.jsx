@@ -14,17 +14,19 @@ export default function FilterField({ label, children, className = "" }) {
       {/* Label */}
       <div
         className="
-          flex items-center
-          px-3 py-2
-          rounded-tl-xl
-          lg:rounded-bl-xl
-          lg:rounded-tr-none
-          sm:rounded-tr-xl
-          bg-gray-100
-          border-b border-gray-200
-          md:border-b-0 md:border-r
-          md:min-w-[95px] md:h-12
-        "
+    flex items-center
+    px-3 py-2
+    bg-gray-100
+    border-b border-gray-200
+    rounded-t-xl
+    md:rounded-l-xl
+    md:rounded-r-none
+    md:border-b-0
+    md:border-r
+    md:min-w-[95px]
+    md:h-12
+    shrink-0
+  "
       >
         <span className="text-sm font-semibold text-gray-800">{label}</span>
       </div>

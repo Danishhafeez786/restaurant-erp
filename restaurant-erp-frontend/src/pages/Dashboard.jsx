@@ -1,11 +1,31 @@
 import Sidebar from "../components/Sidebar";
+import { useState } from "react";
 
 const Dashboard = () => {
+  const [collapsed, setCollapsed] = useState(() => {
+  const saved = localStorage.getItem("sidebarCollapsed");
+
+  if (saved === null || saved === "undefined") {
+    return true; // default collapsed
+  }
+
+  return JSON.parse(saved);
+});
   return (
     <div className="min-h-screen bg-gray-100 lg:flex">
-        <Sidebar />
+        <Sidebar
+    collapsed={collapsed}
+    setCollapsed={setCollapsed}
+/>
 
-        <div className="flex-1 overflow-y-auto">
+       <div
+    className={`flex-1 transition-all duration-300
+    ${
+      collapsed
+        ? "lg:ml-20"
+        : "lg:ml-[300px]"
+    }`}
+>
         {/* HEADER */}
         <div className="bg-white px-8 py-6 shadow-sm flex items-center justify-between">
           <div>
@@ -49,7 +69,7 @@ const Dashboard = () => {
         </div>
 
         {/* MAIN CONTENT */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="h-[calc(100vh-88px)] overflow-y-auto">
 
        
 

@@ -334,7 +334,7 @@ return (
               !isFormValid
                 ? "cursor-not-allowed bg-gray-400"
                 : isCreate
-                ? "bg-green-600 hover:bg-green-700"
+                ? "bg-blue-600 hover:bg-blue-700"
                 : "bg-blue-600 hover:bg-blue-700"
             }`}
           >

@@ -246,7 +246,7 @@ export default function OrganizationTable() {
 
         {/* Search Toolbar */}
         <div className="flex flex-wrap items-center gap-4">
-          <FilterField label="Search" className="flex-1 min-w-[500px]">
+          <FilterField label="Search" className="flex-1 min-w-[200px]">
             <input
               type="text"
               value={searchCriteria.searchInput}

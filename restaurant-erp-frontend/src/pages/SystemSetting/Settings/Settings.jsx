@@ -5,7 +5,7 @@ import Sidebar from "../../../components/Sidebar";
 
 import SummaryCards from "../../../components/Settings/SummaryCards";
 import SettingsToolbar from "../../../components/settings/SettingsToolbar";
-import PermissionMatrix from "../../../components/settings/PermissionMatrix";
+import PermissionMatrix from "../../../components/Settings/PermissionMatrix";
 import RoleList from "../../../components/settings/RoleList";
 import RolePermissionModal from "../../../components/settings/RolePermissionModal";
 
