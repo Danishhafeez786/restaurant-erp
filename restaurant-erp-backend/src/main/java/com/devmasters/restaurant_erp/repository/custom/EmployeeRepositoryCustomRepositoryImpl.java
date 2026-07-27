@@ -53,7 +53,7 @@ public class EmployeeRepositoryCustomRepositoryImpl implements EmployeeRepositor
             filters.add(Criteria.where("isActive").is(criteria.getIsActive()));
 
         if (criteria.getEmploymentStatus() != null)
-            filters.add(Criteria.where("employmentStatus").is(criteria.getIsActive()));
+            filters.add(Criteria.where("employmentStatus").is(criteria.getEmploymentStatus()));
 
         if (!filters.isEmpty())
             query.addCriteria(new Criteria().andOperator(filters.toArray(new Criteria[0])));
