@@ -10,6 +10,8 @@ import {
   PlusIcon,
   EyeIcon,
   TrashIcon,
+  MagnifyingGlassIcon,
+  FunnelIcon,
   ArrowPathIcon,
   ChevronUpIcon,
   ChevronDownIcon,
@@ -38,6 +40,7 @@ const pageSizeOptions = [
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function PermissionTable() {
+  const [showFilters, setShowFilters] = useState(false);
   const [permissions, setPermissions] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -247,19 +250,130 @@ export default function PermissionTable() {
                 setSelectedPermission(null);
                 setShowModal(true);
               }}
-            className="flex items-center justify-center gap-2 rounded-lg bg-[#0d4039] px-3 py-2 font-medium text-white sm:px-6"
-          >
-            <PlusIcon className="h-5 w-5" />
-            <span className="hidden sm:inline">
-              Add Permission
-            </span>
-          </button>)}
+              className="flex items-center justify-center gap-2 rounded-lg bg-[#0d4039] px-3 py-2 font-medium text-white sm:px-6"
+            >
+              <PlusIcon className="h-5 w-5" />
+              <span className="hidden sm:inline">
+                Add Permission
+              </span>
+            </button>)}
         </div>
 
-        {/* Filters */}
-        <div>
-          <div className="flex flex-wrap items-center gap-4">
+        {/* ================= Search & Filters ================= */}
 
+        <div>
+          {/* Mobile Search */}
+          <div className="lg:hidden space-y-4">
+            <div className="relative">
+              <input
+                type="text"
+                value={searchCriteria.searchInput}
+                onChange={(e) =>
+                  setSearchCriteria((prev) => ({
+                    ...prev,
+                    searchInput: e.target.value,
+                  }))
+                }
+                placeholder="Permission Name..."
+                className="w-full rounded-xl border border-gray-300 bg-white py-3 pl-11 pr-12 text-sm shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+
+              <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg p-2 hover:bg-gray-100"
+              >
+                <FunnelIcon
+                  className={`h-5 w-5 transition ${showFilters ? "rotate-180 text-blue-600" : "text-gray-500"
+                    }`}
+                />
+              </button>
+            </div>
+          </div>
+
+          {/* Mobile Filters */}
+          <div
+            className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${showFilters
+                ? "max-h-[500px] opacity-100 mt-4"
+                : "max-h-0 opacity-0"
+              }`}
+          >
+            <div className="space-y-4">
+              {showFilters && (
+                <>
+                  {/* Status */}
+                  <FilterField
+                    label="Status"
+                    className="w-full xl:flex-1 xl:min-w-[300px]"
+                  >
+                    <CustomSelect
+                      options={statusOptions}
+                      value={searchCriteria.isActive}
+                      onChange={(item) =>
+                        setSearchCriteria((prev) => ({
+                          ...prev,
+                          isActive: item.value,
+                        }))
+                      }
+                    />
+                  </FilterField>
+
+                  {/* Order */}
+                  <FilterField
+                    label="Order"
+                    className="w-full xl:flex-1 xl:min-w-[300px]"
+                  >
+                    <CustomSelect
+                      options={orderOptions}
+                      value={direction}
+                      onChange={(item) => {
+                        setCurrentPage(0);
+                        setDirection(item.value);
+                      }}
+                    />
+                  </FilterField>
+
+                  {/* Rows */}
+                  <FilterField
+                    label="Rows"
+                    className="w-full xl:flex-1 xl:min-w-[100px]"
+                  >
+                    <CustomSelect
+                      options={pageSizeOptions}
+                      value={pageSize}
+                      onChange={(item) => {
+                        setCurrentPage(0);
+                        setPageSize(item.value);
+                      }}
+                    />
+                  </FilterField>
+
+                  {/* Reset */}
+                  <button
+                    onClick={() => {
+                      setSearchCriteria({
+                        searchInput: "",
+                        isActive: "",
+                      });
+
+                      setSortBy("createdAt");
+                      setDirection("DESC");
+                      setPageSize(10);
+                      setCurrentPage(0);
+                    }}
+                    className="w-full h-12 rounded-xl bg-gray-100 font-medium hover:bg-gray-200 flex items-center justify-center gap-2"
+                  >
+                    <ArrowPathIcon className="h-5 w-5" />
+                    Reset
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* Desktop Filters */}
+          <div className="hidden lg:flex flex-wrap items-center gap-4">
             {/* Search */}
             <FilterField label="Search" className="flex-1 min-w-[300px]">
               <input
@@ -279,7 +393,7 @@ export default function PermissionTable() {
             {/* Status */}
             <FilterField
               label="Status"
-              className="w-full xl:flex-1 xl:min-w-[300px]"
+              className="w-full xl:flex-1 xl:min-w-[250px]"
             >
               <CustomSelect
                 options={statusOptions}
@@ -296,7 +410,7 @@ export default function PermissionTable() {
             {/* Order */}
             <FilterField
               label="Order"
-              className="w-full xl:flex-1 xl:min-w-[300px]"
+              className="w-full xl:flex-1 xl:min-w-[250px]"
             >
               <CustomSelect
                 options={orderOptions}
@@ -311,7 +425,7 @@ export default function PermissionTable() {
             {/* Rows */}
             <FilterField
               label="Rows"
-              className="w-full xl:flex-1 xl:min-w-[50px]"
+              className="w-full xl:flex-1 xl:min-w-[100px]"
             >
               <CustomSelect
                 options={pageSizeOptions}
@@ -336,12 +450,11 @@ export default function PermissionTable() {
                 setPageSize(10);
                 setCurrentPage(0);
               }}
-              className="h-12 w-full rounded-xl bg-gray-100 px-6 font-bold transition hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 md:w-auto flex items-center justify-center gap-2"
+              className="w-full md:w-auto h-12 flex items-center justify-center gap-2 rounded-xl bg-gray-100 px-6 font-bold transition hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300"
             >
               <ArrowPathIcon className="h-5 w-5" />
               <span>Reset</span>
             </button>
-
           </div>
         </div>
       </div>
@@ -596,8 +709,8 @@ export default function PermissionTable() {
             disabled={currentPage === 0}
             onClick={() => setCurrentPage((prev) => prev - 1)}
             className={`rounded-xl border px-4 py-2 text-sm transition ${currentPage === 0
-                ? "cursor-not-allowed border-gray-200 text-gray-400"
-                : "border-gray-300 hover:bg-gray-50"
+              ? "cursor-not-allowed border-gray-200 text-gray-400"
+              : "border-gray-300 hover:bg-gray-50"
               }`}
           >
             Previous
@@ -609,8 +722,8 @@ export default function PermissionTable() {
               key={page}
               onClick={() => setCurrentPage(page)}
               className={`h-10 w-10 rounded-xl text-sm font-medium transition ${currentPage === page
-                  ? "bg-[#0d4039] text-white shadow-sm"
-                  : "border border-gray-200 bg-white hover:bg-gray-50"
+                ? "bg-[#0d4039] text-white shadow-sm"
+                : "border border-gray-200 bg-white hover:bg-gray-50"
                 }`}
             >
               {page + 1}
@@ -624,8 +737,8 @@ export default function PermissionTable() {
             }
             onClick={() => setCurrentPage((prev) => prev + 1)}
             className={`rounded-xl border px-4 py-2 text-sm transition ${currentPage === pages.length - 1 || pages.length === 0
-                ? "cursor-not-allowed border-gray-200 text-gray-400"
-                : "border-gray-300 hover:bg-gray-50"
+              ? "cursor-not-allowed border-gray-200 text-gray-400"
+              : "border-gray-300 hover:bg-gray-50"
               }`}
           >
             Next
