@@ -295,8 +295,8 @@ export default function PermissionTable() {
           {/* Mobile Filters */}
           <div
             className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${showFilters
-                ? "max-h-[500px] opacity-100 mt-4"
-                : "max-h-0 opacity-0"
+              ? "max-h-[500px] opacity-100 mt-4"
+              : "max-h-0 opacity-0"
               }`}
           >
             <div className="space-y-4">
@@ -466,7 +466,7 @@ export default function PermissionTable() {
         <div className="flex items-center justify-between mb-4">
           <p className="text-sm text-gray-500">
             Showing{" "}
-            <span className="font-semibold text-green-600">
+            <span className="font-semibold text-blue-600">
               {permissions.length}
             </span>{" "}
             Permissions
@@ -587,210 +587,215 @@ export default function PermissionTable() {
             </table>
           )}
         </div>
-      </div>
 
-      {/* MOBILE */}
-      {/* MOBILE */}
-      <div className="md:hidden space-y-4">
-        {loading ? (
-          <div className="rounded-xl border bg-white py-10 text-center">
-            Loading...
-          </div>
-        ) : (
-          permissions.map((permission) => (
-            <div
-              key={permission.id}
-              className="rounded-xl border bg-white p-4"
-            >
-              <div className="flex items-start justify-between">
-                <h3 className="text-lg font-bold">
-                  {permission.name}
-                </h3>
 
-                <span
-                  className={`rounded-full px-3 py-1 text-xs ${getStatusColor(
-                    permission.isActive
-                  )}`}
-                >
-                  {permission.isActive
-                    ? "ACTIVE"
-                    : "INACTIVE"}
-                </span>
+        {/* MOBILE */}
+        <div className="lg:hidden rounded-2xl border border-gray-200 bg-white overflow-hidden shadow-sm">
+          {loading ? (
+            <div className="py-10 text-center">Loading...</div>
+          ) : (
+            permissions.map((permission) => (
+              <div
+                key={permission.id}
+                className="px-4 py-3 border-b last:border-b-0 hover:bg-blue-50/40 transition"
+              >
+                {/* Header */}
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="truncate font-semibold text-gray-900">
+                        {permission.name}
+                      </h3>
+
+                      <span
+                        className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${permission.isActive
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700"
+                          }`}
+                      >
+                        {permission.isActive ? "ACTIVE" : "INACTIVE"}
+                      </span>
+                    </div>
+
+                    <p className="mt-1 text-xs text-gray-500">
+                      {permission.module || "N/A"}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Details */}
+                <div className="mt-3 space-y-1 text-sm">
+                  <p>
+                    <b>Code:</b> {permission.code}
+                  </p>
+
+                  <p>
+                    <b>Module:</b> {permission.module || "N/A"}
+                  </p>
+                </div>
+
+                {/* Actions */}
+                <div className="mt-3 flex items-center justify-end gap-1">
+                  {canView && (
+                    <button
+                      onClick={() => {
+                        setModalMode("view");
+                        setSelectedPermission(permission);
+                        setShowModal(true);
+                      }}
+                      className="rounded-lg p-2 text-blue-600 hover:bg-blue-100"
+                    >
+                      <EyeIcon className="h-5 w-5" />
+                    </button>
+                  )}
+
+                  {canUpdate && (
+                    <button
+                      onClick={() => {
+                        setModalMode("edit");
+                        setSelectedPermission(permission);
+                        setShowModal(true);
+                      }}
+                      className="rounded-lg p-2 text-indigo-600 hover:bg-indigo-100"
+                    >
+                      <PenLine className="h-5 w-5" />
+                    </button>
+                  )}
+
+                  {permission.isActive && canDelete && (
+                    <button
+                      onClick={() => openDeleteModal(permission.id)}
+                      className="rounded-lg p-2 text-red-600 hover:bg-red-100"
+                    >
+                      <Trash className="h-5 w-5" />
+                    </button>
+                  )}
+
+                  {!permission.isActive && canRestore && (
+                    <button
+                      onClick={() => openRestoreModal(permission.id)}
+                      className="rounded-lg p-2 text-orange-600 hover:bg-orange-100"
+                    >
+                      <ArrowPathIcon className="h-5 w-5" />
+                    </button>
+                  )}
+                </div>
               </div>
-
-              <div className="mt-3 space-y-2 text-sm">
-                <p>
-                  <b>Code:</b> {permission.code}
-                </p>
-
-                <p>
-                  <b>Module:</b>{" "}
-                  {permission.module || "N/A"}
-                </p>
-              </div>
-
-              <div className="mt-4 flex gap-2">
-
-                {canView && (
-                  <button
-                    className="flex-1 rounded-lg bg-green-500 py-2 text-white"
-                    onClick={() => {
-                      setModalMode("view");
-                      setSelectedPermission(permission);
-                      setShowModal(true);
-                    }}
-                  >
-                    View
-                  </button>
-                )}
-
-                {canUpdate && (
-                  <button
-                    className="flex-1 rounded-lg bg-blue-500 py-2 text-white"
-                    onClick={() => {
-                      setModalMode("edit");
-                      setSelectedPermission(permission);
-                      setShowModal(true);
-                    }}
-                  >
-                    Edit
-                  </button>
-                )}
-
-                {permission.isActive && canDelete && (
-                  <button
-                    className="flex-1 rounded-lg bg-red-500 py-2 text-white"
-                    onClick={() => openDeleteModal(permission.id)}
-                  >
-                    Delete
-                  </button>
-                )}
-
-                {!permission.isActive && canRestore && (
-                  <button
-                    className="flex-1 rounded-lg bg-orange-500 py-2 text-white"
-                    onClick={() => openRestoreModal(permission.id)}
-                  >
-                    Restore
-                  </button>
-                )}
-
-              </div>
-            </div>
-          ))
-        )}
-      </div>
-
-
-      {/* PAGINATION */}
-      <div className="mt-6 flex flex-col gap-4 border-t border-gray-200 pt-5 md:flex-row md:items-center md:justify-between">
-
-        {/* Left */}
-        <div className="text-sm text-gray-500">
-          Showing{" "}
-          <span className="font-semibold text-green-600">
-            {permissions.length === 0 ? 0 : currentPage * pageSize + 1}
-          </span>{" "}
-          to{" "}
-          <span className="font-semibold text-green-600">
-            {Math.min(
-              (currentPage + 1) * pageSize,
-              currentPage * pageSize + permissions.length
-            )}
-          </span>{" "}
-          results
+            ))
+          )}
         </div>
 
-        {/* Right */}
-        <div className="flex items-center gap-2">
 
-          {/* Previous */}
-          <button
-            disabled={currentPage === 0}
-            onClick={() => setCurrentPage((prev) => prev - 1)}
-            className={`rounded-xl border px-4 py-2 text-sm transition ${currentPage === 0
-              ? "cursor-not-allowed border-gray-200 text-gray-400"
-              : "border-gray-300 hover:bg-gray-50"
-              }`}
-          >
-            Previous
-          </button>
+        {/* PAGINATION */}
+        <div className="mt-6 flex flex-col gap-4 border-t border-gray-200 pt-5 md:flex-row md:items-center md:justify-between">
 
-          {/* Page Numbers */}
-          {pages.map((page) => (
+          {/* Left */}
+          <div className="text-sm text-gray-500">
+            Showing{" "}
+            <span className="font-semibold text-blue-600">
+              {permissions.length === 0 ? 0 : currentPage * pageSize + 1}
+            </span>{" "}
+            to{" "}
+            <span className="font-semibold text-blue-600">
+              {Math.min(
+                (currentPage + 1) * pageSize,
+                currentPage * pageSize + permissions.length
+              )}
+            </span>{" "}
+            results
+          </div>
+
+          {/* Right */}
+          <div className="flex items-center gap-2">
+
+            {/* Previous */}
             <button
-              key={page}
-              onClick={() => setCurrentPage(page)}
-              className={`h-10 w-10 rounded-xl text-sm font-medium transition ${currentPage === page
-                ? "bg-[#0d4039] text-white shadow-sm"
-                : "border border-gray-200 bg-white hover:bg-gray-50"
+              disabled={currentPage === 0}
+              onClick={() => setCurrentPage((prev) => prev - 1)}
+              className={`rounded-xl border px-4 py-2 text-sm transition ${currentPage === 0
+                ? "cursor-not-allowed border-gray-200 text-gray-400"
+                : "border-gray-300 hover:bg-gray-50"
                 }`}
             >
-              {page + 1}
+              Previous
             </button>
-          ))}
 
-          {/* Next */}
-          <button
-            disabled={
-              currentPage === pages.length - 1 || pages.length === 0
-            }
-            onClick={() => setCurrentPage((prev) => prev + 1)}
-            className={`rounded-xl border px-4 py-2 text-sm transition ${currentPage === pages.length - 1 || pages.length === 0
-              ? "cursor-not-allowed border-gray-200 text-gray-400"
-              : "border-gray-300 hover:bg-gray-50"
-              }`}
-          >
-            Next
-          </button>
-
-        </div>
-      </div>
-
-      {/* {Model Box} */}
-      {confirmModal.open && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-lg w-[90%] max-w-md p-6">
-            <h2 className="text-xl font-bold text-gray-800">
-              {confirmModal.title}
-            </h2>
-
-            <p className="mt-3 text-gray-600">{confirmModal.message}</p>
-
-            <div className="flex justify-end gap-3 mt-6">
+            {/* Page Numbers */}
+            {pages.map((page) => (
               <button
-                onClick={() =>
-                  setConfirmModal((prev) => ({ ...prev, open: false }))
-                }
-                className="px-5 py-2 rounded-lg border border-gray-300 hover:bg-gray-100"
+                key={page}
+                onClick={() => setCurrentPage(page)}
+                className={`h-10 w-10 rounded-xl text-sm font-medium transition ${currentPage === page
+                  ? "bg-[#0d4039] text-white shadow-sm"
+                  : "border border-gray-200 bg-white hover:bg-gray-50"
+                  }`}
               >
-                Cancel
+                {page + 1}
               </button>
+            ))}
 
-              <button
-                onClick={confirmModal.action}
-                className="px-5 py-2 rounded-lg bg-[#0d4039] text-white hover:bg-[#0b322d]"
-              >
-                Confirm
-              </button>
-            </div>
+            {/* Next */}
+            <button
+              disabled={
+                currentPage === pages.length - 1 || pages.length === 0
+              }
+              onClick={() => setCurrentPage((prev) => prev + 1)}
+              className={`rounded-xl border px-4 py-2 text-sm transition ${currentPage === pages.length - 1 || pages.length === 0
+                ? "cursor-not-allowed border-gray-200 text-gray-400"
+                : "border-gray-300 hover:bg-gray-50"
+                }`}
+            >
+              Next
+            </button>
+
           </div>
         </div>
-      )}
 
-      {/* MODAL RESET */}
-      {showModal && (
-        <PermissionModalBox
-          isOpen={showModal}
-          onClose={() => {
-            setShowModal(false);
-            setSelectedPermission(null);
-          }}
-          mode={modalMode}
-          permission={selectedPermission}
-          onSuccess={loadPermissions}
-        />
-      )}
+        {/* {Model Box} */}
+        {confirmModal.open && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-xl shadow-lg w-[90%] max-w-md p-6">
+              <h2 className="text-xl font-bold text-gray-800">
+                {confirmModal.title}
+              </h2>
+
+              <p className="mt-3 text-gray-600">{confirmModal.message}</p>
+
+              <div className="flex justify-end gap-3 mt-6">
+                <button
+                  onClick={() =>
+                    setConfirmModal((prev) => ({ ...prev, open: false }))
+                  }
+                  className="px-5 py-2 rounded-lg border border-gray-300 hover:bg-gray-100"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  onClick={confirmModal.action}
+                  className="px-5 py-2 rounded-lg bg-[#0d4039] text-white hover:bg-[#0b322d]"
+                >
+                  Confirm
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* MODAL RESET */}
+        {showModal && (
+          <PermissionModalBox
+            isOpen={showModal}
+            onClose={() => {
+              setShowModal(false);
+              setSelectedPermission(null);
+            }}
+            mode={modalMode}
+            permission={selectedPermission}
+            onSuccess={loadPermissions}
+          />
+        )}
+      </div>
     </div>
   );
 }

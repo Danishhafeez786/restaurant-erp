@@ -463,7 +463,7 @@ export default function OrganizationTable() {
         <div className=" flex items-center justify-between mb-4 ">
           <p className="text-sm text-gray-500">
             Showing{" "}
-            <span className="font-semibold text-green-600">
+            <span className="font-semibold text-blue-600">
               {organizations.length}
             </span>{" "}
             Organizations
@@ -581,24 +581,37 @@ export default function OrganizationTable() {
         </div>
 
         {/* MOBILE */}
-        <div className="md:hidden space-y-4">
+        <div className="lg:hidden rounded-2xl border border-gray-200 bg-white overflow-hidden shadow-sm">
           {organizations.map((organization) => (
             <div
               key={organization.id}
-              className="border rounded-xl p-4 bg-white"
+              className="px-4 py-3 border-b last:border-b-0 hover:bg-blue-50/40 transition"
             >
-              <div className="flex justify-between">
-                <h3 className="font-bold">{organization.organizationName}</h3>
+              {/* Header */}
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className="truncate font-semibold text-gray-900">
+                      {organization.organizationName}
+                    </h3>
 
-                <span
-                  className={`px-3 py-1 rounded-full text-xs ${getStatusColor(
-                    organization.isActive,
-                  )}`}
-                >
-                  {organization.isActive ? "ACTIVE" : "INACTIVE"}
-                </span>
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${organization.isActive
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700"
+                        }`}
+                    >
+                      {organization.isActive ? "ACTIVE" : "INACTIVE"}
+                    </span>
+                  </div>
+
+                  <p className="mt-1 text-xs text-gray-500">
+                    {organization.subscriptionModel?.name || "N/A"}
+                  </p>
+                </div>
               </div>
 
+              {/* Details */}
               <div className="mt-3 space-y-1 text-sm">
                 <p>
                   <b>Owner:</b> {organization.ownerName}
@@ -621,50 +634,51 @@ export default function OrganizationTable() {
                 </p>
               </div>
 
-              <div className="flex gap-2 mt-4">
+              {/* Actions */}
+              <div className="mt-3 flex items-center justify-end gap-1">
                 {user?.permissions?.includes("ORGANIZATION_VIEW") && (
                   <button
-                    className="flex-1 bg-green-500 text-white py-2 rounded-lg"
                     onClick={() => {
                       setModalMode("view");
                       setSelectedOrganization(organization);
                       setShowModal(true);
                     }}
+                    className="rounded-lg p-2 text-blue-600 hover:bg-blue-100"
                   >
-                    View
+                    <EyeIcon className="h-5 w-5" />
                   </button>
                 )}
 
                 {user?.permissions?.includes("ORGANIZATION_UPDATE") && (
                   <button
-                    className="flex-1 bg-blue-500 text-white py-2 rounded-lg"
                     onClick={() => {
                       setModalMode("edit");
                       setSelectedOrganization(organization);
                       setShowModal(true);
                     }}
+                    className="rounded-lg p-2 text-indigo-600 hover:bg-indigo-100"
                   >
-                    Edit
+                    <PenLine className="h-5 w-5" />
                   </button>
                 )}
 
                 {organization.isActive &&
-                  user.permissions.includes("ORGANIZATION_DELETE") && (
+                  user?.permissions?.includes("ORGANIZATION_DELETE") && (
                     <button
-                      className="flex-1 bg-red-500 text-white py-2 rounded-lg"
                       onClick={() => openDeleteModal(organization.id)}
+                      className="rounded-lg p-2 text-red-600 hover:bg-red-100"
                     >
-                      Delete
+                      <Trash className="h-5 w-5" />
                     </button>
                   )}
 
                 {!organization.isActive &&
                   user?.permissions?.includes("ORGANIZATION_REACTIVATE") && (
                     <button
-                      className="flex-1 bg-orange-500 text-white py-2 rounded-lg"
                       onClick={() => openRestoreModal(organization.id)}
+                      className="rounded-lg p-2 text-orange-600 hover:bg-orange-100"
                     >
-                      Restore
+                      <ArrowPathIcon className="h-5 w-5" />
                     </button>
                   )}
               </div>
@@ -679,11 +693,11 @@ export default function OrganizationTable() {
 
           <div className="text-sm text-gray-500">
             Showing{" "}
-            <span className="font-semibold text-green-600">
+            <span className="font-semibold text-blue-600">
               {organizations.length === 0 ? 0 : currentPage * pageSize + 1}
             </span>{" "}
             to{" "}
-            <span className="font-semibold text-green-600">
+            <span className="font-semibold text-blue-600">
               {Math.min(
                 (currentPage + 1) * pageSize,
                 currentPage * pageSize + organizations.length,

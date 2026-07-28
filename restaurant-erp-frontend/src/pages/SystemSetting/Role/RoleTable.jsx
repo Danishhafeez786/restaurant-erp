@@ -293,8 +293,8 @@ export default function RoleTable() {
           {/* Mobile Filters */}
           <div
             className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${showFilters
-                ? "max-h-[500px] opacity-100 mt-4"
-                : "max-h-0 opacity-0"
+              ? "max-h-[500px] opacity-100 mt-4"
+              : "max-h-0 opacity-0"
               }`}
           >
             <div className="space-y-4">
@@ -463,7 +463,7 @@ export default function RoleTable() {
         <div className=" flex items-center justify-between mb-4 ">
           <p className="text-sm text-gray-500">
             Showing{" "}
-            <span className="font-semibold text-green-600">{roles.length}</span>{" "}
+            <span className="font-semibold text-blue-600">{roles.length}</span>{" "}
             Roles
           </p>
         </div>
@@ -563,200 +563,207 @@ export default function RoleTable() {
             </tbody>
           </table>
         </div>
-      </div>
 
-      {/* MOBILE TABLE */}
-      {/* MOBILE */}
-      <div className="md:hidden space-y-4">
-        {roles.map((role) => (
-          <div
-            key={role.id}
-            className="border rounded-xl p-4 bg-white"
-          >
-            <div className="flex justify-between items-start">
-              <h3 className="font-bold text-lg">
-                {role.roleName}
-              </h3>
 
-              <span
-                className={`px-3 py-1 rounded-full text-xs ${getStatusColor(
-                  role.isActive
-                )}`}
-              >
-                {role.isActive ? "ACTIVE" : "INACTIVE"}
-              </span>
-            </div>
+        {/* MOBILE */}
+        <div className="lg:hidden rounded-2xl border border-gray-200 bg-white overflow-hidden shadow-sm">
+          {roles.map((role) => (
+            <div
+              key={role.id}
+              className="px-4 py-3 border-b last:border-b-0 hover:bg-blue-50/40 transition"
+            >
+              {/* Header */}
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className="truncate font-semibold text-gray-900">
+                      {role.roleName}
+                    </h3>
 
-            <div className="mt-3 space-y-2 text-sm">
-              <p>
-                <b>Description:</b>{" "}
-                {role.description || "N/A"}
-              </p>
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${role.isActive
+                        ? "bg-green-100 text-green-700"
+                        : "bg-red-100 text-red-700"
+                        }`}
+                    >
+                      {role.isActive ? "ACTIVE" : "INACTIVE"}
+                    </span>
+                  </div>
 
-              <p>
-                <b>Organization:</b>{" "}
-                {role.organizationModel?.organizationName || "N/A"}
-              </p>
-            </div>
+                  <p className="mt-1 text-xs text-gray-500">
+                    {role.organizationModel?.organizationName || "N/A"}
+                  </p>
+                </div>
+              </div>
 
-            <div className="flex gap-2 mt-4">
+              {/* Details */}
+              <div className="mt-3 space-y-1 text-sm">
+                <p>
+                  <b>Description:</b> {role.description || "N/A"}
+                </p>
 
-              {canView && (
-                <button
-                  className="flex-1 bg-green-500 text-white py-2 rounded-lg"
-                  onClick={() => {
-                    setModalMode("view");
-                    setSelectedRole(role);
-                    setShowModal(true);
-                  }}
-                >
-                  View
-                </button>
-              )}
+                <p>
+                  <b>Organization:</b>{" "}
+                  {role.organizationModel?.organizationName || "N/A"}
+                </p>
+              </div>
 
-              {canUpdate && (
-                <button
-                  className="flex-1 bg-blue-500 text-white py-2 rounded-lg"
-                  onClick={() => {
-                    setModalMode("edit");
-                    setSelectedRole(role);
-                    setShowModal(true);
-                  }}
-                >
-                  Edit
-                </button>
-              )}
-
-              {role.isActive &&
-                canDelete && (
+              {/* Actions */}
+              <div className="mt-3 flex items-center justify-end gap-1">
+                {canView && (
                   <button
-                    className="flex-1 bg-red-500 text-white py-2 rounded-lg"
+                    onClick={() => {
+                      setModalMode("view");
+                      setSelectedRole(role);
+                      setShowModal(true);
+                    }}
+                    className="rounded-lg p-2 text-blue-600 hover:bg-blue-100"
+                  >
+                    <EyeIcon className="h-5 w-5" />
+                  </button>
+                )}
+
+                {canUpdate && (
+                  <button
+                    onClick={() => {
+                      setModalMode("edit");
+                      setSelectedRole(role);
+                      setShowModal(true);
+                    }}
+                    className="rounded-lg p-2 text-indigo-600 hover:bg-indigo-100"
+                  >
+                    <PenLine className="h-5 w-5" />
+                  </button>
+                )}
+
+                {role.isActive && canDelete && (
+                  <button
                     onClick={() => openDeleteModal(role.id)}
+                    className="rounded-lg p-2 text-red-600 hover:bg-red-100"
                   >
-                    Delete
+                    <Trash className="h-5 w-5" />
                   </button>
                 )}
 
-              {!role.isActive &&
-                canRestore && (
+                {!role.isActive && canRestore && (
                   <button
-                    className="flex-1 bg-orange-500 text-white py-2 rounded-lg"
                     onClick={() => openRestoreModal(role.id)}
+                    className="rounded-lg p-2 text-orange-600 hover:bg-orange-100"
                   >
-                    Restore
+                    <ArrowPathIcon className="h-5 w-5" />
                   </button>
                 )}
-
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
-
-
-      {/* PAGINATION */}
-
-      <div className="mt-6 flex flex-col gap-4 border-t border-gray-200 pt-5 md:flex-row md:items-center md:justify-between">
-        {/* Left */}
-        <div className="text-sm text-gray-500">
-          Showing{" "}
-          <span className="font-semibold text-green-600">
-            {roles.length === 0 ? 0 : currentPage * pageSize + 1}
-          </span>{" "}
-          to{" "}
-          <span className="font-semibold text-green-600">
-            {Math.min(
-              (currentPage + 1) * pageSize,
-              currentPage * pageSize + roles.length
-            )}
-          </span>{" "}
-          results
+          ))}
         </div>
 
-        {/* Right */}
-        <div className="flex items-center gap-2">
 
-          {/* Previous */}
-          <button
-            disabled={currentPage === 0}
-            onClick={() => setCurrentPage((prev) => prev - 1)}
-            className={`rounded-xl border px-4 py-2 text-sm transition ${currentPage === 0
-              ? "cursor-not-allowed border-gray-200 text-gray-400"
-              : "border-gray-300 hover:bg-gray-50"
-              }`}
-          >
-            Previous
-          </button>
+        {/* PAGINATION */}
 
-          {/* Page Numbers */}
-          {[...Array(totalPages)].map((_, index) => (
+        <div className="mt-6 flex flex-col gap-4 border-t border-gray-200 pt-5 md:flex-row md:items-center md:justify-between">
+          {/* Left */}
+          <div className="text-sm text-gray-500">
+            Showing{" "}
+            <span className="font-semibold text-blue-600">
+              {roles.length === 0 ? 0 : currentPage * pageSize + 1}
+            </span>{" "}
+            to{" "}
+            <span className="font-semibold text-blue-600">
+              {Math.min(
+                (currentPage + 1) * pageSize,
+                currentPage * pageSize + roles.length
+              )}
+            </span>{" "}
+            results
+          </div>
+
+          {/* Right */}
+          <div className="flex items-center gap-2">
+
+            {/* Previous */}
             <button
-              key={index}
-              onClick={() => setCurrentPage(index)}
-              className={`h-10 w-10 rounded-xl text-sm font-medium transition ${currentPage === index
-                ? "bg-[#0d4039] text-white shadow-sm"
-                : "border border-gray-200 bg-white hover:bg-gray-50"
+              disabled={currentPage === 0}
+              onClick={() => setCurrentPage((prev) => prev - 1)}
+              className={`rounded-xl border px-4 py-2 text-sm transition ${currentPage === 0
+                ? "cursor-not-allowed border-gray-200 text-gray-400"
+                : "border-gray-300 hover:bg-gray-50"
                 }`}
             >
-              {index + 1}
+              Previous
             </button>
-          ))}
 
-          {/* Next */}
-          <button
-            disabled={currentPage === totalPages - 1 || totalPages === 0}
-            onClick={() => setCurrentPage((prev) => prev + 1)}
-            className={`rounded-xl border px-4 py-2 text-sm transition ${currentPage === totalPages - 1 || totalPages === 0
-              ? "cursor-not-allowed border-gray-200 text-gray-400"
-              : "border-gray-300 hover:bg-gray-50"
-              }`}
-          >
-            Next
-          </button>
-
-        </div>
-      </div>
-
-      {/* {Model Box} */}
-      {confirmModal.open && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-lg w-[90%] max-w-md p-6">
-            <h2 className="text-xl font-bold text-gray-800">
-              {confirmModal.title}
-            </h2>
-
-            <p className="mt-3 text-gray-600">{confirmModal.message}</p>
-
-            <div className="flex justify-end gap-3 mt-6">
+            {/* Page Numbers */}
+            {[...Array(totalPages)].map((_, index) => (
               <button
-                onClick={() =>
-                  setConfirmModal((prev) => ({ ...prev, open: false }))
-                }
-                className="px-5 py-2 rounded-lg border border-gray-300 hover:bg-gray-100"
+                key={index}
+                onClick={() => setCurrentPage(index)}
+                className={`h-10 w-10 rounded-xl text-sm font-medium transition ${currentPage === index
+                  ? "bg-[#0d4039] text-white shadow-sm"
+                  : "border border-gray-200 bg-white hover:bg-gray-50"
+                  }`}
               >
-                Cancel
+                {index + 1}
               </button>
+            ))}
 
-              <button
-                onClick={confirmModal.action}
-                className="px-5 py-2 rounded-lg bg-[#0d4039] text-white hover:bg-[#0b322d]"
-              >
-                Confirm
-              </button>
-            </div>
+            {/* Next */}
+            <button
+              disabled={currentPage === totalPages - 1 || totalPages === 0}
+              onClick={() => setCurrentPage((prev) => prev + 1)}
+              className={`rounded-xl border px-4 py-2 text-sm transition ${currentPage === totalPages - 1 || totalPages === 0
+                ? "cursor-not-allowed border-gray-200 text-gray-400"
+                : "border-gray-300 hover:bg-gray-50"
+                }`}
+            >
+              Next
+            </button>
+
           </div>
         </div>
-      )}
+
+        {/* {Model Box} */}
+        {confirmModal.open && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-xl shadow-lg w-[90%] max-w-md p-6">
+              <h2 className="text-xl font-bold text-gray-800">
+                {confirmModal.title}
+              </h2>
+
+              <p className="mt-3 text-gray-600">{confirmModal.message}</p>
+
+              <div className="flex justify-end gap-3 mt-6">
+                <button
+                  onClick={() =>
+                    setConfirmModal((prev) => ({ ...prev, open: false }))
+                  }
+                  className="px-5 py-2 rounded-lg border border-gray-300 hover:bg-gray-100"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  onClick={confirmModal.action}
+                  className="px-5 py-2 rounded-lg bg-[#0d4039] text-white hover:bg-[#0b322d]"
+                >
+                  Confirm
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
 
-      {/* MODAL */}
+        {/* MODAL */}
 
-      <RoleModalBox
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        mode={modalMode}
-        role={selectedRole}
-        onSuccess={loadRoles}
-      />
+        <RoleModalBox
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          mode={modalMode}
+          role={selectedRole}
+          onSuccess={loadRoles}
+        />
+      </div>
     </div>
   );
 }
