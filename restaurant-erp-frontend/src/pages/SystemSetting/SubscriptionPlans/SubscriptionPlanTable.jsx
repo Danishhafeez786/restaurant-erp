@@ -244,6 +244,18 @@ export default function SubscriptionPlanTable() {
     return status ? "bg-green-200 text-green-700" : "bg-red-100 text-red-700";
   };
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setShowFilters(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div>
       <div className="bg-white rounded-2xl shadow-md p-4 md:p-6">
@@ -292,9 +304,8 @@ export default function SubscriptionPlanTable() {
                   className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg p-2 hover:bg-gray-100"
                 >
                   <FunnelIcon
-                    className={`h-5 w-5 transition-all duration-300 ${
-                      showFilters ? "rotate-180 text-blue-600" : "text-gray-500"
-                    }`}
+                    className={`h-5 w-5 transition-all duration-300 ${showFilters ? "rotate-180 text-blue-600" : "text-gray-500"
+                      }`}
                   />
                 </button>
               </div>
@@ -303,11 +314,10 @@ export default function SubscriptionPlanTable() {
 
           {/* Mobile Filter Toggle */}
           <div
-            className={`overflow-hidden transition-all duration-300 ease-in-out ${
-              showFilters
+            className={`overflow-hidden transition-all duration-300 ease-in-out ${showFilters
                 ? "max-h-[500px] opacity-100 mt-4"
                 : "max-h-0 opacity-0"
-            }`}
+              }`}
           >
             <div className=" shadow-sm space-y-4">
               {/* Hidden on mobile until expanded */}
@@ -315,7 +325,6 @@ export default function SubscriptionPlanTable() {
                 className={`
                 space-y-4
                 ${showFilters ? "block" : "hidden"}
-                lg:block
               `}
               >
                 <FilterField label="Status">
@@ -590,11 +599,10 @@ export default function SubscriptionPlanTable() {
                     </h3>
 
                     <span
-                      className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${
-                        plan.isActive
+                      className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${plan.isActive
                           ? "bg-green-100 text-green-700"
                           : "bg-red-100 text-red-700"
-                      }`}
+                        }`}
                     >
                       {plan.isActive ? "ACTIVE" : "INACTIVE"}
                     </span>
@@ -700,11 +708,10 @@ export default function SubscriptionPlanTable() {
               disabled={currentPage === 0}
               onClick={() => setCurrentPage((prev) => prev - 1)}
               className={`rounded-xl border px-4 py-2 text-sm transition 
-      ${
-        currentPage === 0
-          ? "cursor-not-allowed border-gray-200 text-gray-400 "
-          : "border-gray-300 hover:bg-gray-50"
-      }`}
+      ${currentPage === 0
+                  ? "cursor-not-allowed border-gray-200 text-gray-400 "
+                  : "border-gray-300 hover:bg-gray-50"
+                }`}
             >
               Previous
             </button>
@@ -717,11 +724,10 @@ export default function SubscriptionPlanTable() {
                 onClick={() => setCurrentPage(index)}
                 className={`h-10 w-10 rounded-xl text-sm font-medium transition bg-blue-600 hover:bg-blue-700
 
-        ${
-          currentPage === index
-            ? "bg-[#0d4039] text-white shadow-sm"
-            : "border border-gray-200 bg-white hover:bg-gray-50"
-        }`}
+        ${currentPage === index
+                    ? "bg-[#0d4039] text-white shadow-sm"
+                    : "border border-gray-200 bg-white hover:bg-gray-50"
+                  }`}
               >
                 {index + 1}
               </button>
@@ -734,11 +740,10 @@ export default function SubscriptionPlanTable() {
               onClick={() => setCurrentPage((prev) => prev + 1)}
               className={`rounded-xl border px-4 py-2 text-sm transition
 
-      ${
-        currentPage === totalPages - 1 || totalPages === 0
-          ? "cursor-not-allowed border-gray-200 text-gray-400"
-          : "border-gray-300 hover:bg-gray-50"
-      }`}
+      ${currentPage === totalPages - 1 || totalPages === 0
+                  ? "cursor-not-allowed border-gray-200 text-gray-400"
+                  : "border-gray-300 hover:bg-gray-50"
+                }`}
             >
               Next
             </button>

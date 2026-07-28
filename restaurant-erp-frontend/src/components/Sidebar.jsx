@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/sidebar.css";
+
 import {
   HomeIcon,
   UserGroupIcon,

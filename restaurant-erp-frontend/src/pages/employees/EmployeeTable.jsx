@@ -94,7 +94,7 @@ export default function EmployeeTable() {
     action: null,
   });
 
-   const statuses = [
+  const statuses = [
     { name: "All", value: "" },
     { name: "Active", value: "true" },
     { name: "Inactive", value: "false" },
@@ -106,6 +106,18 @@ export default function EmployeeTable() {
 
   const SortableHeader = ({ label, field }) => {
     const active = sortBy === field;
+
+    useEffect(() => {
+      const handleResize = () => {
+        if (window.innerWidth >= 1024) {
+          setShowFilters(false);
+        }
+      };
+
+      window.addEventListener("resize", handleResize);
+
+      return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
     return (
       <th
@@ -287,7 +299,7 @@ export default function EmployeeTable() {
                       search: e.target.value,
                     }))
                   }
-                  placeholder="Search Employee..."
+                  placeholder="Employee Name, Phone..."
                   className="w-full rounded-xl border border-gray-300 bg-white py-3 pl-11 pr-12 text-sm shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
 
@@ -298,9 +310,8 @@ export default function EmployeeTable() {
                   className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg p-2 hover:bg-gray-100"
                 >
                   <FunnelIcon
-                    className={`h-5 w-5 transition ${
-                      showFilters ? "rotate-180 text-blue-600" : "text-gray-500"
-                    }`}
+                    className={`h-5 w-5 transition ${showFilters ? "rotate-180 text-blue-600" : "text-gray-500"
+                      }`}
                   />
                 </button>
               </div>
@@ -309,11 +320,10 @@ export default function EmployeeTable() {
 
           {/* Mobile Filter Toggle */}
           <div
-            className={`overflow-hidden transition-all duration-300 ease-in-out ${
-              showFilters
-                ? "max-h-[500px] opacity-100 mt-4"
-                : "max-h-0 opacity-0"
-            }`}
+            className={`overflow-hidden transition-all duration-300 ease-in-out ${showFilters
+              ? "max-h-[500px] opacity-100 mt-4"
+              : "max-h-0 opacity-0"
+              }`}
           >
             <div className=" shadow-sm space-y-4">
               {/* Hidden on mobile until expanded */}
@@ -321,7 +331,6 @@ export default function EmployeeTable() {
                 className={`
                         space-y-4
                         ${showFilters ? "block" : "hidden"}
-                        lg:block
                       `}
               >
 
@@ -395,7 +404,7 @@ export default function EmployeeTable() {
             </div>
           </div>
 
-          {/* Desktop */}
+          {/* Desktop Filter */}
           <div className="hidden lg:flex flex-wrap items-center gap-4">
             {/* Search */}
             <FilterField label="Search" className="flex-1 min-w-[300px]">
@@ -408,7 +417,7 @@ export default function EmployeeTable() {
                     search: e.target.value,
                   }))
                 }
-                placeholder="Search Employee..."
+                placeholder="Employee Name, Phone..."
                 className="w-full border-0 bg-transparent text-sm focus:outline-none"
               />
             </FilterField>
@@ -651,11 +660,10 @@ export default function EmployeeTable() {
                       </h3>
 
                       <span
-                        className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${
-                          employee.isActive
-                            ? "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-700"
-                        }`}
+                        className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${employee.isActive
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700"
+                          }`}
                       >
                         {employee.isActive ? "ACTIVE" : "INACTIVE"}
                       </span>
@@ -767,11 +775,10 @@ export default function EmployeeTable() {
             <button
               disabled={currentPage === 0}
               onClick={() => setCurrentPage((prev) => prev - 1)}
-              className={`rounded-xl border px-4 py-2 text-sm transition ${
-                currentPage === 0
-                  ? "cursor-not-allowed border-gray-200 text-gray-400"
-                  : "border-gray-300 hover:bg-gray-50"
-              }`}
+              className={`rounded-xl border px-4 py-2 text-sm transition ${currentPage === 0
+                ? "cursor-not-allowed border-gray-200 text-gray-400"
+                : "border-gray-300 hover:bg-gray-50"
+                }`}
             >
               Previous
             </button>
@@ -782,11 +789,10 @@ export default function EmployeeTable() {
               <button
                 key={index}
                 onClick={() => setCurrentPage(index)}
-                className={`h-10 w-10 rounded-xl text-sm font-medium transition ${
-                  currentPage === index
-                    ? "bg-blue-600 text-white shadow-sm"
-                    : "border border-gray-200 bg-white hover:bg-gray-50"
-                }`}
+                className={`h-10 w-10 rounded-xl text-sm font-medium transition ${currentPage === index
+                  ? "bg-blue-600 text-white shadow-sm"
+                  : "border border-gray-200 bg-white hover:bg-gray-50"
+                  }`}
               >
                 {index + 1}
               </button>
@@ -797,11 +803,10 @@ export default function EmployeeTable() {
             <button
               disabled={currentPage === totalPages - 1 || totalPages === 0}
               onClick={() => setCurrentPage((prev) => prev + 1)}
-              className={`rounded-xl border px-4 py-2 text-sm transition ${
-                currentPage === totalPages - 1 || totalPages === 0
-                  ? "cursor-not-allowed border-gray-200 text-gray-400"
-                  : "border-gray-300 hover:bg-gray-50"
-              }`}
+              className={`rounded-xl border px-4 py-2 text-sm transition ${currentPage === totalPages - 1 || totalPages === 0
+                ? "cursor-not-allowed border-gray-200 text-gray-400"
+                : "border-gray-300 hover:bg-gray-50"
+                }`}
             >
               Next
             </button>
