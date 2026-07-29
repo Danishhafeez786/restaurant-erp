@@ -146,7 +146,7 @@ export default function PermissionMatrix({
         return (
           <div
             key={moduleKey}
-            className="mb-6 overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-sm"
+            className="mb-6 w-full overflow-auto rounded-2xl border border-blue-100 bg-white shadow-sm"
           >
             {/* Module Header */}
             <div
