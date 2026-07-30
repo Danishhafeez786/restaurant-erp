@@ -33,8 +33,7 @@ public class CategoryHandler {
 
         Category entity = categoryTransformer.toEntity(model);
 
-        entity.setCategoryCode(
-                codeGeneratorService.generateCategoryCode()
+        entity.setCategoryCode(codeGeneratorService.generateCategoryCode()
         );
 
         Category saved = categoryService.create(entity);

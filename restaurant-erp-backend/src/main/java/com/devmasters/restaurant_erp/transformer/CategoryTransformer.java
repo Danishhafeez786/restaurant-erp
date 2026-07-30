@@ -28,15 +28,9 @@ public class CategoryTransformer extends Transformer<Category, CategoryModel> {
                 .imageUrl(model.getImageUrl())
                 .displayOrder(model.getDisplayOrder())
                 .available(model.getAvailable())
-                .organization(
-                        organizationTransformer.toEntity(
-                                model.getOrganizationModel()))
-                .branch(
-                        branchTransformer.toEntity(
-                                model.getBranchModel()))
+                .organization(organizationTransformer.toEntity(model.getOrganizationModel()))
+                .branch(branchTransformer.toEntity(model.getBranchModel()))
                 .isActive(model.getIsActive())
-                .createdAt(model.getCreatedAt())
-                .updatedAt(model.getUpdatedAt())
                 .build();
     }
 

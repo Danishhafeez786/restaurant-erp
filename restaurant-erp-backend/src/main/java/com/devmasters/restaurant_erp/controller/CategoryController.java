@@ -74,14 +74,9 @@ public class CategoryController {
 
     @PreAuthorize("hasAuthority('CATEGORY_UPDATE')")
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<CategoryModel>> update(
-            @PathVariable UUID id,
-            @Valid @RequestBody CategoryModel model) {
-
+    public ResponseEntity<ApiResponse<CategoryModel>> update(@PathVariable UUID id, @Valid @RequestBody CategoryModel model) {
         CategoryModel response = categoryHandler.update(id, model);
-
         sendEvent("category-updated", response);
-
         return ResponseEntity.ok(
                 ApiResponse.<CategoryModel>builder()
                         .success(true)
@@ -94,13 +89,9 @@ public class CategoryController {
 
     @PreAuthorize("hasAuthority('CATEGORY_DELETE')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> delete(
-            @PathVariable UUID id) {
-
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID id) {
         CategoryModel deleted = categoryHandler.delete(id);
-
         sendEvent("category-deleted", deleted);
-
         return ResponseEntity.ok(
                 ApiResponse.<Void>builder()
                         .success(true)
@@ -112,13 +103,9 @@ public class CategoryController {
 
     @PreAuthorize("hasAuthority('CATEGORY_RESTORE')")
     @PatchMapping("/{id}/restore")
-    public ResponseEntity<ApiResponse<Void>> restore(
-            @PathVariable UUID id) {
-
+    public ResponseEntity<ApiResponse<Void>> restore(@PathVariable UUID id) {
         CategoryModel restored = categoryHandler.restore(id);
-
         sendEvent("category-restored", restored);
-
         return ResponseEntity.ok(
                 ApiResponse.<Void>builder()
                         .success(true)
@@ -131,29 +118,25 @@ public class CategoryController {
     @PreAuthorize("hasAuthority('CATEGORY_VIEW')")
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter stream() {
-
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
-
         emitters.add(emitter);
         emitter.onCompletion(() -> emitters.remove(emitter));
         emitter.onTimeout(() -> emitters.remove(emitter));
         emitter.onError(e -> emitters.remove(emitter));
-
         return emitter;
     }
 
 
     private void sendEvent(String eventName, Object data) {
-
         emitters.forEach(emitter -> {
             try {
                 emitter.send(
                         SseEmitter.event()
                                 .name(eventName)
-                                .data(data));
-
-            } catch (IOException e) {
-                emitter.completeWithError(e);
+                                .data(data)
+                );
+            } catch (Exception e) {
+                emitter.complete();
                 emitters.remove(emitter);
             }
         });

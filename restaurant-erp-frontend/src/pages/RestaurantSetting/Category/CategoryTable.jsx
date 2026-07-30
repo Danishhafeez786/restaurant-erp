@@ -130,9 +130,7 @@ export default function CategoryTable() {
         try {
           await axiosClient.delete(`/category/${id}`);
         } catch (error) {
-          toast.error(
-            error?.response?.data?.message || "Failed to delete category",
-          );
+          toast.error(error?.response?.data?.message || "Failed to delete category");
         } finally {
           setConfirmModal((prev) => ({ ...prev, open: false }));
         }
@@ -149,9 +147,7 @@ export default function CategoryTable() {
         try {
           await axiosClient.patch(`/category/${id}/restore`);
         } catch (error) {
-          toast.error(
-            error?.response?.data?.message || "Failed to restore category",
-          );
+          toast.error(error?.response?.data?.message || "Failed to restore category");
         } finally {
           setConfirmModal((prev) => ({ ...prev, open: false }));
         }
@@ -206,6 +202,7 @@ export default function CategoryTable() {
   }, [searchCriteria, sortBy, direction, pageSize]);
 
   useEffect(() => {
+    toast.success("Category list updated.");
     const eventSource = new EventSource(`${API_URL}/category/stream`);
 
     eventSource.addEventListener("category-created", () => {
@@ -471,7 +468,7 @@ export default function CategoryTable() {
           </div>
         </div>
       </div>
-      
+
       <br />
       <div className="bg-white rounded-2xl shadow-md p-4 md:p-6">
         {/* =========================== Table Header =========================== */}
