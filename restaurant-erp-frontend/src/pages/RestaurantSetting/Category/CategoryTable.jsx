@@ -202,7 +202,6 @@ export default function CategoryTable() {
   }, [searchCriteria, sortBy, direction, pageSize]);
 
   useEffect(() => {
-    toast.success("Category list updated.");
     const eventSource = new EventSource(`${API_URL}/category/stream`);
 
     eventSource.addEventListener("category-created", () => {
