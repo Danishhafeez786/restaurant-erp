@@ -7,8 +7,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface CategoryCustomRepository {
 
-    Page<Category> search(
-            CategorySearchCriteria criteria,
-            Pageable pageable
-    );
+    Page<Category> search(CategorySearchCriteria criteria, Pageable pageable);
 }

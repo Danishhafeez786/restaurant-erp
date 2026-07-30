@@ -23,7 +23,7 @@ import {
   ChevronRightIcon,
 } from "@heroicons/react/24/outline";
 
-import { UserRound, LogOut, LifeBuoy, PanelLeft } from "lucide-react";
+import { UserRound, LogOut, LifeBuoy, PanelLeft, User2Icon } from "lucide-react";
 
 const Sidebar = ({ collapsed, setCollapsed }) => {
   const navigate = useNavigate();
@@ -76,7 +76,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
     {
       title: "Employee",
       path: "/employee",
-      icon: <ClipboardDocumentListIcon className="w-5 h-5" />,
+      icon: <UserIcon className="w-5 h-5" />,
     },
 
     {
@@ -86,35 +86,9 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
     },
 
     {
-      title: "Restaurant",
-      icon: <TableCellsIcon className="w-5 h-5" />,
-      children: [
-        {
-          title: "Category",
-          path: "/category-management",
-          icon: <Squares2X2Icon className="w-5 h-5" />,
-        },
-        {
-          title: "Floor",
-          path: "/floor-management",
-          icon: <ClipboardDocumentListIcon className="w-5 h-5" />,
-        },
-        {
-          title: "Table",
-          path: "/table-management",
-          icon: <Squares2X2Icon className="w-5 h-5" />,
-        },
-        {
-          title: "Modifier Group",
-          path: "/modifier-group",
-          icon: <Squares2X2Icon className="w-5 h-5" />,
-        },
-        {
-          title: "Modifier",
-          path: "/modifier",
-          icon: <Squares2X2Icon className="w-5 h-5" />,
-        },
-      ],
+      title: "Restaurant Management",
+      path: "/restaurant-settings",
+      icon: <BuildingOfficeIcon className="w-5 h-5" />,
     },
 
     {
@@ -127,12 +101,6 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
       title: "Customers",
       icon: <UserGroupIcon className="w-5 h-5" />,
       path: "/customers",
-    },
-
-    {
-      title: "Settings",
-      path: "/system-settings",
-      icon: <Cog6ToothIcon className="w-5 h-5" />,
     },
 
     {
@@ -295,9 +263,11 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
             Profile
           </button>
 
-          <button className="w-full px-4 py-3 flex items-center gap-3 hover:bg-slate-700 transition">
+          <button 
+          onClick={() => navigate("/system-settings")}
+          className="w-full px-4 py-3 flex items-center gap-3 hover:bg-slate-700 transition">
             <Cog6ToothIcon className="w-5 h-5" />
-            Settings
+            System Settings
           </button>
 
           <button
@@ -492,9 +462,11 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                 <span>Profile</span>
               </button>
 
-              <button className="w-full px-4 py-3 flex items-center gap-3 text-left hover:bg-slate-700 transition">
+              <button 
+              onClick={() => navigate("/system-settings")}
+              className="w-full px-4 py-3 flex items-center gap-3 text-left hover:bg-slate-700 transition">
                 <Cog6ToothIcon className="w-5 h-5 text-gray-300" />
-                <span>Settings</span>
+                <span>System Settings</span>
               </button>
 
               <button className="w-full px-4 py-3 flex items-center gap-3 text-left hover:bg-slate-700 transition border-t border-white/10">

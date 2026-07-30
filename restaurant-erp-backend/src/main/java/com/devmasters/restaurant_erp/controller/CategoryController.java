@@ -29,8 +29,7 @@ public class CategoryController {
 
     private final CategoryHandler categoryHandler;
 
-    private final List<SseEmitter> emitters =
-            new CopyOnWriteArrayList<>();
+    private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
 
     @PreAuthorize("hasAuthority('CATEGORY_CREATE')")
@@ -42,12 +41,11 @@ public class CategoryController {
         sendEvent("category-created", response);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(
-                        ApiResponse.<CategoryModel>builder()
-                                .success(true)
-                                .message("Category Created Successfully")
-                                .data(response)
-                                .build()
+                .body(ApiResponse.<CategoryModel>builder()
+                        .success(true)
+                        .message("Category Created Successfully")
+                        .data(response)
+                        .build()
                 );
     }
 
@@ -61,23 +59,14 @@ public class CategoryController {
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "DESC") String direction) {
 
-        Pageable pageable = PageRequest.of(
-                page,
-                size,
-                Sort.by(
-                        Sort.Direction.valueOf(direction.toUpperCase()),
-                        sortBy
-                )
-        );
+        Pageable pageable = PageRequest.of(page, size, Sort.by(
+                        Sort.Direction.valueOf(direction.toUpperCase()), sortBy));
 
         return ResponseEntity.ok(
                 ApiResponse.<PageResponse<CategoryModel>>builder()
                         .success(true)
                         .message("Categories fetched successfully")
-                        .data(
-                                categoryHandler.getAll(
-                                        criteria,
-                                        pageable))
+                        .data(categoryHandler.getAll(criteria, pageable))
                         .build()
         );
     }

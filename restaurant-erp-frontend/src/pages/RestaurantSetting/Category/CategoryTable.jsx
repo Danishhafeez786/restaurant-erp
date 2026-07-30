@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../../../api/axiosClient";
-import BranchModalBox from "./BranchModalBox";
+import CategoryModelBox from "./CategoryModelBox";
 import FilterField from "../../../components/FilterField";
 import CustomSelect from "../../../components/CustomSelect";
+import CategoryService from "../../../services/CategoryService";
 import { Listbox } from "@headlessui/react";
 import {
   PlusIcon,
@@ -40,20 +41,18 @@ const API_URL = import.meta.env.VITE_API_URL;
 import { toast } from "react-toastify";
 import { PenLine } from "lucide-react";
 
-export default function BranchTable() {
+export default function CategoryTable() {
   const [showFilters, setShowFilters] = useState(false);
-  const [branches, setBranches] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState("create");
-  const [selectedBranch, setSelectedBranch] = useState(null);
-
-  const user = JSON.parse(localStorage.getItem("user"));
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
 
   const [sortBy, setSortBy] = useState("createdAt");
   const [direction, setDirection] = useState("DESC");
@@ -64,12 +63,17 @@ export default function BranchTable() {
     isActive: "",
   });
 
-  const [confirmModal, setConfirmModal] = useState({
-    open: false,
-    title: "",
-    message: "",
-    action: null,
-  });
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const canCreate = user?.permissions?.includes("CATEGORY_CREATE");
+
+  const canView = user?.permissions?.includes("CATEGORY_VIEW");
+
+  const canUpdate = user?.permissions?.includes("CATEGORY_UPDATE");
+
+  const canDelete = user?.permissions?.includes("CATEGORY_DELETE");
+
+  const canRestore = user?.permissions?.includes("CATEGORY_REACTIVATE");
 
   const handleSort = (field) => {
     setCurrentPage(0);
@@ -81,6 +85,13 @@ export default function BranchTable() {
       setDirection("ASC");
     }
   };
+
+  const [confirmModal, setConfirmModal] = useState({
+    open: false,
+    title: "",
+    message: "",
+    action: null,
+  });
 
   const SortableHeader = ({ label, field }) => {
     const active = sortBy === field;
@@ -113,14 +124,14 @@ export default function BranchTable() {
   const openDeleteModal = (id) => {
     setConfirmModal({
       open: true,
-      title: "Delete Branch",
-      message: "Are you sure you want to delete this branch?",
+      title: "Delete Category",
+      message: "Are you sure you want to delete this category?",
       action: async () => {
         try {
-          await axiosClient.delete(`/branch/${id}`);
+          await axiosClient.delete(`/category/${id}`);
         } catch (error) {
           toast.error(
-            error?.response?.data?.message || "Failed to delete branch",
+            error?.response?.data?.message || "Failed to delete category",
           );
         } finally {
           setConfirmModal((prev) => ({ ...prev, open: false }));
@@ -132,14 +143,14 @@ export default function BranchTable() {
   const openRestoreModal = (id) => {
     setConfirmModal({
       open: true,
-      title: "Restore Branch",
-      message: "Are you sure you want to restore this branch?",
+      title: "Restore Category",
+      message: "Are you sure you want to restore this category?",
       action: async () => {
         try {
-          await axiosClient.patch(`/branch/${id}/restore`);
+          await axiosClient.patch(`/category/${id}/restore`);
         } catch (error) {
           toast.error(
-            error?.response?.data?.message || "Failed to restore branch",
+            error?.response?.data?.message || "Failed to restore category",
           );
         } finally {
           setConfirmModal((prev) => ({ ...prev, open: false }));
@@ -148,27 +159,32 @@ export default function BranchTable() {
     });
   };
 
-  const loadBranches = async () => {
+  const loadCategories = async () => {
     try {
       setLoading(true);
-
       const payload = {
         searchInput: searchCriteria.searchInput || null,
+        organizationId: searchCriteria.organizationId || null,
+        available:
+          searchCriteria.available === ""
+            ? null
+            : searchCriteria.available === "true",
+
         isActive:
           searchCriteria.isActive === ""
             ? null
             : searchCriteria.isActive === "true",
       };
 
-      const response = await axiosClient.post(
-        `/branch/search?page=${currentPage}&size=${pageSize}&sortBy=${sortBy}&direction=${direction}`,
+      const response = await CategoryService.search(
         payload,
+        currentPage,
+        pageSize,
+        sortBy,
+        direction,
       );
-
-      const page = response.data.data;
-
-      setBranches(page.content);
-      setTotalPages(page.totalPages);
+      setCategories(response.content);
+      setTotalPages(response.totalPages);
     } catch (error) {
       console.error(error);
     } finally {
@@ -177,39 +193,39 @@ export default function BranchTable() {
   };
 
   useEffect(() => {
-    loadBranches();
+    loadCategories();
   }, [currentPage, pageSize, sortBy, direction]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setCurrentPage(0);
-      loadBranches();
+      loadCategories();
     }, 300);
 
     return () => clearTimeout(timer);
   }, [searchCriteria, sortBy, direction, pageSize]);
 
   useEffect(() => {
-    const eventSource = new EventSource(`${API_URL}/branch/stream`);
+    const eventSource = new EventSource(`${API_URL}/category/stream`);
 
-    eventSource.addEventListener("branch-created", () => {
-      loadBranches();
-      toast.success("A new branch was created.");
+    eventSource.addEventListener("category-created", () => {
+      loadCategories();
+      toast.success("A new category was created.");
     });
 
-    eventSource.addEventListener("branch-updated", () => {
-      loadBranches();
-      toast.success("A branch was updated.");
+    eventSource.addEventListener("category-updated", () => {
+      loadCategories();
+      toast.success("A category was updated.");
     });
 
-    eventSource.addEventListener("branch-deleted", async (event) => {
-      loadBranches();
-      toast.success("A branch was deleted.");
+    eventSource.addEventListener("category-deleted", async (event) => {
+      loadCategories();
+      toast.success("A category was deleted.");
     });
 
-    eventSource.addEventListener("branch-restored", () => {
-      loadBranches();
-      toast.success("A branch was restored.");
+    eventSource.addEventListener("category-restored", () => {
+      loadCategories();
+      toast.success("A category was restored.");
     });
 
     return () => eventSource.close();
@@ -236,27 +252,28 @@ export default function BranchTable() {
         {/* Header */}
 
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold">Branches</h2>
+          <h2 className="text-2xl font-bold">Categories</h2>
 
-          {user.permissions.includes("BRANCH_CREATE") && (
+          {canCreate && (
             <button
               onClick={() => {
                 setModalMode("create");
-                setSelectedBranch(null);
+                setSelectedCategory(null);
                 setShowModal(true);
               }}
               className="px-3 sm:px-6 py-2 bg-[#0d4039] text-white rounded-lg font-medium flex items-center justify-center gap-2"
             >
-              <PlusIcon className="w-5 h-5" title="Add Branch" />
-              <span className="hidden sm:inline">Add Branch</span>
+              <PlusIcon className="w-5 h-5" />
+              <span className="hidden sm:inline">Add Category</span>
             </button>
           )}
         </div>
 
-        {/* ================= Search & Filters ================= */}
+        {/* Search & Filters */}
 
         <div>
           {/* Mobile Search */}
+
           <div className="lg:hidden space-y-4">
             <div className="relative">
               <input
@@ -268,7 +285,7 @@ export default function BranchTable() {
                     searchInput: e.target.value,
                   }))
                 }
-                placeholder="Branch Name, Branch Code, Address, City, Phone"
+                placeholder="Category Name, Category Code"
                 className="w-full rounded-xl border border-gray-300 bg-white py-3 pl-11 pr-12 text-sm shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               />
 
@@ -279,18 +296,22 @@ export default function BranchTable() {
                 className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg p-2 hover:bg-gray-100"
               >
                 <FunnelIcon
-                  className={`h-5 w-5 transition ${showFilters ? "rotate-180 text-blue-600" : "text-gray-500"
-                    }`}
+                  className={`h-5 w-5 transition ${
+                    showFilters ? "rotate-180 text-blue-600" : "text-gray-500"
+                  }`}
                 />
               </button>
             </div>
           </div>
 
           {/* Mobile Filters */}
-          <div className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${showFilters
-              ? "max-h-[500px] opacity-100 mt-4"
-              : "max-h-0 opacity-0"
-              }`}>
+          <div
+            className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+              showFilters
+                ? "max-h-[500px] opacity-100 mt-4"
+                : "max-h-0 opacity-0"
+            }`}
+          >
             <div className="space-y-4">
               {showFilters && (
                 <>
@@ -377,7 +398,7 @@ export default function BranchTable() {
                     searchInput: e.target.value,
                   }))
                 }
-                placeholder="Branch Name, Branch Code, Address, City, Phone"
+                placeholder="Category Name, Category Code"
                 className="w-full border-0 bg-transparent text-sm focus:outline-none"
               />
             </FilterField>
@@ -450,29 +471,31 @@ export default function BranchTable() {
           </div>
         </div>
       </div>
-
-      {/* Table */}
+      
       <br />
       <div className="bg-white rounded-2xl shadow-md p-4 md:p-6">
+        {/* =========================== Table Header =========================== */}
         <div className=" flex items-center justify-between mb-4 ">
           <p className="text-sm text-gray-500">
             Showing{" "}
             <span className="font-semibold text-blue-600">
-              {branches.length}
+              {categories.length}
             </span>{" "}
-            Branches
+            Categories
           </p>
         </div>
+        {/* =========================== DESKTOP TABLE =========================== */}
         <div className="hidden lg:block overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
           <table className="min-w-full">
             <thead className="border-b border-gray-200 bg-gray-50">
               <tr className="bg-gray-100">
-                <SortableHeader label="Branch Name" field="branchName" />
-                <SortableHeader label="Branch Code" field="branchCode" />
-                <SortableHeader label="Address" field="address" />
-                <SortableHeader label="City" field="city" />
-                <SortableHeader label="Phone" field="phone" />
+                <SortableHeader label="Category Code" field="categoryCode" />
+                <SortableHeader label="Category Name" field="categoryName" />
+                <SortableHeader label="Description" field="description" />
+                <SortableHeader label="Display Order" field="displayOrder" />
+                <SortableHeader label="Available" field="available" />
                 <SortableHeader label="Organization" field="organization" />
+                <SortableHeader label="Branch" field="branch" />
                 <SortableHeader label="Status" field="isActive" />
                 <th className="rounded-tr-xl px-4 py-3 text-left">Action</th>
               </tr>
@@ -488,39 +511,72 @@ export default function BranchTable() {
               )}
 
               {!loading &&
-                branches.map((branch) => (
-                  <tr key={branch.id} className="border-b hover:bg-gray-50">
-                    <td className="px-4 py-3 ">{branch.branchName}</td>
-
-                    <td className="px-4 py-3 ">{branch.branchCode}</td>
-
-                    <td className="px-4 py-3 ">{branch.address}</td>
-
-                    <td className="px-4 py-3 ">{branch.city}</td>
-
-                    <td className="px-4 py-3 ">{branch.phone}</td>
+                categories.map((category) => (
+                  <tr key={category.id} className="border-b hover:bg-gray-50">
+                    <td className="px-4 py-3 ">{category.categoryCode}</td>
 
                     <td className="px-4 py-3 ">
-                      {branch.organizationModel?.organizationName || "-"}
+                      <div className="flex items-center gap-3">
+                        {category.imageUrl ? (
+                          <img
+                            src={category.imageUrl}
+                            alt={category.categoryName}
+                            className="w-12 h-12 rounded-lg border object-cover"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 rounded-lg border flex items-center justify-center bg-gray-100 text-gray-400 text-xs">
+                            No Image
+                          </div>
+                        )}
+
+                        <div>
+                          <div className="font-medium">
+                            {category.categoryName}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+
+                    <td className="px-4 py-3 ">{category.description}</td>
+
+                    <td className="px-4 py-3 ">{category.displayOrder}</td>
+
+                    <td className="px-4 py-3 ">
+                      <span
+                        className={`px-3 py-1 rounded-full text-sm ${
+                          category.available
+                            ? "bg-blue-100 text-blue-700"
+                            : "bg-gray-200 text-gray-700"
+                        }`}
+                      >
+                        {category.available ? "Available" : "Unavailable"}
+                      </span>
+                    </td>
+
+                    <td className="px-4 py-3 ">
+                      {category.organizationModel?.organizationName || "-"}
+                    </td>
+
+                    <td className="px-4 py-3 ">
+                      {category.branchModel?.branchName || "-"}
                     </td>
 
                     <td className="px-4 py-3 ">
                       <span
                         className={`px-3 py-1 rounded-full text-sm ${getStatusColor(
-                          branch.isActive,
+                          category.isActive,
                         )}`}
                       >
-                        {branch.isActive ? "ACTIVE" : "INACTIVE"}
+                        {category.isActive ? "ACTIVE" : "INACTIVE"}
                       </span>
                     </td>
 
                     <td className="px-4 py-3 ">
-                      {user.permissions.includes("BRANCH_VIEW") && (
+                      {canView && (
                         <button
                           className="text-Balck-600"
-                          disabled={!user.permissions.includes("BRANCH_VIEW")}
                           onClick={() => {
-                            setSelectedBranch(branch);
+                            setSelectedCategory(category);
                             setModalMode("view");
                             setShowModal(true);
                           }}
@@ -530,11 +586,11 @@ export default function BranchTable() {
                         </button>
                       )}
 
-                      {user.permissions.includes("BRANCH_UPDATE") && (
+                      {canUpdate && (
                         <button
                           className="text-blue-600"
                           onClick={() => {
-                            setSelectedBranch(branch);
+                            setSelectedCategory(category);
                             setModalMode("edit");
                             setShowModal(true);
                           }}
@@ -544,27 +600,27 @@ export default function BranchTable() {
                         </button>
                       )}
 
-                      {branch.isActive
-                        ? user?.permissions?.includes("BRANCH_DELETE") && (
-                          <button
-                            className="text-Balck-600"
-                            onClick={() => openDeleteModal(branch.id)}
-                            className="text-red-600 mr-3 items-center text-sm hover:bg-gray-50 border rounded-lg p-1 "
-                          >
-                            <Trash className="w-5 h-5 " title="Delete" />
-                          </button>
-                        )
-                        : user?.permissions?.includes("BRANCH_REACTIVATE") && (
-                          <button
-                            className="text-orange-600 mr-3 items-center text-sm hover:bg-gray-50 border rounded-lg p-1 "
-                            onClick={() => openRestoreModal(branch.id)}
-                          >
-                            <ArrowPathIcon
-                              className="w-5 h-5 "
-                              title="Restore"
-                            />
-                          </button>
-                        )}
+                      {category.isActive
+                        ? canDelete && (
+                            <button
+                              className="text-Balck-600"
+                              onClick={() => openDeleteModal(category.id)}
+                              className="text-red-600 mr-3 items-center text-sm hover:bg-gray-50 border rounded-lg p-1 "
+                            >
+                              <Trash className="w-5 h-5 " title="Delete" />
+                            </button>
+                          )
+                        : canRestore && (
+                            <button
+                              className="text-orange-600 mr-3 items-center text-sm hover:bg-gray-50 border rounded-lg p-1 "
+                              onClick={() => openRestoreModal(category.id)}
+                            >
+                              <ArrowPathIcon
+                                className="w-5 h-5 "
+                                title="Restore"
+                              />
+                            </button>
+                          )}
                     </td>
                   </tr>
                 ))}
@@ -572,79 +628,103 @@ export default function BranchTable() {
           </table>
         </div>
 
-        {/* MOBILE */}
+        {/* =========================== MOBILE VIEW =========================== */}
+
         <div className="lg:hidden rounded-2xl border border-gray-200 bg-white overflow-hidden shadow-sm">
           {loading ? (
             <div className="text-center py-10">Loading...</div>
+          ) : categories.length === 0 ? (
+            <div className="text-center py-10 text-gray-500">
+              No Categories Found
+            </div>
           ) : (
-            branches.map((branch) => (
+            categories.map((category) => (
               <div
-                key={branch.id}
+                key={category.id}
                 className="px-4 py-3 border-b last:border-b-0 hover:bg-blue-50/40 transition"
               >
-                {/* Row 1 */}
+                {/* Header */}
                 <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <h3 className="truncate font-semibold text-gray-900">
-                        {branch.branchName}
-                      </h3>
+                  <div className="flex min-w-0 flex-1 gap-3">
+                    {category.imageUrl ? (
+                      <img
+                        src={category.imageUrl}
+                        alt={category.categoryName}
+                        className="h-14 w-14 rounded-lg border object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-14 w-14 items-center justify-center rounded-lg border bg-gray-100 text-[10px] text-gray-400">
+                        No Image
+                      </div>
+                    )}
 
-                      <span
-                        className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${branch.isActive
-                            ? "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-700"
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <h3 className="truncate font-semibold text-gray-900">
+                          {category.categoryName}
+                        </h3>
+
+                        <span
+                          className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                            category.isActive
+                              ? "bg-green-100 text-green-700"
+                              : "bg-red-100 text-red-700"
                           }`}
-                      >
-                        {branch.isActive ? "ACTIVE" : "INACTIVE"}
-                      </span>
-                    </div>
+                        >
+                          {category.isActive ? "ACTIVE" : "INACTIVE"}
+                        </span>
+                      </div>
 
-                    <p className="mt-1 text-xs text-gray-500">
-                      {branch.branchCode}
-                    </p>
+                      <p className="mt-1 text-xs text-gray-500">
+                        {category.categoryCode}
+                      </p>
+                    </div>
                   </div>
                 </div>
 
                 {/* Details */}
                 <div className="mt-3 space-y-1 text-sm">
                   <p>
-                    <b>Address:</b> {branch.address}
+                    <b>Description:</b> {category.description || "-"}
                   </p>
 
                   <p>
-                    <b>City:</b> {branch.city}
+                    <b>Display Order:</b> {category.displayOrder}
                   </p>
 
                   <p>
-                    <b>Phone:</b> {branch.phone}
+                    <b>Available:</b> {category.available ? "Yes" : "No"}
                   </p>
 
                   <p>
                     <b>Organization:</b>{" "}
-                    {branch.organizationModel?.organizationName || "N/A"}
+                    {category.organizationModel?.organizationName || "N/A"}
+                  </p>
+
+                  <p>
+                    <b>Branch:</b> {category.branchModel?.branchName || "N/A"}
                   </p>
                 </div>
 
                 {/* Actions */}
                 <div className="mt-3 flex items-center justify-end gap-1">
-                  {user.permissions.includes("BRANCH_VIEW") && (
+                  {canView && (
                     <button
                       onClick={() => {
-                        setSelectedBranch(branch);
+                        setSelectedCategory(category);
                         setModalMode("view");
                         setShowModal(true);
                       }}
-                      className="rounded-lg p-2 text-blue-600 hover:bg-blue-100"
+                      className="rounded-lg p-2 text-green-600 hover:bg-green-100"
                     >
                       <EyeIcon className="h-5 w-5" />
                     </button>
                   )}
 
-                  {user.permissions.includes("BRANCH_UPDATE") && (
+                  {canUpdate && (
                     <button
                       onClick={() => {
-                        setSelectedBranch(branch);
+                        setSelectedCategory(category);
                         setModalMode("edit");
                         setShowModal(true);
                       }}
@@ -654,33 +734,30 @@ export default function BranchTable() {
                     </button>
                   )}
 
-                  {branch.isActive
-                    ? user.permissions.includes("BRANCH_DELETE") && (
-                      <button
-                        onClick={() => openDeleteModal(branch.id)}
-                        className="rounded-lg p-2 text-red-600 hover:bg-red-100"
-                      >
-                        <Trash className="h-5 w-5" />
-                      </button>
-                    )
-                    : user.permissions.includes("BRANCH_REACTIVATE") && (
-                      <button
-                        onClick={() => openRestoreModal(branch.id)}
-                        disabled={
-                          !user?.permissions?.includes("BRANCH_REACTIVATE")
-                        }
-                        className="rounded-lg p-2 text-orange-600 hover:bg-orange-100"
-                      >
-                        <ArrowPathIcon className="h-5 w-5" />
-                      </button>
-                    )}
+                  {category.isActive
+                    ? canDelete && (
+                        <button
+                          onClick={() => openDeleteModal(category.id)}
+                          className="rounded-lg p-2 text-red-600 hover:bg-red-100"
+                        >
+                          <Trash className="h-5 w-5" />
+                        </button>
+                      )
+                    : canRestore && (
+                        <button
+                          onClick={() => openRestoreModal(category.id)}
+                          className="rounded-lg p-2 text-orange-600 hover:bg-orange-100"
+                        >
+                          <ArrowPathIcon className="h-5 w-5" />
+                        </button>
+                      )}
                 </div>
               </div>
             ))
           )}
         </div>
 
-        {/* ================= Pagination ================= */}
+        {/* =========================== PAGINATION =========================== */}
 
         <div className="mt-6 flex flex-col gap-4 border-t border-gray-200 pt-5 md:flex-row md:items-center md:justify-between">
           {/* Left */}
@@ -688,13 +765,13 @@ export default function BranchTable() {
           <div className="text-sm text-gray-500">
             Showing{" "}
             <span className="font-semibold text-blue-600">
-              {branches.length === 0 ? 0 : currentPage * pageSize + 1}
+              {categories.length === 0 ? 0 : currentPage * pageSize + 1}
             </span>{" "}
             to{" "}
             <span className="font-semibold text-blue-600">
               {Math.min(
                 (currentPage + 1) * pageSize,
-                currentPage * pageSize + branches.length,
+                currentPage * pageSize + categories.length,
               )}
             </span>{" "}
             results
@@ -709,10 +786,11 @@ export default function BranchTable() {
               disabled={currentPage === 0}
               onClick={() => setCurrentPage((prev) => prev - 1)}
               className={`rounded-xl border px-4 py-2 text-sm transition
-      ${currentPage === 0
-                  ? "cursor-not-allowed border-gray-200 text-gray-400"
-                  : "border-gray-300 hover:bg-gray-50"
-                }`}
+      ${
+        currentPage === 0
+          ? "cursor-not-allowed border-gray-200 text-gray-400"
+          : "border-gray-300 hover:bg-gray-50"
+      }`}
             >
               Previous
             </button>
@@ -725,10 +803,11 @@ export default function BranchTable() {
                 onClick={() => setCurrentPage(index)}
                 className={`h-10 w-10 rounded-xl text-sm font-medium transition
 
-        ${currentPage === index
-                    ? "bg-[#0d4039] text-white shadow-sm"
-                    : "border border-gray-200 bg-white hover:bg-gray-50"
-                  }`}
+        ${
+          currentPage === index
+            ? "bg-[#0d4039] text-white shadow-sm"
+            : "border border-gray-200 bg-white hover:bg-gray-50"
+        }`}
               >
                 {index + 1}
               </button>
@@ -741,15 +820,18 @@ export default function BranchTable() {
               onClick={() => setCurrentPage((prev) => prev + 1)}
               className={`rounded-xl border px-4 py-2 text-sm transition
 
-      ${currentPage === totalPages - 1 || totalPages === 0
-                  ? "cursor-not-allowed border-gray-200 text-gray-400"
-                  : "border-gray-300 hover:bg-gray-50"
-                }`}
+      ${
+        currentPage === totalPages - 1 || totalPages === 0
+          ? "cursor-not-allowed border-gray-200 text-gray-400"
+          : "border-gray-300 hover:bg-gray-50"
+      }`}
             >
               Next
             </button>
           </div>
         </div>
+
+        {/* =========================== MODAL =========================== */}
 
         {/* {Model Box} */}
         {confirmModal.open && (
@@ -782,14 +864,12 @@ export default function BranchTable() {
           </div>
         )}
 
-        {/* Modal */}
-
-        <BranchModalBox
+        <CategoryModelBox
           isOpen={showModal}
           onClose={() => setShowModal(false)}
           mode={modalMode}
-          branch={selectedBranch}
-          onSuccess={loadBranches}
+          category={selectedCategory}
+          onSuccess={loadCategories}
         />
       </div>
     </div>

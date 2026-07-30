@@ -13,15 +13,11 @@ import java.util.UUID;
 @Builder
 public class CategorySearchCriteria {
 
-    private String categoryCode;
-
-    private String categoryName;
+    private String searchInput;
 
     private UUID organizationId;
 
     private UUID branchId;
-
-    private Boolean available;
 
     private Boolean isActive;
 }

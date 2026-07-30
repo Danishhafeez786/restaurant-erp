@@ -9,16 +9,20 @@ import SystemSettings from './pages/SystemSetting/SystemSettings';
 import CreateEmployee from './pages/CreateEmployee';
 import Dashboard from './pages/Dashboard';
 import Employee from './pages/employees/Employee';
-import Category from './pages/Category/Category';
-import Tables from './pages/Tables/Tables';
-import ModifierGroup from './pages/ModifierGroup/ModifierGroup';
-import Modifier from './pages/Modifier/Modifier';
+
 import Settings from './pages/SystemSetting/Settings/Settings';
 import SubscriptionPlans from './pages/SystemSetting/SubscriptionPlans/SubscriptionPlans';
 import Organization from './pages/SystemSetting/Organizations/Organizations';
 import Branch from './pages/SystemSetting/Branch/Branch';
 import Role from './pages/SystemSetting/Role/Role';
 import Permission from './pages/SystemSetting/Permission/Permission';
+
+import RestaurantSettings from './pages/RestaurantSetting/RestaurantSettings';
+import Category from './pages/RestaurantSetting/Category/Category';
+import Tables from './pages/Tables/Tables';
+import ModifierGroup from './pages/ModifierGroup/ModifierGroup';
+import Modifier from './pages/Modifier/Modifier';
+
 import './App.css';
 
 function App() {
@@ -29,18 +33,23 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/settings" element={<Settings />} />
             <Route path="/system-settings" element={<ProtectedRoute><SystemSettings /></ProtectedRoute>}>
-              <Route
-                index
-                element={<Navigate to="subscription-plans" replace />}
-              />
-              <Route path="subscription-plans" element={<SubscriptionPlans />} />
-              <Route path="organizations" element={<Organization />} />
-              <Route path="branch" element={<Branch />} />
-              <Route path="role" element={<Role />} />
-              <Route path="permission" element={<Permission />} />
-              <Route path="settings" element={<Settings />} />
+              <Route index element={<Navigate to="subscription-plans" replace />}/>
+              <Route path="subscription-plans" element={<ProtectedRoute><SubscriptionPlans /></ProtectedRoute>}/>
+              <Route path="organizations" element={<ProtectedRoute> <Organization /> </ProtectedRoute>} />
+              <Route path="branch" element={<ProtectedRoute> <Branch /> </ProtectedRoute>} />
+              <Route path="role" element={<ProtectedRoute> <Role /> </ProtectedRoute>} />
+              <Route path="permission" element={<ProtectedRoute> <Permission /> </ProtectedRoute>} />
+              <Route path="settings" element={<ProtectedRoute> <Settings /> </ProtectedRoute>} />
+            </Route>
+
+            <Route path="/restaurant-settings" element={<ProtectedRoute> <RestaurantSettings /> </ProtectedRoute>} >
+              <Route index element={<Navigate to="category-management" replace />} />
+              <Route path="category-management" element={<ProtectedRoute> <Category /> </ProtectedRoute>} />
+              <Route path="table-management" element={<ProtectedRoute> <Tables /> </ProtectedRoute>} />
+              <Route path="modifier-group" element={<ProtectedRoute> <ModifierGroup /> </ProtectedRoute>} />
+              <Route path="modifier" element={<ProtectedRoute> <Modifier /> </ProtectedRoute>} />
+            
             </Route>
 
             <Route path="/dashboard" element={<ProtectedRoute> <Dashboard /> </ProtectedRoute>} />

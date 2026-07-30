@@ -41,9 +41,7 @@ public class CategoryHandler {
         return categoryTransformer.toModel(saved);
     }
 
-    public PageResponse<CategoryModel> getAll(
-            CategorySearchCriteria criteria,
-            Pageable pageable) {
+    public PageResponse<CategoryModel> getAll(CategorySearchCriteria criteria, Pageable pageable) {
 
         Page<Category> page = categoryService.search(criteria, pageable);
         return PageResponse.<CategoryModel>builder()

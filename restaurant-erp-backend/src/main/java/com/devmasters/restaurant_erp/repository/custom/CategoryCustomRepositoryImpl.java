@@ -26,46 +26,31 @@ public class CategoryCustomRepositoryImpl
 
         Query query = new Query();
         List<Criteria> filters = new ArrayList<>();
-        if (criteria.getCategoryCode() != null &&
-                !criteria.getCategoryCode().isBlank()) {
-            filters.add(
-                    Criteria.where("categoryCode")
-                            .regex(criteria.getCategoryCode(), "i")
+        if (criteria.getSearchInput() != null && !criteria.getSearchInput().isBlank()) {
+            String keyword = criteria.getSearchInput();
+            filters.add(new Criteria().orOperator(
+                            Criteria.where("categoryCode").regex(keyword, "i"),
+                            Criteria.where("categoryName").regex(keyword, "i")
+                    )
             );
         }
 
-        if (criteria.getCategoryName() != null && !criteria.getCategoryName().isBlank()) {
-            filters.add(Criteria.where("categoryName").regex(criteria.getCategoryName(), "i"));
-        }
-
-        if (criteria.getOrganizationId() != null) {
+        if (criteria.getOrganizationId() != null)
             filters.add(Criteria.where("organization.$id").is(criteria.getOrganizationId()));
-        }
 
-        if (criteria.getBranchId() != null) {
+        if (criteria.getBranchId() != null)
             filters.add(Criteria.where("branch.$id").is(criteria.getBranchId()));
-        }
 
-        if (criteria.getAvailable() != null) {
-            filters.add(Criteria.where("available").is(criteria.getAvailable()));
-        }
-
-        if (criteria.getIsActive() != null) {
+        if (criteria.getIsActive() != null)
             filters.add(Criteria.where("isActive").is(criteria.getIsActive()));
-        }
 
-        if (!filters.isEmpty()) {
+        if (!filters.isEmpty())
             query.addCriteria(new Criteria().andOperator(filters.toArray(new Criteria[0])));
-        }
 
         long total = mongoTemplate.count(query, Category.class);
 
         query.with(pageable);
         List<Category> categories = mongoTemplate.find(query, Category.class);
-        return new PageImpl<>(
-                categories,
-                pageable,
-                total
-        );
+        return new PageImpl<>(categories, pageable, total);
     }
 }
