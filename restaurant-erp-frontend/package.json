@@ -17,7 +17,7 @@
     "lucide-react": "^1.26.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "react-router-dom": "^6.30.4",
+    "react-router-dom": "^7.18.2",
     "react-toastify": "^11.1.0",
     "recharts": "^3.10.0",
     "simplebar": "^6.3.3",
