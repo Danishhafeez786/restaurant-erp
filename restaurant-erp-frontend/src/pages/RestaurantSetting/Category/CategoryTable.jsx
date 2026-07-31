@@ -3,7 +3,7 @@ import axiosClient from "../../../api/axiosClient";
 import CategoryModelBox from "./CategoryModelBox";
 import FilterField from "../../../components/FilterField";
 import CustomSelect from "../../../components/CustomSelect";
-import CategoryService from "../../../services/CategoryService";
+import CategoryService from "../../../services/categoryService";
 import { Listbox } from "@headlessui/react";
 import {
   PlusIcon,
