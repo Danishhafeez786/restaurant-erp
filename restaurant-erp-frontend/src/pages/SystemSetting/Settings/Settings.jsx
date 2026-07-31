@@ -4,10 +4,10 @@ import { toast } from "react-toastify";
 import Sidebar from "../../../components/Sidebar";
 
 import SummaryCards from "../../../components/Settings/SummaryCards";
-import SettingsToolbar from "../../../components/settings/SettingsToolbar";
+import SettingsToolbar from "../../../components/Settings/SettingsToolbar";
 import PermissionMatrix from "../../../components/Settings/PermissionMatrix";
-import RoleList from "../../../components/settings/RoleList";
-import RolePermissionModal from "../../../components/settings/RolePermissionModal";
+import RoleList from "../../../components/Settings/RoleList";
+import RolePermissionModal from "../../../components/Settings/RolePermissionModal";
 
 import roleService from "../../../services/roleService";
 import permissionService from "../../../services/permissionService";
