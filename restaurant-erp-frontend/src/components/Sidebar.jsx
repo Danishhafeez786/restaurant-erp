@@ -23,7 +23,13 @@ import {
   ChevronRightIcon,
 } from "@heroicons/react/24/outline";
 
-import { UserRound, LogOut, LifeBuoy, PanelLeft, User2Icon } from "lucide-react";
+import {
+  UserRound,
+  LogOut,
+  LifeBuoy,
+  PanelLeft,
+  User2Icon,
+} from "lucide-react";
 
 const Sidebar = ({ collapsed, setCollapsed }) => {
   const navigate = useNavigate();
@@ -122,10 +128,6 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                 title={collapsed ? menu.title : ""}
                 onClick={() => {
                   setIsOpen(false);
-
-                  if (window.innerWidth >= 1024) {
-                    setCollapsed(true);
-                  }
 
                   navigate(menu.path);
                 }}
@@ -263,9 +265,10 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
             Profile
           </button>
 
-          <button 
-          onClick={() => navigate("/system-settings")}
-          className="w-full px-4 py-3 flex items-center gap-3 hover:bg-slate-700 transition">
+          <button
+            onClick={() => navigate("/system-settings")}
+            className="w-full px-4 py-3 flex items-center gap-3 hover:bg-slate-700 transition"
+          >
             <Cog6ToothIcon className="w-5 h-5" />
             System Settings
           </button>
@@ -462,9 +465,10 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                 <span>Profile</span>
               </button>
 
-              <button 
-              onClick={() => navigate("/system-settings")}
-              className="w-full px-4 py-3 flex items-center gap-3 text-left hover:bg-slate-700 transition">
+              <button
+                onClick={() => navigate("/system-settings")}
+                className="w-full px-4 py-3 flex items-center gap-3 text-left hover:bg-slate-700 transition"
+              >
                 <Cog6ToothIcon className="w-5 h-5 text-gray-300" />
                 <span>System Settings</span>
               </button>
