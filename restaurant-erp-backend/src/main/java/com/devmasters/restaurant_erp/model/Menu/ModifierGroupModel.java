@@ -29,20 +29,20 @@ public class ModifierGroupModel {
     @Size(max = 500, message = "Description cannot exceed 500 characters")
     private String description;
 
-    @NotNull(message = "Minimum selection is required")
+//    @NotNull(message = "Minimum selection is required")
     @Min(value = 0, message = "Minimum selection cannot be negative")
     @Max(value = 100, message = "Minimum selection cannot exceed 100")
     private Integer minimumSelection;
 
-    @NotNull(message = "Maximum selection is required")
+//    @NotNull(message = "Maximum selection is required")
     @Min(value = 1, message = "Maximum selection must be at least 1")
     @Max(value = 100, message = "Maximum selection cannot exceed 100")
     private Integer maximumSelection;
 
-    @NotNull(message = "Required flag is required")
+//    @NotNull(message = "Required flag is required")
     private Boolean required;
 
-    @NotNull(message = "Display order is required")
+//    @NotNull(message = "Display order is required")
     @Min(value = 0, message = "Display order cannot be negative")
     private Integer displayOrder;
 

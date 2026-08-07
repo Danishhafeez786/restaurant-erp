@@ -470,9 +470,9 @@ export default function ModifierGroupTable() {
                 <SortableHeader label="Code" field="code" />
                 <SortableHeader label="Name" field="name" />
                 <SortableHeader label="Description" field="description" />
-                <SortableHeader label="Min Selection" field="minSelection" />
+                {/* <SortableHeader label="Min Selection" field="minSelection" />
                 <SortableHeader label="Max Selection" field="maxSelection" />
-                <SortableHeader label="Required" field="required" />
+                <SortableHeader label="Required" field="required" /> */}
                 <SortableHeader label="Organization" field="organization" />
                 <SortableHeader label="Branch" field="branch" />
                 <SortableHeader label="Status" field="isActive" />
@@ -513,7 +513,7 @@ export default function ModifierGroupTable() {
                       {modifierGroup.description || "-"}
                     </td>
 
-                    <td className="px-4 py-3">{modifierGroup.minSelection}</td>
+                    {/* <td className="px-4 py-3">{modifierGroup.minSelection}</td>
 
                     <td className="px-4 py-3">{modifierGroup.maxSelection}</td>
 
@@ -527,7 +527,7 @@ export default function ModifierGroupTable() {
                       >
                         {modifierGroup.required ? "Required" : "Optional"}
                       </span>
-                    </td>
+                    </td> */}
 
                     <td className="px-4 py-3">
                       {modifierGroup.organizationModel?.organizationName || "-"}
@@ -655,7 +655,7 @@ export default function ModifierGroupTable() {
                     <b>Description:</b> {modifierGroup.description || "-"}
                   </p>
 
-                  <p>
+                  {/* <p>
                     <b>Min Selection:</b> {modifierGroup.minSelection}
                   </p>
 
@@ -665,7 +665,7 @@ export default function ModifierGroupTable() {
 
                   <p>
                     <b>Required:</b> {modifierGroup.required ? "Yes" : "No"}
-                  </p>
+                  </p> */}
 
                   <p>
                     <b>Organization:</b>{" "}

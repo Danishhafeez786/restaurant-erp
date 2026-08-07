@@ -25,51 +25,31 @@ public class ModifierGroupCustomRepositoryImpl implements ModifierGroupCustomRep
 
         Query query = new Query();
         List<Criteria> filters = new ArrayList<>();
-        if (criteria.getName() != null &&
-                !criteria.getName().isBlank()) {
-            filters.add(
-                    Criteria.where("name")
-                            .regex(criteria.getName(), "i")
-            );
-        }
 
-        if (criteria.getCode() != null && !criteria.getCode().isBlank()) {
-            filters.add(
-                    Criteria.where("code")
-                            .regex(criteria.getCode(), "i")
-            );
-        }
-
-        if (criteria.getOrganizationId() != null) {
-            filters.add(Criteria.where("organization.$id")
-                            .is(criteria.getOrganizationId())
-            );
-        }
-
-        if (criteria.getBranchId() != null) {
-            filters.add(Criteria.where("branch.$id")
-                            .is(criteria.getBranchId())
-            );
-        }
-
-        if (criteria.getRequired() != null) {
-            filters.add(Criteria.where("required")
-                            .is(criteria.getRequired())
-            );
-        }
-
-        if (criteria.getIsActive() != null) {
-            filters.add(Criteria.where("isActive")
-                            .is(criteria.getIsActive())
-            );
-        }
-
-        if (!filters.isEmpty()) {
-            query.addCriteria(new Criteria().andOperator(
-                            filters.toArray(new Criteria[0])
+        if(criteria.getSearchInput() != null && !criteria.getSearchInput().isBlank()) {
+            String keyword = criteria.getSearchInput();
+            filters.add(new Criteria().orOperator(
+                            Criteria.where("name").regex(keyword, "i"),
+                            Criteria.where("code").regex(keyword, "i")
                     )
             );
+
         }
+
+
+        if (criteria.getOrganizationId() != null)
+            filters.add(Criteria.where("organization.$id").is(criteria.getOrganizationId()));
+
+        if (criteria.getBranchId() != null)
+            filters.add(Criteria.where("branch.$id").is(criteria.getBranchId()));
+
+
+        if (criteria.getIsActive() != null)
+            filters.add(Criteria.where("isActive").is(criteria.getIsActive()));
+
+
+        if (!filters.isEmpty())
+            query.addCriteria(new Criteria().andOperator(filters.toArray(new Criteria[0])));
 
         long total = mongoTemplate.count(query, ModifierGroup.class);
         query.with(pageable);

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -37,6 +38,7 @@ public class ModifierGroupServiceImpl implements ModifierGroupService {
 
     @Override
     public ModifierGroup create(ModifierGroup entity) {
+        entity.setCreatedAt(LocalDateTime.now());
         return modifierGroupRepository.save(entity);
     }
 

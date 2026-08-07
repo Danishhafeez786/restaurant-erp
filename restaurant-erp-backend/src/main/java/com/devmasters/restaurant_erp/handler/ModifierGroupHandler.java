@@ -33,17 +33,11 @@ public class ModifierGroupHandler {
             );
         }
 
-        if(modifierGroupService.existsByCodeIgnoreCaseAndBranch_Id(
-                        model.getCode(),
-                        branchId)) {
-            throw new RuntimeException(
-                    "Modifier Group Code already exists : "
-                            + model.getCode());
+        if(modifierGroupService.existsByCodeIgnoreCaseAndBranch_Id(model.getCode(), branchId)) {
+            throw new RuntimeException("Modifier Group Code already exists : " + model.getCode());
         }
 
-        if(modifierGroupService.existsByNameIgnoreCaseAndBranch_Id(
-                        model.getName(),
-                        branchId)) {
+        if(modifierGroupService.existsByNameIgnoreCaseAndBranch_Id(model.getName(), branchId)) {
             throw new RuntimeException(
                     "Modifier Group already exists : "
                             + model.getName());

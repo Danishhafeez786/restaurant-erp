@@ -7,8 +7,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface ModifierGroupCustomRepository {
 
-    Page<ModifierGroup> search(
-            ModifierGroupSearchCriteria criteria,
-            Pageable pageable
-    );
+    Page<ModifierGroup> search(ModifierGroupSearchCriteria criteria, Pageable pageable);
 }

@@ -32,8 +32,6 @@ public class ModifierGroupTransformer extends Transformer<ModifierGroup, Modifie
                 .organization(organizationTransformer.toEntity(model.getOrganizationModel()))
                 .branch(branchTransformer.toEntity(model.getBranchModel()))
                 .isActive(model.getIsActive())
-                .createdAt(model.getCreatedAt())
-                .updatedAt(model.getUpdatedAt())
                 .build();
     }
 

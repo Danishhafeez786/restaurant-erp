@@ -13,15 +13,11 @@ import java.util.UUID;
 @Builder
 public class ModifierGroupSearchCriteria {
 
-    private String name;
-
-    private String code;
+    private String searchInput;
 
     private UUID organizationId;
 
     private UUID branchId;
-
-    private Boolean required;
 
     private Boolean isActive;
 }
