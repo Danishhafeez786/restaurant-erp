@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axiosClient from "../../api/axiosClient";
+import axiosClient from "../../../api/axiosClient";
 
 export default function ModifierGroupModelBox({
     isOpen,
@@ -20,8 +20,8 @@ export default function ModifierGroupModelBox({
         code: "",
         name: "",
         description: "",
-        minSelection: "",
-        maxSelection: "",
+        // minSelection: "",
+        // maxSelection: "",
         required: false,
         organizationModel: null,
         branchModel: null,
@@ -33,11 +33,10 @@ export default function ModifierGroupModelBox({
     ========================== */
 
     const isFormValid =
-        formData.code.trim() !== "" &&
         formData.name.trim() !== "" &&
         formData.description.trim() !== "" &&
-        formData.minSelection !== "" &&
-        formData.maxSelection !== "" &&
+        // formData.minSelection !== "" &&
+        // formData.maxSelection !== "" &&
         formData.organizationModel !== null &&
         formData.branchModel !== null;
 
@@ -50,8 +49,8 @@ export default function ModifierGroupModelBox({
             code: "",
             name: "",
             description: "",
-            minSelection: "",
-            maxSelection: "",
+            // minSelection: "",
+            // maxSelection: "",
             required: false,
             organizationModel: null,
             branchModel: null,
@@ -77,8 +76,8 @@ export default function ModifierGroupModelBox({
                 code: modifierGroup.code || "",
                 name: modifierGroup.name || "",
                 description: modifierGroup.description || "",
-                minSelection: modifierGroup.minSelection ?? "",
-                maxSelection: modifierGroup.maxSelection ?? "",
+                // minSelection: modifierGroup.minSelection ?? "",
+                // maxSelection: modifierGroup.maxSelection ?? "",
                 required: modifierGroup.required ?? false,
                 organizationModel:
                     modifierGroup.organizationModel || null,
@@ -140,12 +139,7 @@ export default function ModifierGroupModelBox({
     ========================== */
 
     const handleChange = (e) => {
-        const {
-            name,
-            value,
-            checked,
-            type,
-        } = e.target;
+        const {name, value, checked, type,} = e.target;
 
         setFormData((prev) => ({
             ...prev,
@@ -203,8 +197,8 @@ export default function ModifierGroupModelBox({
                 code: formData.code,
                 name: formData.name,
                 description: formData.description,
-                minSelection: Number(formData.minSelection),
-                maxSelection: Number(formData.maxSelection),
+                // minSelection: Number(formData.minSelection),
+                // maxSelection: Number(formData.maxSelection),
                 required: formData.required,
                 organizationModel: formData.organizationModel,
                 branchModel: formData.branchModel,
@@ -243,8 +237,8 @@ export default function ModifierGroupModelBox({
                 code: formData.code,
                 name: formData.name,
                 description: formData.description,
-                minSelection: Number(formData.minSelection),
-                maxSelection: Number(formData.maxSelection),
+                // minSelection: Number(formData.minSelection),
+                // maxSelection: Number(formData.maxSelection),
                 required: formData.required,
                 organizationModel: formData.organizationModel,
                 branchModel: formData.branchModel,
@@ -311,7 +305,7 @@ return (
                 <div>
 
                     <label className="block mb-2 text-sm font-medium">
-                        Code <span className="text-red-500">*</span>
+                        Code
                     </label>
 
                     <input
@@ -319,7 +313,7 @@ return (
                         name="code"
                         value={formData.code}
                         onChange={handleChange}
-                        disabled={isView}
+                        disabled={true}
                         placeholder="Enter Code"
                         className={`w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2 ${
                             !formData.code && !isView
@@ -380,7 +374,7 @@ return (
 
                 {/* Min Selection */}
 
-                <div>
+                {/* <div>
 
                     <label className="block mb-2 text-sm font-medium">
                         Min Selection <span className="text-red-500">*</span>
@@ -400,11 +394,11 @@ return (
                         }`}
                     />
 
-                </div>
+                </div> */}
 
                 {/* Max Selection */}
 
-                <div>
+                {/* <div>
 
                     <label className="block mb-2 text-sm font-medium">
                         Max Selection <span className="text-red-500">*</span>
@@ -424,7 +418,7 @@ return (
                         }`}
                     />
 
-                </div>
+                </div> */}
 
                 {/* Organization */}
 

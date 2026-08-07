@@ -20,7 +20,7 @@ import Permission from './pages/SystemSetting/Permission/Permission';
 import RestaurantSettings from './pages/RestaurantSetting/RestaurantSettings';
 import Category from './pages/RestaurantSetting/Category/Category';
 import Tables from './pages/Tables/Tables';
-import ModifierGroup from './pages/ModifierGroup/ModifierGroup';
+import ModifierGroup from './pages/RestaurantSetting/ModifierGroup/ModifierGroup';
 import Modifier from './pages/Modifier/Modifier';
 
 import './App.css';

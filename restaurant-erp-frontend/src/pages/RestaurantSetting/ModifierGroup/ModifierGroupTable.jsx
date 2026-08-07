@@ -1,24 +1,23 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../../../api/axiosClient";
-import CategoryModelBox from "./CategoryModelBox";
+import ModifierGroupModelBox from "./ModifierGroupModelBox";
 import FilterField from "../../../components/FilterField";
 import CustomSelect from "../../../components/CustomSelect";
-import CategoryService from "../../../services/categoryService";
-import { Listbox } from "@headlessui/react";
+import modifierGroupService from "../../../services/modifierGroupService";
+
 import {
   PlusIcon,
   EyeIcon,
-  TrashIcon,
   MagnifyingGlassIcon,
   FunnelIcon,
   ArrowPathIcon,
   ChevronUpIcon,
   ChevronDownIcon,
-  ChevronUpDownIcon,
-  CheckIcon,
 } from "@heroicons/react/24/outline";
 
-import { Trash, ScanEye } from "lucide-react";
+import { Trash, PenLine } from "lucide-react";
+
+import { toast } from "react-toastify";
 
 const statusOptions = [
   { label: "All", value: "" },
@@ -37,24 +36,30 @@ const pageSizeOptions = [
   { label: "50", value: 50 },
   { label: "100", value: 100 },
 ];
-const API_URL = import.meta.env.VITE_API_URL;
-import { toast } from "react-toastify";
-import { PenLine } from "lucide-react";
 
-export default function CategoryTable() {
+const API_URL = import.meta.env.VITE_API_URL;
+
+export default function ModifierGroupTable() {
   const [showFilters, setShowFilters] = useState(false);
-  const [categories, setCategories] = useState([]);
+
+  const [modifierGroups, setModifierGroups] = useState([]);
+
   const [loading, setLoading] = useState(false);
 
   const [showModal, setShowModal] = useState(false);
+
   const [modalMode, setModalMode] = useState("create");
-  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  const [selectedModifierGroup, setSelectedModifierGroup] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(0);
+
   const [totalPages, setTotalPages] = useState(0);
+
   const [pageSize, setPageSize] = useState(10);
 
   const [sortBy, setSortBy] = useState("createdAt");
+
   const [direction, setDirection] = useState("DESC");
 
   const [searchCriteria, setSearchCriteria] = useState({
@@ -65,15 +70,15 @@ export default function CategoryTable() {
 
   const user = JSON.parse(localStorage.getItem("user"));
 
-  const canCreate = user?.permissions?.includes("CATEGORY_CREATE");
+  const canCreate = user?.permissions?.includes("MODIFIER_GROUP_CREATE");
 
-  const canView = user?.permissions?.includes("CATEGORY_VIEW");
+  const canView = user?.permissions?.includes("MODIFIER_GROUP_VIEW");
 
-  const canUpdate = user?.permissions?.includes("CATEGORY_UPDATE");
+  const canUpdate = user?.permissions?.includes("MODIFIER_GROUP_UPDATE");
 
-  const canDelete = user?.permissions?.includes("CATEGORY_DELETE");
+  const canDelete = user?.permissions?.includes("MODIFIER_GROUP_DELETE");
 
-  const canRestore = user?.permissions?.includes("CATEGORY_REACTIVATE");
+  const canRestore = user?.permissions?.includes("MODIFIER_GROUP_REACTIVATE");
 
   const handleSort = (field) => {
     setCurrentPage(0);
@@ -124,14 +129,17 @@ export default function CategoryTable() {
   const openDeleteModal = (id) => {
     setConfirmModal({
       open: true,
-      title: "Delete Category",
-      message: "Are you sure you want to delete this category?",
+      title: "Delete Modifier Group",
+      message: "Are you sure you want to delete this modifier group?",
       action: async () => {
         try {
-          await axiosClient.delete(`/category/${id}`);
+          await modifierGroupService.delete(id);
+          toast.success("Modifier Group Deleted Successfully");
+          loadModifierGroups();
         } catch (error) {
           toast.error(
-            error?.response?.data?.message || "Failed to delete category",
+            error?.response?.data?.message ||
+              "Failed to delete modifier group.",
           );
         } finally {
           setConfirmModal((prev) => ({ ...prev, open: false }));
@@ -143,14 +151,17 @@ export default function CategoryTable() {
   const openRestoreModal = (id) => {
     setConfirmModal({
       open: true,
-      title: "Restore Category",
-      message: "Are you sure you want to restore this category?",
+      title: "Restore Modifier Group",
+      message: "Are you sure you want to restore this modifier group?",
       action: async () => {
         try {
-          await axiosClient.patch(`/category/${id}/restore`);
+          await modifierGroupService.restore(id);
+          toast.success("Modifier Group Restored Successfully");
+          loadModifierGroups();
         } catch (error) {
           toast.error(
-            error?.response?.data?.message || "Failed to restore category",
+            error?.response?.data?.message ||
+              "Failed to restore modifier group.",
           );
         } finally {
           setConfirmModal((prev) => ({ ...prev, open: false }));
@@ -159,16 +170,14 @@ export default function CategoryTable() {
     });
   };
 
-  const loadCategories = async () => {
+  const loadModifierGroups = async () => {
     try {
       setLoading(true);
+
       const payload = {
         searchInput: searchCriteria.searchInput || null,
+
         organizationId: searchCriteria.organizationId || null,
-        available:
-          searchCriteria.available === ""
-            ? null
-            : searchCriteria.available === "true",
 
         isActive:
           searchCriteria.isActive === ""
@@ -176,14 +185,16 @@ export default function CategoryTable() {
             : searchCriteria.isActive === "true",
       };
 
-      const response = await CategoryService.search(
+      const response = await modifierGroupService.search(
         payload,
         currentPage,
         pageSize,
         sortBy,
         direction,
       );
-      setCategories(response.content);
+
+      setModifierGroups(response.content);
+
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error(error);
@@ -193,39 +204,39 @@ export default function CategoryTable() {
   };
 
   useEffect(() => {
-    loadCategories();
+    loadModifierGroups();
   }, [currentPage, pageSize, sortBy, direction]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setCurrentPage(0);
-      loadCategories();
+      loadModifierGroups();
     }, 300);
 
     return () => clearTimeout(timer);
   }, [searchCriteria, sortBy, direction, pageSize]);
 
   useEffect(() => {
-    const eventSource = new EventSource(`${API_URL}/category/stream`);
+    const eventSource = new EventSource(`${API_URL}/modifier-group/stream`);
 
-    eventSource.addEventListener("category-created", () => {
-      loadCategories();
-      toast.success("A new category was created.");
+    eventSource.addEventListener("modifier-group-created", () => {
+      loadModifierGroups();
+      toast.success("A modifier group was created.");
     });
 
-    eventSource.addEventListener("category-updated", () => {
-      loadCategories();
-      toast.success("A category was updated.");
+    eventSource.addEventListener("modifier-group-updated", () => {
+      loadModifierGroups();
+      toast.success("A modifier group was updated.");
     });
 
-    eventSource.addEventListener("category-deleted", async (event) => {
-      loadCategories();
-      toast.success("A category was deleted.");
+    eventSource.addEventListener("modifier-group-deleted", () => {
+      loadModifierGroups();
+      toast.success("A modifier group was deleted.");
     });
 
-    eventSource.addEventListener("category-restored", () => {
-      loadCategories();
-      toast.success("A category was restored.");
+    eventSource.addEventListener("modifier-group-restored", () => {
+      loadModifierGroups();
+      toast.success("A modifier group was restored.");
     });
 
     return () => eventSource.close();
@@ -248,9 +259,9 @@ export default function CategoryTable() {
 
   return (
     <div>
-      <div className="bg-white rounded-2xl shadow-md p-4 md:p-6">
-        {/* Header */}
+      {/* =========================== HEADER =========================== */}
 
+      <div className="bg-white rounded-2xl shadow-md p-4 md:p-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">Modifier Groups</h2>
 
@@ -307,7 +318,7 @@ export default function CategoryTable() {
           {/* Mobile Filters */}
 
           <div
-            className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+            className={`lg:hidden overflow-hidden transition-all duration-300 ${
               showFilters
                 ? "max-h-[500px] opacity-100 mt-4"
                 : "max-h-0 opacity-0"
@@ -316,12 +327,7 @@ export default function CategoryTable() {
             <div className="space-y-4">
               {showFilters && (
                 <>
-                  {/* Status */}
-
-                  <FilterField
-                    label="Status"
-                    className="w-full xl:flex-1 xl:min-w-[300px]"
-                  >
+                  <FilterField label="Status">
                     <CustomSelect
                       options={statusOptions}
                       value={searchCriteria.isActive}
@@ -334,12 +340,7 @@ export default function CategoryTable() {
                     />
                   </FilterField>
 
-                  {/* Order */}
-
-                  <FilterField
-                    label="Order"
-                    className="w-full xl:flex-1 xl:min-w-[300px]"
-                  >
+                  <FilterField label="Order">
                     <CustomSelect
                       options={orderOptions}
                       value={direction}
@@ -350,12 +351,7 @@ export default function CategoryTable() {
                     />
                   </FilterField>
 
-                  {/* Rows */}
-
-                  <FilterField
-                    label="Rows"
-                    className="w-full xl:flex-1 xl:min-w-[100px]"
-                  >
+                  <FilterField label="Rows">
                     <CustomSelect
                       options={pageSizeOptions}
                       value={pageSize}
@@ -366,22 +362,9 @@ export default function CategoryTable() {
                     />
                   </FilterField>
 
-                  {/* Reset */}
-
                   <button
-                    onClick={() => {
-                      setSearchCriteria({
-                        searchInput: "",
-                        organizationId: "",
-                        isActive: "",
-                      });
-
-                      setSortBy("createdAt");
-                      setDirection("DESC");
-                      setPageSize(10);
-                      setCurrentPage(0);
-                    }}
-                    className="w-full h-12 rounded-xl bg-gray-100 font-medium hover:bg-gray-200 flex items-center justify-center gap-2"
+                    onClick={resetFilters}
+                    className="w-full h-12 rounded-xl bg-gray-100 hover:bg-gray-200 font-medium flex items-center justify-center gap-2"
                   >
                     <ArrowPathIcon className="h-5 w-5" />
                     Reset
@@ -394,8 +377,6 @@ export default function CategoryTable() {
           {/* Desktop Filters */}
 
           <div className="hidden lg:flex flex-wrap items-center gap-4">
-            {/* Search */}
-
             <FilterField label="Search" className="flex-1 min-w-[300px]">
               <input
                 type="text"
@@ -411,11 +392,9 @@ export default function CategoryTable() {
               />
             </FilterField>
 
-            {/* Status */}
-
             <FilterField
               label="Status"
-              className="w-full xl:flex-1 xl:min-w-[250px]"
+              className="w-full xl:flex-1 xl:min-w-[220px]"
             >
               <CustomSelect
                 options={statusOptions}
@@ -429,11 +408,9 @@ export default function CategoryTable() {
               />
             </FilterField>
 
-            {/* Order */}
-
             <FilterField
               label="Order"
-              className="w-full xl:flex-1 xl:min-w-[250px]"
+              className="w-full xl:flex-1 xl:min-w-[220px]"
             >
               <CustomSelect
                 options={orderOptions}
@@ -445,11 +422,9 @@ export default function CategoryTable() {
               />
             </FilterField>
 
-            {/* Rows */}
-
             <FilterField
               label="Rows"
-              className="w-full xl:flex-1 xl:min-w-[100px]"
+              className="w-full xl:flex-1 xl:min-w-[120px]"
             >
               <CustomSelect
                 options={pageSizeOptions}
@@ -461,29 +436,18 @@ export default function CategoryTable() {
               />
             </FilterField>
 
-            {/* Reset */}
-
             <button
-              onClick={() => {
-                setSearchCriteria({
-                  searchInput: "",
-                  organizationId: "",
-                  isActive: "",
-                });
-
-                setSortBy("createdAt");
-                setDirection("DESC");
-                setPageSize(10);
-                setCurrentPage(0);
-              }}
-              className="w-full md:w-auto h-12 flex items-center justify-center gap-2 rounded-xl bg-gray-100 px-6 font-bold transition hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300"
+              onClick={resetFilters}
+              className="h-12 px-6 rounded-xl bg-gray-100 hover:bg-gray-200 font-bold flex items-center gap-2"
             >
               <ArrowPathIcon className="h-5 w-5" />
-              <span>Reset</span>
+              Reset
             </button>
           </div>
         </div>
       </div>
+
+      {/* =========================== DESKTOP TABLE =========================== */}
 
       <br />
       <div className="bg-white rounded-2xl shadow-md p-4 md:p-6">
@@ -492,21 +456,23 @@ export default function CategoryTable() {
           <p className="text-sm text-gray-500">
             Showing{" "}
             <span className="font-semibold text-blue-600">
-              {categories.length}
+              {modifierGroups.length}
             </span>{" "}
-            Categories
+            Modifier Groups
           </p>
         </div>
         {/* =========================== DESKTOP TABLE =========================== */}
+
         <div className="hidden lg:block overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
           <table className="min-w-full">
             <thead className="border-b border-gray-200 bg-gray-50">
               <tr className="bg-gray-100">
-                <SortableHeader label="Category Code" field="categoryCode" />
-                <SortableHeader label="Category Name" field="categoryName" />
+                <SortableHeader label="Code" field="code" />
+                <SortableHeader label="Name" field="name" />
                 <SortableHeader label="Description" field="description" />
-                <SortableHeader label="Display Order" field="displayOrder" />
-                <SortableHeader label="Available" field="available" />
+                <SortableHeader label="Min Selection" field="minSelection" />
+                <SortableHeader label="Max Selection" field="maxSelection" />
+                <SortableHeader label="Required" field="required" />
                 <SortableHeader label="Organization" field="organization" />
                 <SortableHeader label="Branch" field="branch" />
                 <SortableHeader label="Status" field="isActive" />
@@ -517,83 +483,79 @@ export default function CategoryTable() {
             <tbody>
               {loading && (
                 <tr>
-                  <td colSpan="8" className="text-center py-10">
+                  <td colSpan="10" className="py-10 text-center">
                     Loading...
                   </td>
                 </tr>
               )}
 
+              {!loading && modifierGroups.length === 0 && (
+                <tr>
+                  <td colSpan="10" className="py-10 text-center text-gray-500">
+                    No Modifier Groups Found
+                  </td>
+                </tr>
+              )}
+
               {!loading &&
-                categories.map((category) => (
-                  <tr key={category.id} className="border-b hover:bg-gray-50">
-                    <td className="px-4 py-3 ">{category.categoryCode}</td>
+                modifierGroups.map((modifierGroup) => (
+                  <tr
+                    key={modifierGroup.id}
+                    className="border-b hover:bg-gray-50"
+                  >
+                    <td className="px-4 py-3">{modifierGroup.code}</td>
 
-                    <td className="px-4 py-3 ">
-                      <div className="flex items-center gap-3">
-                        {category.imageUrl ? (
-                          <img
-                            src={category.imageUrl}
-                            alt={category.categoryName}
-                            className="w-12 h-12 rounded-lg border object-cover"
-                          />
-                        ) : (
-                          <div className="w-12 h-12 rounded-lg border flex items-center justify-center bg-gray-100 text-gray-400 text-xs">
-                            No Image
-                          </div>
-                        )}
-
-                        <div>
-                          <div className="font-medium">
-                            {category.categoryName}
-                          </div>
-                        </div>
-                      </div>
+                    <td className="px-4 py-3">
+                      <div className="font-medium">{modifierGroup.name}</div>
                     </td>
 
-                    <td className="px-4 py-3 ">{category.description}</td>
+                    <td className="px-4 py-3">
+                      {modifierGroup.description || "-"}
+                    </td>
 
-                    <td className="px-4 py-3 ">{category.displayOrder}</td>
+                    <td className="px-4 py-3">{modifierGroup.minSelection}</td>
 
-                    <td className="px-4 py-3 ">
+                    <td className="px-4 py-3">{modifierGroup.maxSelection}</td>
+
+                    <td className="px-4 py-3">
                       <span
                         className={`px-3 py-1 rounded-full text-sm ${
-                          category.available
+                          modifierGroup.required
                             ? "bg-blue-100 text-blue-700"
                             : "bg-gray-200 text-gray-700"
                         }`}
                       >
-                        {category.available ? "Available" : "Unavailable"}
+                        {modifierGroup.required ? "Required" : "Optional"}
                       </span>
                     </td>
 
-                    <td className="px-4 py-3 ">
-                      {category.organizationModel?.organizationName || "-"}
+                    <td className="px-4 py-3">
+                      {modifierGroup.organizationModel?.organizationName || "-"}
                     </td>
 
-                    <td className="px-4 py-3 ">
-                      {category.branchModel?.branchName || "-"}
+                    <td className="px-4 py-3">
+                      {modifierGroup.branchModel?.branchName || "-"}
                     </td>
 
-                    <td className="px-4 py-3 ">
+                    <td className="px-4 py-3">
                       <span
                         className={`px-3 py-1 rounded-full text-sm ${getStatusColor(
-                          category.isActive,
+                          modifierGroup.isActive,
                         )}`}
                       >
-                        {category.isActive ? "ACTIVE" : "INACTIVE"}
+                        {modifierGroup.isActive ? "ACTIVE" : "INACTIVE"}
                       </span>
                     </td>
 
-                    <td className="px-4 py-3 ">
+                    <td className="px-4 py-3">
                       {canView && (
                         <button
-                          className="text-Balck-600"
                           onClick={() => {
-                            setSelectedCategory(category);
+                            setSelectedModifierGroup(modifierGroup);
                             setModalMode("view");
                             setShowModal(true);
                           }}
-                          className="text-green-600 mr-3 items-center text-sm hover:bg-gray-50 border rounded-lg p-1"
+                          className="text-green-600 mr-3 hover:bg-gray-50 border rounded-lg p-1"
                         >
                           <EyeIcon className="w-5 h-5" title="View" />
                         </button>
@@ -601,35 +563,33 @@ export default function CategoryTable() {
 
                       {canUpdate && (
                         <button
-                          className="text-blue-600"
                           onClick={() => {
-                            setSelectedCategory(category);
+                            setSelectedModifierGroup(modifierGroup);
                             setModalMode("edit");
                             setShowModal(true);
                           }}
-                          className="text-blue-600 mr-3 items-center text-sm hover:bg-gray-50 border rounded-lg p-1 "
+                          className="text-blue-600 mr-3 hover:bg-gray-50 border rounded-lg p-1"
                         >
                           <PenLine className="w-5 h-5" title="Edit" />
                         </button>
                       )}
 
-                      {category.isActive
+                      {modifierGroup.isActive
                         ? canDelete && (
                             <button
-                              className="text-Balck-600"
-                              onClick={() => openDeleteModal(category.id)}
-                              className="text-red-600 mr-3 items-center text-sm hover:bg-gray-50 border rounded-lg p-1 "
+                              onClick={() => openDeleteModal(modifierGroup.id)}
+                              className="text-red-600 mr-3 hover:bg-gray-50 border rounded-lg p-1"
                             >
-                              <Trash className="w-5 h-5 " title="Delete" />
+                              <Trash className="w-5 h-5" title="Delete" />
                             </button>
                           )
                         : canRestore && (
                             <button
-                              className="text-orange-600 mr-3 items-center text-sm hover:bg-gray-50 border rounded-lg p-1 "
-                              onClick={() => openRestoreModal(category.id)}
+                              onClick={() => openRestoreModal(modifierGroup.id)}
+                              className="text-orange-600 mr-3 hover:bg-gray-50 border rounded-lg p-1"
                             >
                               <ArrowPathIcon
-                                className="w-5 h-5 "
+                                className="w-5 h-5"
                                 title="Restore"
                               />
                             </button>
@@ -646,85 +606,85 @@ export default function CategoryTable() {
         <div className="lg:hidden rounded-2xl border border-gray-200 bg-white overflow-hidden shadow-sm">
           {loading ? (
             <div className="text-center py-10">Loading...</div>
-          ) : categories.length === 0 ? (
+          ) : modifierGroups.length === 0 ? (
             <div className="text-center py-10 text-gray-500">
-              No Categories Found
+              No Modifier Groups Found
             </div>
           ) : (
-            categories.map((category) => (
+            modifierGroups.map((modifierGroup) => (
               <div
-                key={category.id}
+                key={modifierGroup.id}
                 className="px-4 py-3 border-b last:border-b-0 hover:bg-blue-50/40 transition"
               >
                 {/* Header */}
+
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex min-w-0 flex-1 gap-3">
-                    {category.imageUrl ? (
-                      <img
-                        src={category.imageUrl}
-                        alt={category.categoryName}
-                        className="h-14 w-14 rounded-lg border object-cover"
-                      />
-                    ) : (
-                      <div className="flex h-14 w-14 items-center justify-center rounded-lg border bg-gray-100 text-[10px] text-gray-400">
-                        No Image
-                      </div>
-                    )}
+                    <div className="flex h-14 w-14 items-center justify-center rounded-lg border bg-[#0d4039]/10 text-[#0d4039] font-bold text-xl">
+                      {modifierGroup.name?.charAt(0)?.toUpperCase()}
+                    </div>
 
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
                         <h3 className="truncate font-semibold text-gray-900">
-                          {category.categoryName}
+                          {modifierGroup.name}
                         </h3>
 
                         <span
                           className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${
-                            category.isActive
+                            modifierGroup.isActive
                               ? "bg-green-100 text-green-700"
                               : "bg-red-100 text-red-700"
                           }`}
                         >
-                          {category.isActive ? "ACTIVE" : "INACTIVE"}
+                          {modifierGroup.isActive ? "ACTIVE" : "INACTIVE"}
                         </span>
                       </div>
 
                       <p className="mt-1 text-xs text-gray-500">
-                        {category.categoryCode}
+                        {modifierGroup.code}
                       </p>
                     </div>
                   </div>
                 </div>
 
                 {/* Details */}
+
                 <div className="mt-3 space-y-1 text-sm">
                   <p>
-                    <b>Description:</b> {category.description || "-"}
+                    <b>Description:</b> {modifierGroup.description || "-"}
                   </p>
 
                   <p>
-                    <b>Display Order:</b> {category.displayOrder}
+                    <b>Min Selection:</b> {modifierGroup.minSelection}
                   </p>
 
                   <p>
-                    <b>Available:</b> {category.available ? "Yes" : "No"}
+                    <b>Max Selection:</b> {modifierGroup.maxSelection}
+                  </p>
+
+                  <p>
+                    <b>Required:</b> {modifierGroup.required ? "Yes" : "No"}
                   </p>
 
                   <p>
                     <b>Organization:</b>{" "}
-                    {category.organizationModel?.organizationName || "N/A"}
+                    {modifierGroup.organizationModel?.organizationName || "N/A"}
                   </p>
 
                   <p>
-                    <b>Branch:</b> {category.branchModel?.branchName || "N/A"}
+                    <b>Branch:</b>{" "}
+                    {modifierGroup.branchModel?.branchName || "N/A"}
                   </p>
                 </div>
 
                 {/* Actions */}
+
                 <div className="mt-3 flex items-center justify-end gap-1">
                   {canView && (
                     <button
                       onClick={() => {
-                        setSelectedCategory(category);
+                        setSelectedModifierGroup(modifierGroup);
                         setModalMode("view");
                         setShowModal(true);
                       }}
@@ -737,7 +697,7 @@ export default function CategoryTable() {
                   {canUpdate && (
                     <button
                       onClick={() => {
-                        setSelectedCategory(category);
+                        setSelectedModifierGroup(modifierGroup);
                         setModalMode("edit");
                         setShowModal(true);
                       }}
@@ -747,10 +707,10 @@ export default function CategoryTable() {
                     </button>
                   )}
 
-                  {category.isActive
+                  {modifierGroup.isActive
                     ? canDelete && (
                         <button
-                          onClick={() => openDeleteModal(category.id)}
+                          onClick={() => openDeleteModal(modifierGroup.id)}
                           className="rounded-lg p-2 text-red-600 hover:bg-red-100"
                         >
                           <Trash className="h-5 w-5" />
@@ -758,7 +718,7 @@ export default function CategoryTable() {
                       )
                     : canRestore && (
                         <button
-                          onClick={() => openRestoreModal(category.id)}
+                          onClick={() => openRestoreModal(modifierGroup.id)}
                           className="rounded-lg p-2 text-orange-600 hover:bg-orange-100"
                         >
                           <ArrowPathIcon className="h-5 w-5" />
@@ -778,13 +738,13 @@ export default function CategoryTable() {
           <div className="text-sm text-gray-500">
             Showing{" "}
             <span className="font-semibold text-blue-600">
-              {categories.length === 0 ? 0 : currentPage * pageSize + 1}
+              {modifierGroups.length === 0 ? 0 : currentPage * pageSize + 1}
             </span>{" "}
             to{" "}
             <span className="font-semibold text-blue-600">
               {Math.min(
                 (currentPage + 1) * pageSize,
-                currentPage * pageSize + categories.length,
+                currentPage * pageSize + modifierGroups.length,
               )}
             </span>{" "}
             results
@@ -844,7 +804,7 @@ export default function CategoryTable() {
           </div>
         </div>
 
-        {/* =========================== MODAL =========================== */}
+        {/* =========================== MODIFIER GROUP MODAL =========================== */}
 
         {/* {Model Box} */}
         {confirmModal.open && (
@@ -877,12 +837,12 @@ export default function CategoryTable() {
           </div>
         )}
 
-        <CategoryModelBox
+        <ModifierGroupModelBox
           isOpen={showModal}
           onClose={() => setShowModal(false)}
           mode={modalMode}
-          category={selectedCategory}
-          onSuccess={loadCategories}
+          modifierGroup={selectedModifierGroup}
+          onSuccess={loadModifierGroups}
         />
       </div>
     </div>
