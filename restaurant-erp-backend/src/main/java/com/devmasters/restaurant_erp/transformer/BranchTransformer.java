@@ -10,6 +10,7 @@ import java.util.UUID;
 @Component
 @AllArgsConstructor
 public class BranchTransformer extends Transformer<Branch, BranchModel>{
+
     private final OrganizationTransformer organizationTransformer;
 
     @Override

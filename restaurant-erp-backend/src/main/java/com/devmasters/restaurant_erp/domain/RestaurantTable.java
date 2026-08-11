@@ -1,5 +1,6 @@
 package com.devmasters.restaurant_erp.domain;
 
+import com.devmasters.restaurant_erp.domain.order.Order;
 import com.devmasters.restaurant_erp.enums.TableStatus;
 import lombok.*;
 import lombok.experimental.SuperBuilder;

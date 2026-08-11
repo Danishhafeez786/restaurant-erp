@@ -1,6 +1,7 @@
 package com.devmasters.restaurant_erp.model;
 
 import com.devmasters.restaurant_erp.enums.KitchenStatus;
+import com.devmasters.restaurant_erp.model.order.OrderModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -15,7 +15,6 @@ public class CodeGeneratorService {
     public String generateCategoryCode() {
 
         long sequence = sequenceGeneratorService.generateSequence("CATEGORY");
-
         return "CAT" + String.format("%05d", sequence);
     }
 
@@ -148,13 +147,29 @@ public class CodeGeneratorService {
     }
 
     public String generateExpenseAttachmentCode(UUID organizationId) {
-
-        String sequenceName =
-                "EXPENSE_ATTACHMENT_" + organizationId;
-
-        long sequence =
-                sequenceGeneratorService.generateSequence(sequenceName);
-
+        String sequenceName = "EXPENSE_ATTACHMENT_" + organizationId;
+        long sequence = sequenceGeneratorService.generateSequence(sequenceName);
         return "ATT" + String.format("%05d", sequence);
+    }
+//Order Code generator
+    public String generateOrderNumber(UUID branchId) {
+        String sequenceName = "ORDER_" + branchId;
+        long sequence = sequenceGeneratorService.generateSequence(sequenceName);
+        return "ORD" + String.format("%06d", sequence);
+    }
+
+    public String generatePaymentCode(UUID organizationId) {
+        String sequenceName = "ORDER_PAYMENT_" + organizationId;
+        long sequence = sequenceGeneratorService.generateSequence(sequenceName);
+        return "OPAY" + String.format("%06d", sequence);
+    }
+
+    public String generateOrderDiscountCode(UUID organizationId) {
+
+        String sequenceName = "ORDER_DISCOUNT_" + organizationId;
+
+        long sequence = sequenceGeneratorService.generateSequence(sequenceName);
+
+        return "ODIS" + String.format("%06d", sequence);
     }
 }
