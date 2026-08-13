@@ -57,8 +57,6 @@ public class OrderTransformer extends Transformer<Order, OrderModel> {
                 .createdByModel(userTransformer.toModel(order.getCreatedBy()))
                 .updatedByModel(userTransformer.toModel(order.getUpdatedBy()))
                 .cancelledByModel(userTransformer.toModel(order.getCancelledBy()))
-                .deliveryPartnerId(order.getDeliveryPartnerId())
-                .deliveryAddress(order.getDeliveryAddress())
                 .items(orderItemTransformer.toModels(order.getItems()))
                 .build();
     }
@@ -100,8 +98,6 @@ public class OrderTransformer extends Transformer<Order, OrderModel> {
                 .createdBy(userTransformer.toEntity(model.getCreatedByModel()))
                 .updatedBy(userTransformer.toEntity(model.getUpdatedByModel()))
                 .cancelledBy(userTransformer.toEntity(model.getCancelledByModel()))
-                .deliveryPartnerId(model.getDeliveryPartnerId())
-                .deliveryAddress(model.getDeliveryAddress())
                 .items(orderItemTransformer.toEntities(model.getItems()))
                 .build();
     }

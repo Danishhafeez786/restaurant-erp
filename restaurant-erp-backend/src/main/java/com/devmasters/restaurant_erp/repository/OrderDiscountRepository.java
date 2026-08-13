@@ -10,15 +10,9 @@ import java.util.UUID;
 @Repository
 public interface OrderDiscountRepository extends MongoRepository<OrderDiscount, UUID>, OrderDiscountCustomRepository {
 
-    boolean existsByDiscountNumberIgnoreCaseAndOrganization_IdAndIsActiveTrue(String discountNumber, UUID organizationId);
+    boolean existsByDiscountNumberIgnoreCase(String discountNumber);
 
-    boolean existsByDiscountNameIgnoreCaseAndOrganization_IdAndIsActiveTrue(String discountName, UUID organizationId);
+    boolean existsByOrder_IdAndDiscountNameIgnoreCase(UUID orderId, String discountName);
 
-    boolean existsByDiscountNumberIgnoreCaseAndOrganization_IdAndIsActiveTrueAndIdNot(
-            String discountNumber, UUID organizationId, UUID id);
-
-    boolean existsByDiscountNameIgnoreCaseAndOrganization_IdAndIsActiveTrueAndIdNot(
-            String discountName, UUID organizationId, UUID id);
-
-    boolean existsByOrderIdAndOrganization_IdAndIsActiveTrue(UUID orderId, UUID organizationId);
+    boolean existsByOrder_IdAndDiscountNameIgnoreCaseAndIdNot(UUID orderId, String discountName, UUID id);
 }

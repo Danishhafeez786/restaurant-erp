@@ -6,6 +6,5 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface OrderRefundCustomRepository {
-
     Page<OrderRefund> search(OrderRefundSearchCriteria criteria, Pageable pageable);
 }

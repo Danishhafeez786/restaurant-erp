@@ -10,7 +10,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,57 +24,58 @@ public class OrderSplitCustomRepositoryImpl implements OrderSplitCustomRepositor
     public Page<OrderSplit> search(OrderSplitSearchCriteria criteria, Pageable pageable) {
 
         Query query = new Query();
-
         List<Criteria> filters = new ArrayList<>();
 
-        if (criteria != null) {
+        if (criteria.getKeyword() != null && !criteria.getKeyword().isBlank()) {
 
-            if (StringUtils.hasText(criteria.getSearchInput())) {
+            String keyword = criteria.getKeyword().trim();
 
-                String searchInput = criteria.getSearchInput().trim();
+            filters.add(new Criteria().orOperator(Criteria.where("splitNumber").regex(keyword, "i"), Criteria.where("note").regex(keyword, "i")));
+        }
 
-                filters.add(new Criteria().orOperator(
+        if (criteria.getOrderId() != null) {
+            filters.add(Criteria.where("order.$id").is(criteria.getOrderId()));
+        }
 
-                        Criteria.where("orderNumber").regex(searchInput, "i")));
+        if (criteria.getOrganizationId() != null) {
+            filters.add(Criteria.where("organization.$id").is(criteria.getOrganizationId()));
+        }
+
+        if (criteria.getBranchId() != null) {
+            filters.add(Criteria.where("branch.$id").is(criteria.getBranchId()));
+        }
+
+        if (criteria.getPaid() != null) {
+            filters.add(Criteria.where("paid").is(criteria.getPaid()));
+        }
+
+        if (criteria.getMinTotalAmount() != null || criteria.getMaxTotalAmount() != null) {
+
+            Criteria amount = Criteria.where("totalAmount");
+
+            if (criteria.getMinTotalAmount() != null) {
+                amount.gte(criteria.getMinTotalAmount());
             }
 
-            if (criteria.getPaymentMethod() != null) {
-
-                filters.add(Criteria.where("paymentMethod").is(criteria.getPaymentMethod()));
+            if (criteria.getMaxTotalAmount() != null) {
+                amount.lte(criteria.getMaxTotalAmount());
             }
 
-            if (criteria.getPaid() != null) {
+            filters.add(amount);
+        }
 
-                filters.add(Criteria.where("paid").is(criteria.getPaid()));
-            }
-
-            if (criteria.getOrderId() != null) {
-
-                filters.add(Criteria.where("order.$id").is(criteria.getOrderId()));
-            }
-
-            if (criteria.getOrganizationId() != null) {
-
-                filters.add(Criteria.where("organization.$id").is(criteria.getOrganizationId()));
-            }
-
-            if (criteria.getBranchId() != null) {
-
-                filters.add(Criteria.where("branch.$id").is(criteria.getBranchId()));
-            }
+        if (criteria.getIsActive() != null) {
+            filters.add(Criteria.where("isActive").is(criteria.getIsActive()));
         }
 
         if (!filters.isEmpty()) {
-
-            query.addCriteria(new Criteria().andOperator(filters.toArray(new Criteria[0])));
+            query.addCriteria(new Criteria().andOperator(filters));
         }
 
-        long total = mongoTemplate.count(Query.of(query).limit(-1).skip(-1), OrderSplit.class);
+        long total = mongoTemplate.count(query, OrderSplit.class);
 
         query.with(pageable);
 
-        List<OrderSplit> splits = mongoTemplate.find(query, OrderSplit.class);
-
-        return new PageImpl<>(splits, pageable, total);
+        return new PageImpl<>(mongoTemplate.find(query, OrderSplit.class), pageable, total);
     }
 }

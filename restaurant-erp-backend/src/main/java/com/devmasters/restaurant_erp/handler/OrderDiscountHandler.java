@@ -5,7 +5,7 @@ import com.devmasters.restaurant_erp.model.order.OrderDiscountModel;
 import com.devmasters.restaurant_erp.model.pagination.PageResponse;
 import com.devmasters.restaurant_erp.model.searchcriteria.OrderDiscountSearchCriteria;
 import com.devmasters.restaurant_erp.service.Sequence.CodeGeneratorService;
-import com.devmasters.restaurant_erp.service.order.OrderDiscountService;
+import com.devmasters.restaurant_erp.service.OrderDiscountService;
 import com.devmasters.restaurant_erp.transformer.OrderDiscountTransformer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,13 +23,34 @@ public class OrderDiscountHandler {
     private final CodeGeneratorService codeGeneratorService;
 
     public OrderDiscountModel create(OrderDiscountModel model) {
-        UUID organizationId = model.getOrganizationModel().getId();
+        if (model.getOrderModel() == null || model.getOrderModel().getId() == null)
+            throw new RuntimeException("Order is required.");
 
-        if (orderDiscountService.existsByDiscountNameIgnoreCase(
-                model.getDiscountName(), organizationId))
-            throw new RuntimeException("Discount already exists with name : " + model.getDiscountName());
+        if (model.getOrganizationModel() == null || model.getOrganizationModel().getId() == null)
+            throw new RuntimeException("Organization is required.");
 
-        model.setDiscountNumber(codeGeneratorService.generateOrderDiscountCode(organizationId));
+        if (model.getDiscountName() == null || model.getDiscountName().isBlank())
+            throw new RuntimeException("Discount name is required.");
+
+        if (model.getDiscountType() == null)
+            throw new RuntimeException("Discount type is required.");
+
+        if (model.getDiscountValue() == null || model.getDiscountValue().signum() < 0)
+            throw new RuntimeException("Discount value must be greater than or equal to zero.");
+
+        if (model.getDiscountAmount() == null || model.getDiscountAmount().signum() < 0)
+            throw new RuntimeException("Discount amount must be greater than or equal to zero.");
+
+        UUID orderId = model.getOrderModel().getId();
+
+        if (orderDiscountService.existsByOrderAndDiscountName(orderId, model.getDiscountName()))
+            throw new RuntimeException("Discount already exists on this order.");
+
+        model.setDiscountNumber(
+                codeGeneratorService.generateOrderDiscountCode(
+                        model.getOrganizationModel().getId()
+                )
+        );
 
         OrderDiscount entity = orderDiscountTransformer.toEntity(model);
         OrderDiscount saved = orderDiscountService.create(entity);
@@ -37,10 +58,7 @@ public class OrderDiscountHandler {
         return orderDiscountTransformer.toModel(saved);
     }
 
-    public PageResponse<OrderDiscountModel> getAll(
-            OrderDiscountSearchCriteria criteria,
-            Pageable pageable) {
-
+    public PageResponse<OrderDiscountModel> getAll(OrderDiscountSearchCriteria criteria, Pageable pageable) {
         Page<OrderDiscount> page = orderDiscountService.search(criteria, pageable);
 
         return PageResponse.<OrderDiscountModel>builder()
@@ -55,19 +73,34 @@ public class OrderDiscountHandler {
     }
 
     public OrderDiscountModel getById(UUID id) {
-        return orderDiscountTransformer.toModel(
-                orderDiscountService.findById(id)
-        );
+        return orderDiscountTransformer.toModel(orderDiscountService.findById(id));
     }
 
     public OrderDiscountModel update(UUID id, OrderDiscountModel model) {
         OrderDiscount existing = orderDiscountService.findById(id);
 
-        UUID organizationId = existing.getOrganization().getId();
+        if (!Boolean.TRUE.equals(existing.getIsActive()))
+            throw new RuntimeException("Cannot update an inactive order discount.");
 
-        if (orderDiscountService.existsByDiscountNameIgnoreCaseAndIdNot(
-                model.getDiscountName(), organizationId, id))
-            throw new RuntimeException("Discount already exists with name : " + model.getDiscountName());
+        if (model.getDiscountName() == null || model.getDiscountName().isBlank())
+            throw new RuntimeException("Discount name is required.");
+
+        if (model.getDiscountType() == null)
+            throw new RuntimeException("Discount type is required.");
+
+        if (model.getDiscountValue() == null || model.getDiscountValue().signum() < 0)
+            throw new RuntimeException("Discount value must be greater than or equal to zero.");
+
+        if (model.getDiscountAmount() == null || model.getDiscountAmount().signum() < 0)
+            throw new RuntimeException("Discount amount must be greater than or equal to zero.");
+
+        UUID orderId = existing.getOrder().getId();
+
+        if (orderDiscountService.existsByOrderAndDiscountNameAndIdNot(
+                orderId,
+                model.getDiscountName(),
+                id))
+            throw new RuntimeException("Discount already exists on this order.");
 
         OrderDiscount entity = orderDiscountTransformer.toEntity(model);
         OrderDiscount updated = orderDiscountService.update(id, entity);
@@ -76,22 +109,20 @@ public class OrderDiscountHandler {
     }
 
     public OrderDiscountModel delete(UUID id) {
-        OrderDiscount discount = orderDiscountService.findById(id);
+        OrderDiscount existing = orderDiscountService.findById(id);
 
-        if (!Boolean.TRUE.equals(discount.getIsActive()))
+        if (!Boolean.TRUE.equals(existing.getIsActive()))
             throw new RuntimeException("Order discount already deleted.");
 
-        OrderDiscount deleted = orderDiscountService.delete(id);
-        return orderDiscountTransformer.toModel(deleted);
+        return orderDiscountTransformer.toModel(orderDiscountService.delete(id));
     }
 
     public OrderDiscountModel restore(UUID id) {
-        OrderDiscount discount = orderDiscountService.findById(id);
+        OrderDiscount existing = orderDiscountService.findById(id);
 
-        if (Boolean.TRUE.equals(discount.getIsActive()))
+        if (Boolean.TRUE.equals(existing.getIsActive()))
             throw new RuntimeException("Order discount is already active.");
 
-        OrderDiscount restored = orderDiscountService.restore(id);
-        return orderDiscountTransformer.toModel(restored);
+        return orderDiscountTransformer.toModel(orderDiscountService.restore(id));
     }
 }

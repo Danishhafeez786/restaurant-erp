@@ -172,4 +172,19 @@ public class CodeGeneratorService {
 
         return "ODIS" + String.format("%06d", sequence);
     }
+
+    public String generateTaxCode(UUID organizationId) {
+        String sequenceName = "TAX_" + organizationId;
+        long sequence = sequenceGeneratorService.generateSequence(sequenceName);
+        return "TAX" + String.format("%05d", sequence);
+    }
+
+    public String generateKitchenTicketCode(UUID branchId) {
+        long sequence = sequenceGeneratorService.generateSequence("KITCHEN_TICKET_" + branchId);
+        return "KIT" + String.format("%06d", sequence);
+    }
+
+    public String generateSplitNumber() {
+        return "SPLIT-" + System.currentTimeMillis();
+    }
 }

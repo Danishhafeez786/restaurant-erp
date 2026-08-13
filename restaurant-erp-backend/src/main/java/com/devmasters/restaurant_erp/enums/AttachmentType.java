@@ -1,10 +1,11 @@
 package com.devmasters.restaurant_erp.enums;
 
 public enum AttachmentType {
-    IMAGE,
-    PDF,
-    EXCEL,
-    WORD,
-    TEXT,
+    PAYMENT_PROOF,
+    DELIVERY_PROOF,
+    INVOICE,
+    RECEIPT,
+    CUSTOMER_COMPLAINT,
+    ORDER_IMAGE,
     OTHER
 }

@@ -10,14 +10,14 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class OrderAttachmentCustomRepositoryImpl implements OrderAttachmentCustomRepository {
+public class OrderAttachmentCustomRepositoryImpl
+        implements OrderAttachmentCustomRepository {
 
     private final MongoTemplate mongoTemplate;
 
@@ -28,49 +28,71 @@ public class OrderAttachmentCustomRepositoryImpl implements OrderAttachmentCusto
 
         List<Criteria> filters = new ArrayList<>();
 
-        if (criteria != null) {
+        if (criteria.getOrderId() != null) {
+            filters.add(
+                    Criteria.where("order.$id")
+                            .is(criteria.getOrderId())
+            );
+        }
 
-            if (StringUtils.hasText(criteria.getSearchInput())) {
+        if (criteria.getAttachmentType() != null) {
+            filters.add(
+                    Criteria.where("attachmentType")
+                            .is(criteria.getAttachmentType())
+            );
+        }
 
-                String searchInput = criteria.getSearchInput().trim();
+        if (criteria.getFileType() != null &&
+                !criteria.getFileType().isBlank()) {
 
-                filters.add(new Criteria().orOperator(Criteria.where("fileName").regex(searchInput, "i"),
+            filters.add(
+                    Criteria.where("fileType")
+                            .is(criteria.getFileType())
+            );
+        }
 
-                        Criteria.where("contentType").regex(searchInput, "i")));
-            }
+        if (criteria.getOrganizationId() != null) {
+            filters.add(
+                    Criteria.where("organization.$id")
+                            .is(criteria.getOrganizationId())
+            );
+        }
 
-            if (criteria.getAttachmentType() != null) {
+        if (criteria.getBranchId() != null) {
+            filters.add(
+                    Criteria.where("branch.$id")
+                            .is(criteria.getBranchId())
+            );
+        }
 
-                filters.add(Criteria.where("attachmentType").is(criteria.getAttachmentType()));
-            }
-
-            if (criteria.getOrderId() != null) {
-
-                filters.add(Criteria.where("order.$id").is(criteria.getOrderId()));
-            }
-
-            if (criteria.getOrganizationId() != null) {
-
-                filters.add(Criteria.where("organization.$id").is(criteria.getOrganizationId()));
-            }
-
-            if (criteria.getBranchId() != null) {
-
-                filters.add(Criteria.where("branch.$id").is(criteria.getBranchId()));
-            }
+        if (criteria.getIsActive() != null) {
+            filters.add(
+                    Criteria.where("isActive")
+                            .is(criteria.getIsActive())
+            );
         }
 
         if (!filters.isEmpty()) {
-
-            query.addCriteria(new Criteria().andOperator(filters.toArray(new Criteria[0])));
+            query.addCriteria(
+                    new Criteria().andOperator(filters)
+            );
         }
 
-        long total = mongoTemplate.count(Query.of(query).limit(-1).skip(-1), OrderAttachment.class);
+        long total =
+                mongoTemplate.count(
+                        query,
+                        OrderAttachment.class
+                );
 
         query.with(pageable);
 
-        List<OrderAttachment> attachments = mongoTemplate.find(query, OrderAttachment.class);
-
-        return new PageImpl<>(attachments, pageable, total);
+        return new PageImpl<>(
+                mongoTemplate.find(
+                        query,
+                        OrderAttachment.class
+                ),
+                pageable,
+                total
+        );
     }
 }

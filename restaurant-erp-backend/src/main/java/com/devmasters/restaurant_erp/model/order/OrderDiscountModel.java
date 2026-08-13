@@ -1,6 +1,6 @@
 package com.devmasters.restaurant_erp.model.order;
 
-import com.devmasters.restaurant_erp.enums.OrderDiscountType;
+import com.devmasters.restaurant_erp.enums.DiscountType;
 import com.devmasters.restaurant_erp.model.BranchModel;
 import com.devmasters.restaurant_erp.model.OrganizationModel;
 import com.devmasters.restaurant_erp.model.UserModel;
@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -21,13 +22,16 @@ public class OrderDiscountModel {
 
     private UUID id;
     private String discountNumber;
-    private UUID orderId;
     private String discountName;
-    private OrderDiscountType discountType;
+    private DiscountType discountType;
     private BigDecimal discountValue;
     private BigDecimal discountAmount;
-    private String reason;
+    private BigDecimal taxableAmount;
+    private OrderModel orderModel;
     private OrganizationModel organizationModel;
     private BranchModel branchModel;
     private EmployeeModel appliedByModel;
+    private Boolean isActive;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

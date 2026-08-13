@@ -1,26 +1,20 @@
 package com.devmasters.restaurant_erp.model.searchcriteria;
 
-import com.devmasters.restaurant_erp.enums.OrderPaymentMethod;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderSplitSearchCriteria {
-
-    private String searchInput;
-
-    private OrderPaymentMethod paymentMethod;
-
-    private Boolean paid;
-
+    private String keyword;
     private UUID orderId;
-
     private UUID organizationId;
-
     private UUID branchId;
+    private Boolean paid;
+    private BigDecimal minTotalAmount;
+    private BigDecimal maxTotalAmount;
+    private Boolean isActive;
 }

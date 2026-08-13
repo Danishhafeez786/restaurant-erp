@@ -1,8 +1,9 @@
 package com.devmasters.restaurant_erp.domain.order;
 
-import com.devmasters.restaurant_erp.domain.BaseEntity;
 import com.devmasters.restaurant_erp.domain.Branch;
+import com.devmasters.restaurant_erp.domain.Employee;
 import com.devmasters.restaurant_erp.domain.Organization;
+import com.devmasters.restaurant_erp.domain.User;
 import com.devmasters.restaurant_erp.enums.KitchenTicketStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,22 +21,19 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document("order_kitchen_tickets")
-public class OrderKitchenTicket extends BaseEntity {
+public class OrderKitchenTicket extends com.devmasters.restaurant_erp.domain.BaseEntity {
 
     private String ticketNumber;
-
     private KitchenTicketStatus status;
-
-    private String kitchenStation;
-
+    private Integer priority;
+    private String kitchenNote;
     private LocalDateTime sentAt;
-
-    private LocalDateTime startedAt;
-
+    private LocalDateTime acceptedAt;
+    private LocalDateTime preparingAt;
     private LocalDateTime readyAt;
-
-    private String note;
-
+    private LocalDateTime completedAt;
+    private LocalDateTime cancelledAt;
+    private String cancellationReason;
 
     @DBRef
     private Order order;
@@ -45,4 +43,7 @@ public class OrderKitchenTicket extends BaseEntity {
 
     @DBRef
     private Branch branch;
+
+    @DBRef
+    private Employee assignedTo;
 }

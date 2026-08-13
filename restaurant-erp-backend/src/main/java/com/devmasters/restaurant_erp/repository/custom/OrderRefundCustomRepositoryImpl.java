@@ -10,7 +10,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,64 +22,79 @@ public class OrderRefundCustomRepositoryImpl implements OrderRefundCustomReposit
 
     @Override
     public Page<OrderRefund> search(OrderRefundSearchCriteria criteria, Pageable pageable) {
-
         Query query = new Query();
-
         List<Criteria> filters = new ArrayList<>();
 
-        if (criteria != null) {
+        if (criteria.getKeyword() != null && !criteria.getKeyword().isBlank()) {
+            String keyword = criteria.getKeyword().trim();
 
-            if (StringUtils.hasText(criteria.getSearchInput())) {
+            filters.add(new Criteria().orOperator(
+                    Criteria.where("refundNumber").regex(keyword, "i"),
+                    Criteria.where("note").regex(keyword, "i"),
+                    Criteria.where("transactionReference").regex(keyword, "i")
+            ));
+        }
 
-                String searchInput = criteria.getSearchInput().trim();
+        if (criteria.getOrderId() != null) {
+            filters.add(Criteria.where("order.$id").is(criteria.getOrderId()));
+        }
 
-                filters.add(new Criteria().orOperator(Criteria.where("refundNumber").regex(searchInput, "i"),
+        if (criteria.getOrderPaymentId() != null) {
+            filters.add(Criteria.where("orderPayment.$id").is(criteria.getOrderPaymentId()));
+        }
 
-                        Criteria.where("reason").regex(searchInput, "i")));
+        if (criteria.getStatus() != null) {
+            filters.add(Criteria.where("status").is(criteria.getStatus()));
+        }
+
+        if (criteria.getReason() != null) {
+            filters.add(Criteria.where("reason").is(criteria.getReason()));
+        }
+
+        if (criteria.getMinRefundAmount() != null ||
+                criteria.getMaxRefundAmount() != null) {
+
+            Criteria amountCriteria = Criteria.where("refundAmount");
+
+            if (criteria.getMinRefundAmount() != null) {
+                amountCriteria.gte(criteria.getMinRefundAmount());
             }
 
-            if (criteria.getPaymentMethod() != null) {
-
-                filters.add(Criteria.where("paymentMethod").is(criteria.getPaymentMethod()));
+            if (criteria.getMaxRefundAmount() != null) {
+                amountCriteria.lte(criteria.getMaxRefundAmount());
             }
 
-            if (criteria.getOrderId() != null) {
+            filters.add(amountCriteria);
+        }
 
-                filters.add(Criteria.where("order.$id").is(criteria.getOrderId()));
-            }
+        if (criteria.getOrganizationId() != null) {
+            filters.add(Criteria.where("organization.$id").is(criteria.getOrganizationId()));
+        }
 
-            if (criteria.getOrganizationId() != null) {
+        if (criteria.getBranchId() != null) {
+            filters.add(Criteria.where("branch.$id").is(criteria.getBranchId()));
+        }
 
-                filters.add(Criteria.where("organization.$id").is(criteria.getOrganizationId()));
-            }
+        if (criteria.getProcessedById() != null) {
+            filters.add(Criteria.where("processedBy.$id").is(criteria.getProcessedById()));
+        }
 
-            if (criteria.getBranchId() != null) {
-
-                filters.add(Criteria.where("branch.$id").is(criteria.getBranchId()));
-            }
-
-            if (criteria.getRefundedAtFrom() != null) {
-
-                filters.add(Criteria.where("refundedAt").gte(criteria.getRefundedAtFrom()));
-            }
-
-            if (criteria.getRefundedAtTo() != null) {
-
-                filters.add(Criteria.where("refundedAt").lte(criteria.getRefundedAtTo()));
-            }
+        if (criteria.getIsActive() != null) {
+            filters.add(Criteria.where("isActive").is(criteria.getIsActive()));
         }
 
         if (!filters.isEmpty()) {
-
-            query.addCriteria(new Criteria().andOperator(filters.toArray(new Criteria[0])));
+            query.addCriteria(new Criteria().andOperator(filters));
         }
 
-        long total = mongoTemplate.count(Query.of(query).limit(-1).skip(-1), OrderRefund.class);
+        long total = mongoTemplate.count(query, OrderRefund.class);
 
         query.with(pageable);
 
-        List<OrderRefund> refunds = mongoTemplate.find(query, OrderRefund.class);
-
-        return new PageImpl<>(refunds, pageable, total);
+        return new PageImpl<>(
+                mongoTemplate.find(query, OrderRefund.class),
+                pageable,
+                total
+        );
     }
 }

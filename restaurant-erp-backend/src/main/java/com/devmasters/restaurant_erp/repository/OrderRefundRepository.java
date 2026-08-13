@@ -13,5 +13,7 @@ public interface OrderRefundRepository extends MongoRepository<OrderRefund, UUID
 
     List<OrderRefund> findByOrder_IdAndOrganization_Id(UUID orderId, UUID organizationId);
 
+    List<OrderRefund> findByOrderPayment_IdAndOrganization_Id(UUID orderPaymentId, UUID organizationId);
+
     boolean existsByRefundNumberIgnoreCaseAndOrganization_Id(String refundNumber, UUID organizationId);
 }

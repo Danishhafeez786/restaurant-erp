@@ -1,14 +1,12 @@
 package com.devmasters.restaurant_erp.model.order;
 
-import com.devmasters.restaurant_erp.enums.OrderPaymentMethod;
 import com.devmasters.restaurant_erp.model.BranchModel;
 import com.devmasters.restaurant_erp.model.OrganizationModel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -16,22 +14,20 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderSplitModel {
-
     private UUID id;
-
-    private Integer splitNumber;
-
-    private BigDecimal amount;
-
-    private OrderPaymentMethod paymentMethod;
-
+    private String splitNumber;
+    private Integer splitSequence;
+    private BigDecimal subtotal;
+    private BigDecimal discountAmount;
+    private BigDecimal taxAmount;
+    private BigDecimal totalAmount;
     private Boolean paid;
-
-
-    private OrderModel order;
-
-    private OrganizationModel organization;
-
-    private BranchModel branch;
+    private String note;
+    private OrderModel orderModel;
+    private OrganizationModel organizationModel;
+    private BranchModel branchModel;
+    private List<OrderSplitItemModel> items;
+    private Boolean isActive;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }
-

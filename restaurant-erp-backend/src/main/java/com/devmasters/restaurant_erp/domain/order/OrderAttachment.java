@@ -4,10 +4,7 @@ import com.devmasters.restaurant_erp.domain.BaseEntity;
 import com.devmasters.restaurant_erp.domain.Branch;
 import com.devmasters.restaurant_erp.domain.Organization;
 import com.devmasters.restaurant_erp.enums.AttachmentType;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -24,12 +21,13 @@ public class OrderAttachment extends BaseEntity {
 
     private String fileUrl;
 
-    private String contentType;
+    private String fileType;
 
     private Long fileSize;
 
     private AttachmentType attachmentType;
 
+    private String description;
 
     @DBRef
     private Order order;

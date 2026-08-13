@@ -22,17 +22,14 @@ public class OrderDiscountCustomRepositoryImpl implements OrderDiscountCustomRep
 
     @Override
     public Page<OrderDiscount> search(OrderDiscountSearchCriteria criteria, Pageable pageable) {
-
         Query query = new Query();
         List<Criteria> filters = new ArrayList<>();
 
         if (criteria.getSearchInput() != null && !criteria.getSearchInput().isBlank()) {
             String search = criteria.getSearchInput().trim();
-
             filters.add(new Criteria().orOperator(
                     Criteria.where("discountNumber").regex(search, "i"),
-                    Criteria.where("discountName").regex(search, "i"),
-                    Criteria.where("reason").regex(search, "i")
+                    Criteria.where("discountName").regex(search, "i")
             ));
         }
 
@@ -40,7 +37,7 @@ public class OrderDiscountCustomRepositoryImpl implements OrderDiscountCustomRep
             filters.add(Criteria.where("discountType").is(criteria.getDiscountType()));
 
         if (criteria.getOrderId() != null)
-            filters.add(Criteria.where("orderId").is(criteria.getOrderId()));
+            filters.add(Criteria.where("order.$id").is(criteria.getOrderId()));
 
         if (criteria.getOrganizationId() != null)
             filters.add(Criteria.where("organization.$id").is(criteria.getOrganizationId()));
@@ -58,12 +55,12 @@ public class OrderDiscountCustomRepositoryImpl implements OrderDiscountCustomRep
             query.addCriteria(new Criteria().andOperator(filters));
 
         long total = mongoTemplate.count(query, OrderDiscount.class);
-
         query.with(pageable);
 
-        List<OrderDiscount> content =
-                mongoTemplate.find(query, OrderDiscount.class);
-
-        return new PageImpl<>(content, pageable, total);
+        return new PageImpl<>(
+                mongoTemplate.find(query, OrderDiscount.class),
+                pageable,
+                total
+        );
     }
 }

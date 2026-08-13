@@ -11,6 +11,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class OrderDiscountTransformer extends Transformer<OrderDiscount, OrderDiscountModel> {
 
+    private final OrderTransformer orderTransformer;
     private final OrganizationTransformer organizationTransformer;
     private final BranchTransformer branchTransformer;
     private final EmployeeTransformer employeeTransformer;
@@ -23,15 +24,18 @@ public class OrderDiscountTransformer extends Transformer<OrderDiscount, OrderDi
         return OrderDiscount.builder()
                 .id(model.getId() != null ? model.getId() : UUID.randomUUID())
                 .discountNumber(model.getDiscountNumber())
-                .orderId(model.getOrderId())
                 .discountName(model.getDiscountName())
                 .discountType(model.getDiscountType())
                 .discountValue(model.getDiscountValue())
                 .discountAmount(model.getDiscountAmount())
-                .reason(model.getReason())
+                .taxableAmount(model.getTaxableAmount())
+                .order(orderTransformer.toEntity(model.getOrderModel()))
                 .organization(organizationTransformer.toEntity(model.getOrganizationModel()))
                 .branch(branchTransformer.toEntity(model.getBranchModel()))
                 .appliedBy(employeeTransformer.toEntity(model.getAppliedByModel()))
+                .isActive(model.getIsActive())
+                .createdAt(model.getCreatedAt())
+                .updatedAt(model.getUpdatedAt())
                 .build();
     }
 
@@ -43,15 +47,18 @@ public class OrderDiscountTransformer extends Transformer<OrderDiscount, OrderDi
         return OrderDiscountModel.builder()
                 .id(entity.getId())
                 .discountNumber(entity.getDiscountNumber())
-                .orderId(entity.getOrderId())
                 .discountName(entity.getDiscountName())
                 .discountType(entity.getDiscountType())
                 .discountValue(entity.getDiscountValue())
                 .discountAmount(entity.getDiscountAmount())
-                .reason(entity.getReason())
+                .taxableAmount(entity.getTaxableAmount())
+                .orderModel(orderTransformer.toModel(entity.getOrder()))
                 .organizationModel(organizationTransformer.toModel(entity.getOrganization()))
                 .branchModel(branchTransformer.toModel(entity.getBranch()))
                 .appliedByModel(employeeTransformer.toModel(entity.getAppliedBy()))
+                .isActive(entity.getIsActive())
+                .createdAt(entity.getCreatedAt())
+                .updatedAt(entity.getUpdatedAt())
                 .build();
     }
 }

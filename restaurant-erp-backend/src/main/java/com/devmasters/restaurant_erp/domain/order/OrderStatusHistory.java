@@ -1,9 +1,6 @@
 package com.devmasters.restaurant_erp.domain.order;
 
-import com.devmasters.restaurant_erp.domain.BaseEntity;
-import com.devmasters.restaurant_erp.domain.Branch;
-import com.devmasters.restaurant_erp.domain.Organization;
-import com.devmasters.restaurant_erp.domain.User;
+import com.devmasters.restaurant_erp.domain.*;
 import com.devmasters.restaurant_erp.enums.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,23 +21,19 @@ import java.time.LocalDateTime;
 public class OrderStatusHistory extends BaseEntity {
 
     private OrderStatus previousStatus;
-
     private OrderStatus newStatus;
-
     private String reason;
-
     private LocalDateTime changedAt;
-
 
     @DBRef
     private Order order;
-
-    @DBRef
-    private User changedBy;
 
     @DBRef
     private Organization organization;
 
     @DBRef
     private Branch branch;
+
+    @DBRef
+    private Employee changedBy;
 }

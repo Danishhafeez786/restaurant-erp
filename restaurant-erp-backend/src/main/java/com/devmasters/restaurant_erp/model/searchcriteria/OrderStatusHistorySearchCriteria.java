@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -13,19 +12,10 @@ import java.util.UUID;
 @AllArgsConstructor
 public class OrderStatusHistorySearchCriteria {
 
-    private String searchInput;
-
-    private OrderStatus previousStatus;
-
-    private OrderStatus newStatus;
-
     private UUID orderId;
-
+    private OrderStatus previousStatus;
+    private OrderStatus newStatus;
     private UUID organizationId;
-
     private UUID branchId;
-
-    private LocalDateTime changedAtFrom;
-
-    private LocalDateTime changedAtTo;
+    private UUID changedById;
 }

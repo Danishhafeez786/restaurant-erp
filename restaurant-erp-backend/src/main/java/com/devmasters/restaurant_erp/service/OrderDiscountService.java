@@ -1,4 +1,4 @@
-package com.devmasters.restaurant_erp.service.order;
+package com.devmasters.restaurant_erp.service;
 
 import com.devmasters.restaurant_erp.domain.order.OrderDiscount;
 import com.devmasters.restaurant_erp.model.searchcriteria.OrderDiscountSearchCriteria;
@@ -9,15 +9,11 @@ import java.util.UUID;
 
 public interface OrderDiscountService {
 
-    boolean existsByDiscountNumberIgnoreCase(String discountNumber, UUID organizationId);
+    boolean existsByDiscountNumberIgnoreCase(String discountNumber);
 
-    boolean existsByDiscountNameIgnoreCase(String discountName, UUID organizationId);
+    boolean existsByOrderAndDiscountName(UUID orderId, String discountName);
 
-    boolean existsByDiscountNumberIgnoreCaseAndIdNot(String discountNumber, UUID organizationId, UUID id);
-
-    boolean existsByDiscountNameIgnoreCaseAndIdNot(String discountName, UUID organizationId, UUID id);
-
-    boolean existsByOrderId(UUID orderId, UUID organizationId);
+    boolean existsByOrderAndDiscountNameAndIdNot(UUID orderId, String discountName, UUID id);
 
     OrderDiscount create(OrderDiscount entity);
 

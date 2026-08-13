@@ -12,13 +12,15 @@ import java.util.UUID;
 @AllArgsConstructor
 public class OrderAttachmentSearchCriteria {
 
-    private String searchInput;
+    private UUID orderId;
 
     private AttachmentType attachmentType;
 
-    private UUID orderId;
+    private String fileType;
 
     private UUID organizationId;
 
     private UUID branchId;
+
+    private Boolean isActive;
 }

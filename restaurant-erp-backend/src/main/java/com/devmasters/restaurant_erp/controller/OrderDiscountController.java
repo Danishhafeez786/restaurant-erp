@@ -31,9 +31,7 @@ public class OrderDiscountController {
 
     @PreAuthorize("hasAuthority('ORDER_DISCOUNT_CREATE')")
     @PostMapping
-    public ResponseEntity<ApiResponse<OrderDiscountModel>> create(
-            @Valid @RequestBody OrderDiscountModel model) {
-
+    public ResponseEntity<ApiResponse<OrderDiscountModel>> create(@Valid @RequestBody OrderDiscountModel model) {
         OrderDiscountModel response = orderDiscountHandler.create(model);
         sendEvent("order-discount-created", response);
 
@@ -57,10 +55,7 @@ public class OrderDiscountController {
         Pageable pageable = PageRequest.of(
                 page,
                 size,
-                Sort.by(
-                        Sort.Direction.valueOf(direction.toUpperCase()),
-                        sortBy
-                )
+                Sort.by(Sort.Direction.valueOf(direction.toUpperCase()), sortBy)
         );
 
         return ResponseEntity.ok(
@@ -74,9 +69,7 @@ public class OrderDiscountController {
 
     @PreAuthorize("hasAuthority('ORDER_DISCOUNT_VIEW')")
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<OrderDiscountModel>> getById(
-            @PathVariable UUID id) {
-
+    public ResponseEntity<ApiResponse<OrderDiscountModel>> getById(@PathVariable UUID id) {
         return ResponseEntity.ok(
                 ApiResponse.<OrderDiscountModel>builder()
                         .success(true)
@@ -92,9 +85,7 @@ public class OrderDiscountController {
             @PathVariable UUID id,
             @Valid @RequestBody OrderDiscountModel model) {
 
-        OrderDiscountModel response =
-                orderDiscountHandler.update(id, model);
-
+        OrderDiscountModel response = orderDiscountHandler.update(id, model);
         sendEvent("order-discount-updated", response);
 
         return ResponseEntity.ok(
@@ -108,13 +99,9 @@ public class OrderDiscountController {
 
     @PreAuthorize("hasAuthority('ORDER_DISCOUNT_DELETE')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> delete(
-            @PathVariable UUID id) {
-
-        OrderDiscountModel deleted =
-                orderDiscountHandler.delete(id);
-
-        sendEvent("order-discount-deleted", deleted);
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID id) {
+        OrderDiscountModel response = orderDiscountHandler.delete(id);
+        sendEvent("order-discount-deleted", response);
 
         return ResponseEntity.ok(
                 ApiResponse.<Void>builder()
@@ -126,13 +113,9 @@ public class OrderDiscountController {
 
     @PreAuthorize("hasAuthority('ORDER_DISCOUNT_RESTORE')")
     @PatchMapping("/{id}/restore")
-    public ResponseEntity<ApiResponse<Void>> restore(
-            @PathVariable UUID id) {
-
-        OrderDiscountModel restored =
-                orderDiscountHandler.restore(id);
-
-        sendEvent("order-discount-restored", restored);
+    public ResponseEntity<ApiResponse<Void>> restore(@PathVariable UUID id) {
+        OrderDiscountModel response = orderDiscountHandler.restore(id);
+        sendEvent("order-discount-restored", response);
 
         return ResponseEntity.ok(
                 ApiResponse.<Void>builder()
@@ -145,27 +128,18 @@ public class OrderDiscountController {
     @PreAuthorize("hasAuthority('ORDER_DISCOUNT_VIEW')")
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter stream() {
-
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
-
         emitters.add(emitter);
-
         emitter.onCompletion(() -> emitters.remove(emitter));
         emitter.onTimeout(() -> emitters.remove(emitter));
         emitter.onError(e -> emitters.remove(emitter));
-
         return emitter;
     }
 
     private void sendEvent(String eventName, Object data) {
-
         emitters.forEach(emitter -> {
             try {
-                emitter.send(
-                        SseEmitter.event()
-                                .name(eventName)
-                                .data(data)
-                );
+                emitter.send(SseEmitter.event().name(eventName).data(data));
             } catch (Exception e) {
                 emitter.complete();
                 emitters.remove(emitter);

@@ -89,9 +89,5 @@ public class OrderModel {
 
     private UserModel cancelledByModel;
 
-    private UUID deliveryPartnerId;
-
-    private DeliveryAddress deliveryAddress;
-
     private List<OrderItemModel> items;
 }

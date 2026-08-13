@@ -3,7 +3,7 @@ package com.devmasters.restaurant_erp.model.order;
 import com.devmasters.restaurant_erp.enums.KitchenTicketStatus;
 import com.devmasters.restaurant_erp.model.BranchModel;
 import com.devmasters.restaurant_erp.model.OrganizationModel;
-import com.devmasters.restaurant_erp.model.order.OrderModel;
+import com.devmasters.restaurant_erp.model.employee.EmployeeModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,23 +24,35 @@ public class OrderKitchenTicketModel {
 
     private KitchenTicketStatus status;
 
-    private String kitchenStation;
+    private Integer priority;
 
+    private String kitchenNote;
 
     private LocalDateTime sentAt;
 
-    private LocalDateTime startedAt;
+    private LocalDateTime acceptedAt;
+
+    private LocalDateTime preparingAt;
 
     private LocalDateTime readyAt;
 
+    private LocalDateTime completedAt;
 
-    private String note;
+    private LocalDateTime cancelledAt;
 
+    private String cancellationReason;
 
-    private OrderModel order;
+    private OrderModel orderModel;
 
-    private OrganizationModel organization;
+    private OrganizationModel organizationModel;
 
-    private BranchModel branch;
+    private BranchModel branchModel;
+
+    private EmployeeModel assignedToModel;
+
+    private Boolean isActive;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 }
-

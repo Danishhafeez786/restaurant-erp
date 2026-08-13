@@ -23,7 +23,7 @@ public class OrderItemModel {
 
     private String itemCode;
 
-    private Integer quantity;
+    private BigDecimal quantity;
 
     private BigDecimal unitPrice;
 

@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -13,19 +12,19 @@ import java.util.UUID;
 @AllArgsConstructor
 public class OrderKitchenTicketSearchCriteria {
 
-    private String searchInput;
+    private String ticketNumber;
+
+    private UUID orderId;
 
     private KitchenTicketStatus status;
 
-    private String kitchenStation;
-
-    private UUID orderId;
+    private Integer priority;
 
     private UUID organizationId;
 
     private UUID branchId;
 
-    private LocalDateTime sentAtFrom;
+    private UUID assignedToId;
 
-    private LocalDateTime sentAtTo;
+    private Boolean isActive;
 }

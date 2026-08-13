@@ -10,7 +10,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,70 +21,92 @@ public class OrderKitchenTicketCustomRepositoryImpl implements OrderKitchenTicke
     private final MongoTemplate mongoTemplate;
 
     @Override
-    public Page<OrderKitchenTicket> search(OrderKitchenTicketSearchCriteria criteria, Pageable pageable) {
+    public Page<OrderKitchenTicket> search(
+            OrderKitchenTicketSearchCriteria criteria,
+            Pageable pageable) {
 
         Query query = new Query();
 
         List<Criteria> filters = new ArrayList<>();
 
-        if (criteria != null) {
+        if (criteria.getTicketNumber() != null &&
+                !criteria.getTicketNumber().isBlank()) {
 
-            if (StringUtils.hasText(criteria.getSearchInput())) {
+            filters.add(
+                    Criteria.where("ticketNumber")
+                            .is(criteria.getTicketNumber())
+            );
+        }
 
-                String searchInput = criteria.getSearchInput().trim();
+        if (criteria.getOrderId() != null) {
+            filters.add(
+                    Criteria.where("order.$id")
+                            .is(criteria.getOrderId())
+            );
+        }
 
-                filters.add(new Criteria().orOperator(Criteria.where("ticketNumber").regex(searchInput, "i"),
+        if (criteria.getStatus() != null) {
+            filters.add(
+                    Criteria.where("status")
+                            .is(criteria.getStatus())
+            );
+        }
 
-                        Criteria.where("note").regex(searchInput, "i")));
-            }
+        if (criteria.getPriority() != null) {
+            filters.add(
+                    Criteria.where("priority")
+                            .is(criteria.getPriority())
+            );
+        }
 
-            if (criteria.getStatus() != null) {
+        if (criteria.getOrganizationId() != null) {
+            filters.add(
+                    Criteria.where("organization.$id")
+                            .is(criteria.getOrganizationId())
+            );
+        }
 
-                filters.add(Criteria.where("status").is(criteria.getStatus()));
-            }
+        if (criteria.getBranchId() != null) {
+            filters.add(
+                    Criteria.where("branch.$id")
+                            .is(criteria.getBranchId())
+            );
+        }
 
-            if (StringUtils.hasText(criteria.getKitchenStation())) {
+        if (criteria.getAssignedToId() != null) {
+            filters.add(
+                    Criteria.where("assignedTo.$id")
+                            .is(criteria.getAssignedToId())
+            );
+        }
 
-                filters.add(Criteria.where("kitchenStation").regex(criteria.getKitchenStation().trim(), "i"));
-            }
-
-            if (criteria.getOrderId() != null) {
-
-                filters.add(Criteria.where("order.$id").is(criteria.getOrderId()));
-            }
-
-            if (criteria.getOrganizationId() != null) {
-
-                filters.add(Criteria.where("organization.$id").is(criteria.getOrganizationId()));
-            }
-
-            if (criteria.getBranchId() != null) {
-
-                filters.add(Criteria.where("branch.$id").is(criteria.getBranchId()));
-            }
-
-            if (criteria.getSentAtFrom() != null) {
-
-                filters.add(Criteria.where("sentAt").gte(criteria.getSentAtFrom()));
-            }
-
-            if (criteria.getSentAtTo() != null) {
-
-                filters.add(Criteria.where("sentAt").lte(criteria.getSentAtTo()));
-            }
+        if (criteria.getIsActive() != null) {
+            filters.add(
+                    Criteria.where("isActive")
+                            .is(criteria.getIsActive())
+            );
         }
 
         if (!filters.isEmpty()) {
-
-            query.addCriteria(new Criteria().andOperator(filters.toArray(new Criteria[0])));
+            query.addCriteria(
+                    new Criteria().andOperator(filters)
+            );
         }
 
-        long total = mongoTemplate.count(Query.of(query).limit(-1).skip(-1), OrderKitchenTicket.class);
+        long total = mongoTemplate.count(
+                query,
+                OrderKitchenTicket.class
+        );
 
         query.with(pageable);
 
-        List<OrderKitchenTicket> tickets = mongoTemplate.find(query, OrderKitchenTicket.class);
-
-        return new PageImpl<>(tickets, pageable, total);
+        return new PageImpl<>(
+                mongoTemplate.find(
+                        query,
+                        OrderKitchenTicket.class
+                ),
+                pageable,
+                total
+        );
     }
 }

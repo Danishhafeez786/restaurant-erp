@@ -1,17 +1,13 @@
 package com.devmasters.restaurant_erp.domain.order;
 
 import com.devmasters.restaurant_erp.domain.*;
-import com.devmasters.restaurant_erp.enums.OrderDiscountType;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import com.devmasters.restaurant_erp.enums.DiscountType;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -22,12 +18,14 @@ import java.util.UUID;
 public class OrderDiscount extends BaseEntity {
 
     private String discountNumber;
-    private UUID orderId;
     private String discountName;
-    private OrderDiscountType discountType;
+    private DiscountType discountType;
     private BigDecimal discountValue;
     private BigDecimal discountAmount;
-    private String reason;
+    private BigDecimal taxableAmount;
+
+    @DBRef
+    private Order order;
 
     @DBRef
     private Organization organization;

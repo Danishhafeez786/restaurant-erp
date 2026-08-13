@@ -10,7 +10,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,54 +22,46 @@ public class OrderTaxCustomRepositoryImpl implements OrderTaxCustomRepository {
 
     @Override
     public Page<OrderTax> search(OrderTaxSearchCriteria criteria, Pageable pageable) {
-
         Query query = new Query();
-
         List<Criteria> filters = new ArrayList<>();
 
-        if (criteria != null) {
+        if (criteria.getSearchInput() != null && !criteria.getSearchInput().isBlank()) {
+            String search = criteria.getSearchInput().trim();
 
-            if (StringUtils.hasText(criteria.getSearchInput())) {
-
-                String searchInput = criteria.getSearchInput().trim();
-
-                filters.add(new Criteria().orOperator(Criteria.where("taxCode").regex(searchInput, "i"),
-
-                        Criteria.where("taxName").regex(searchInput, "i")));
-            }
-
-            if (criteria.getTaxType() != null) {
-
-                filters.add(Criteria.where("taxType").is(criteria.getTaxType()));
-            }
-
-            if (criteria.getOrderId() != null) {
-
-                filters.add(Criteria.where("order.$id").is(criteria.getOrderId()));
-            }
-
-            if (criteria.getOrganizationId() != null) {
-
-                filters.add(Criteria.where("organization.$id").is(criteria.getOrganizationId()));
-            }
-
-            if (criteria.getBranchId() != null) {
-
-                filters.add(Criteria.where("branch.$id").is(criteria.getBranchId()));
-            }
+            filters.add(new Criteria().orOperator(
+                    Criteria.where("taxNumber").regex(search, "i"),
+                    Criteria.where("taxName").regex(search, "i")
+            ));
         }
 
-        if (!filters.isEmpty()) {
+        if (criteria.getOrderId() != null)
+            filters.add(Criteria.where("order.$id").is(criteria.getOrderId()));
 
-            query.addCriteria(new Criteria().andOperator(filters.toArray(new Criteria[0])));
-        }
+        if (criteria.getTaxId() != null)
+            filters.add(Criteria.where("tax.$id").is(criteria.getTaxId()));
 
-        long total = mongoTemplate.count(Query.of(query).limit(-1).skip(-1), OrderTax.class);
+        if (criteria.getOrganizationId() != null)
+            filters.add(Criteria.where("organization.$id").is(criteria.getOrganizationId()));
 
+        if (criteria.getBranchId() != null)
+            filters.add(Criteria.where("branch.$id").is(criteria.getBranchId()));
+
+        if (criteria.getAppliedById() != null)
+            filters.add(Criteria.where("appliedBy.$id").is(criteria.getAppliedById()));
+
+        if (criteria.getIsActive() != null)
+            filters.add(Criteria.where("isActive").is(criteria.getIsActive()));
+
+        if (!filters.isEmpty())
+            query.addCriteria(new Criteria().andOperator(filters));
+
+        long total = mongoTemplate.count(query, OrderTax.class);
         query.with(pageable);
 
-        List<OrderTax> taxes = mongoTemplate.find(query, OrderTax.class);
-
-        return new PageImpl<>(taxes, pageable, total);
+        return new PageImpl<>(
+                mongoTemplate.find(query, OrderTax.class),
+                pageable,
+                total
+        );
     }
 }

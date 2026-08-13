@@ -11,7 +11,7 @@ import java.util.UUID;
 @Repository
 public interface OrderSplitRepository extends MongoRepository<OrderSplit, UUID>, OrderSplitCustomRepository {
 
-    List<OrderSplit> findByOrder_IdAndOrganization_IdOrderBySplitNumberAsc(UUID orderId, UUID organizationId);
+    List<OrderSplit> findByOrder_IdAndOrganization_Id(UUID orderId, UUID organizationId);
 
-    boolean existsByOrder_IdAndSplitNumberAndOrganization_Id(UUID orderId, Integer splitNumber, UUID organizationId);
+    boolean existsBySplitNumberIgnoreCaseAndOrganization_Id(String splitNumber, UUID organizationId);
 }

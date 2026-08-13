@@ -208,7 +208,7 @@ public class OrderHandler {
                 throw new RuntimeException("Item name is required.");
             }
 
-            if (item.getQuantity() == null || item.getQuantity() <= 0) {
+            if (item.getQuantity() == null || item.getQuantity().compareTo(BigDecimal.ZERO) < 0) {
                 throw new RuntimeException("Item quantity must be greater than zero.");
             }
 

@@ -84,10 +84,6 @@ public class OrderServiceImpl implements OrderService {
 
         existing.setRestaurantTable(entity.getRestaurantTable());
 
-        existing.setDeliveryPartnerId(entity.getDeliveryPartnerId());
-
-        existing.setDeliveryAddress(entity.getDeliveryAddress());
-
         existing.setItems(entity.getItems());
 
         existing.setUpdatedBy(entity.getUpdatedBy());

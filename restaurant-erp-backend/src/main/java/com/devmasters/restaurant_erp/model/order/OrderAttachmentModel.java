@@ -3,11 +3,9 @@ package com.devmasters.restaurant_erp.model.order;
 import com.devmasters.restaurant_erp.enums.AttachmentType;
 import com.devmasters.restaurant_erp.model.BranchModel;
 import com.devmasters.restaurant_erp.model.OrganizationModel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -22,17 +20,23 @@ public class OrderAttachmentModel {
 
     private String fileUrl;
 
-    private String contentType;
+    private String fileType;
 
     private Long fileSize;
 
     private AttachmentType attachmentType;
 
+    private String description;
 
-    private OrderModel order;
+    private OrderModel orderModel;
 
-    private OrganizationModel organization;
+    private OrganizationModel organizationModel;
 
-    private BranchModel branch;
+    private BranchModel branchModel;
+
+    private Boolean isActive;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 }
-

@@ -24,7 +24,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document("orders")
-public class Order extends BaseEntity {
+public class  Order extends BaseEntity {
 
     private String orderNumber;
 
@@ -97,10 +97,6 @@ public class Order extends BaseEntity {
 
     @DBRef
     private User cancelledBy;
-
-    private UUID deliveryPartnerId;
-
-    private DeliveryAddress deliveryAddress;
 
     private List<OrderItem> items;
 }
