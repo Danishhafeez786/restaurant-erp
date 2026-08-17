@@ -1,0 +1,16 @@
+package com.devmasters.restaurant_erp.role.respository;
+
+import com.devmasters.restaurant_erp.role.domain.Role;
+import com.devmasters.restaurant_erp.role.respository.custom.RoleCustomRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.UUID;
+
+@Repository
+public interface RoleRepository extends MongoRepository<Role, UUID>, RoleCustomRepository {
+
+    boolean existsByRoleNameIgnoreCase(String roleName);
+    List<Role> findAllByIsActiveTrue();
+}

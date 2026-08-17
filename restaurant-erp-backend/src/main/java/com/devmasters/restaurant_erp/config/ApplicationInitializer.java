@@ -1,20 +1,30 @@
 package com.devmasters.restaurant_erp.config;
 
-import com.devmasters.restaurant_erp.domain.*;
-import com.devmasters.restaurant_erp.enums.BillingCycle;
-import com.devmasters.restaurant_erp.enums.PermissionAction;
-import com.devmasters.restaurant_erp.repository.*;
+import com.devmasters.restaurant_erp.auth.domain.User;
+import com.devmasters.restaurant_erp.auth.respository.UserRepository;
+import com.devmasters.restaurant_erp.branch.domain.Branch;
+import com.devmasters.restaurant_erp.branch.respository.BranchRepository;
+import com.devmasters.restaurant_erp.common.enums.BillingCycle;
+import com.devmasters.restaurant_erp.common.enums.PermissionAction;
+import com.devmasters.restaurant_erp.organization.domain.Organization;
+import com.devmasters.restaurant_erp.organization.respository.OrganizationRepository;
+import com.devmasters.restaurant_erp.permission.domain.Permission;
+import com.devmasters.restaurant_erp.permission.respository.PermissionRepository;
 
+import com.devmasters.restaurant_erp.role.domain.Role;
+import com.devmasters.restaurant_erp.role.respository.RoleRepository;
+import com.devmasters.restaurant_erp.rolepermission.domain.RolePermission;
+import com.devmasters.restaurant_erp.rolepermission.respository.RolePermissionRepository;
+import com.devmasters.restaurant_erp.subscriptionplan.domain.SubscriptionPlan;
+import com.devmasters.restaurant_erp.subscriptionplan.respository.SubscriptionPlanRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
